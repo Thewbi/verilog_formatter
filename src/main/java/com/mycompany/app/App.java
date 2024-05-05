@@ -11,9 +11,6 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import lel.VerilogLexer;
 import lel.VerilogParser;
-import lul.sv2017Lexer;
-import lul.sv2017Parser;
-import lul.sv2017Parser.Source_textContext;
 
 /**
  * Created with
@@ -30,13 +27,14 @@ import lul.sv2017Parser.Source_textContext;
 public class App {
 
     public static void main(String[] args) throws IOException {
-        System.out.println("Lexing ...");
+    System.out.println("Lexing ..."); 
 
-        String testFile = "src/test/resources/verilog_samples/command.v";
+        //String testFile = "src/test/resources/verilog_samples/command.v";
         //String testFile = "src/test/resources/verilog_samples/module.v";
         //String testFile = "src/test/resources/verilog_samples/if_procedural.v";
         //String testFile = "src/test/resources/verilog_samples/if_large.v";
         //String testFile = "src/test/resources/verilog_samples/if_else_chain.v";
+        String testFile = "src/test/resources/verilog_samples/double_click.v";
 
         final CharStream charStream = CharStreams.fromFileName(testFile);
 
@@ -51,14 +49,31 @@ public class App {
         //final lel.VerilogParser.Always_constructContext root = parser.always_construct();
         //final lel.VerilogParser.Always_constructContext root = parser.module_declaration();
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test.txt"));
+        boolean print = false;
+        //boolean print = true;
+        if (print) {
 
-        final FormattingVerilogParserVisitor formatterVisitor = new FormattingVerilogParserVisitor();
-        formatterVisitor.setBufferedWriter(writer);
+            RawOutputListener printListener = new RawOutputListener();
+
+            // Create a generic parse tree walker that can trigger callbacks
+            final ParseTreeWalker walker = new ParseTreeWalker();
+            walker.walk(printListener, root);
+        }
+
+
+        // BufferedWriter writer = new BufferedWriter(new FileWriter("test.txt"));
+
+        // final FormattingVerilogParserVisitor formatterVisitor = new FormattingVerilogParserVisitor();
+        // formatterVisitor.setBufferedWriter(writer);
+        // formatterVisitor.visit(root);
+
+        // writer.flush();
+        // writer.close();
+
+        final SimpleVerilogParserVisitor formatterVisitor = new SimpleVerilogParserVisitor();
         formatterVisitor.visit(root);
 
-        writer.flush();
-        writer.close();
+        
     }
 
     /*

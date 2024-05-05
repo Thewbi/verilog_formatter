@@ -222,20 +222,23 @@ TIVL   : '~|';
 VL     : '|';
 VLVL   : '||';
 
+NEWLINE              : '\r'? '\n';
+
 BINARY_BASE          : '\'' [sS]? [bB]       -> pushMode(BINARY_NUMBER_MODE);
-BLOCK_COMMENT        : '/*' ASCII_ANY*? '*/' -> channel(COMMENTS);
+BLOCK_COMMENT        : '/*' ASCII_ANY*? '*/' ;
 DECIMAL_BASE         : '\'' [sS]? [dD]       -> pushMode(DECIMAL_NUMBER_MODE);
 ESCAPED_IDENTIFIER   : '\\' ASCII_PRINTABLE_NO_SPACE* [ \t\r\n];
 EXPONENTIAL_NUMBER   : UNSIGNED_NUMBER ( '.' UNSIGNED_NUMBER)? [eE] [+\-]? UNSIGNED_NUMBER;
 FIXED_POINT_NUMBER   : UNSIGNED_NUMBER '.' UNSIGNED_NUMBER;
 HEX_BASE             : '\'' [sS]? [hH]        -> pushMode(HEX_NUMBER_MODE);
-LINE_COMMENT         : '//' ASCII_NO_NEWLINE* -> channel(COMMENTS);
+LINE_COMMENT         : '//' ASCII_NO_NEWLINE* ;
 OCTAL_BASE           : '\'' [sS]? [oO]        -> pushMode(OCTAL_NUMBER_MODE);
 SIMPLE_IDENTIFIER    : [a-zA-Z_] [a-zA-Z0-9_$]*;
 STRING               : '"' ( ASCII_NO_NEWLINE_QUOTE_BACKSLASH | ESC_SPECIAL_CHAR)* '"';
 SYSTEM_TF_IDENTIFIER : '$' [a-zA-Z0-9_$] [a-zA-Z0-9_$]*;
 UNSIGNED_NUMBER      : [0-9] [0-9_]*;
-WHITE_SPACE          : [ \t\r\n]+ -> channel(HIDDEN);
+//NEWLINE_CMD          : NEWLINE;
+WHITE_SPACE          : [ \t]+ -> channel(HIDDEN);
 
 mode BINARY_NUMBER_MODE;
 BINARY_VALUE  : [01xXzZ?] [01xXzZ?_]* -> popMode;
@@ -247,12 +250,12 @@ WHITE_SPACE_1     : WHITE_SPACE     -> channel(HIDDEN), type(WHITE_SPACE);
 X_OR_Z_UNDERSCORE : [xXzZ?] '_'*    -> popMode;
 
 mode EDGE_MODE;
-BLOCK_COMMENT_0 : BLOCK_COMMENT -> channel(COMMENTS), type(BLOCK_COMMENT);
+BLOCK_COMMENT_0 : BLOCK_COMMENT -> type(BLOCK_COMMENT);
 CO_0            : CO            -> type(CO);
 EDGE_DESCRIPTOR : '01' | '10' | [xXzZ] [01] | [01] [xXzZ];
 GA_0            : GA           -> channel(DIRECTIVES), type(GA), pushMode(DIRECTIVE_MODE);
 LB_0            : LB           -> type(LB);
-LINE_COMMENT_0  : LINE_COMMENT -> channel(COMMENTS), type(LINE_COMMENT);
+LINE_COMMENT_0  : LINE_COMMENT -> type(LINE_COMMENT);
 RB_0            : RB           -> type(RB), popMode;
 WHITE_SPACE_2   : WHITE_SPACE  -> channel(HIDDEN), type(WHITE_SPACE);
 
@@ -261,11 +264,11 @@ HEX_VALUE     : [0-9a-fA-FxXzZ?] [0-9a-fA-FxXzZ?_]* -> popMode;
 WHITE_SPACE_3 : WHITE_SPACE                         -> channel(HIDDEN), type(WHITE_SPACE);
 
 mode LIBRARY_MODE;
-BLOCK_COMMENT_1      : BLOCK_COMMENT      -> channel(COMMENTS), type(BLOCK_COMMENT);
+BLOCK_COMMENT_1      : BLOCK_COMMENT      -> type(BLOCK_COMMENT);
 CO_1                 : CO                 -> type(CO);
 ESCAPED_IDENTIFIER_0 : ESCAPED_IDENTIFIER -> type(ESCAPED_IDENTIFIER);
 GA_1                 : GA                 -> channel(DIRECTIVES), type(GA), pushMode(DIRECTIVE_MODE);
-LINE_COMMENT_1       : LINE_COMMENT       -> channel(COMMENTS), type(LINE_COMMENT);
+LINE_COMMENT_1       : LINE_COMMENT       -> type(LINE_COMMENT);
 MIINCDIR_0           : MIINCDIR           -> type(MIINCDIR);
 SC_0                 : SC                 -> type(SC), popMode;
 SIMPLE_IDENTIFIER_0  : SIMPLE_IDENTIFIER  -> type(SIMPLE_IDENTIFIER);
@@ -277,13 +280,13 @@ OCTAL_VALUE   : [0-7xXzZ?] [0-7xXzZ?_]* -> popMode;
 WHITE_SPACE_5 : WHITE_SPACE             -> channel(HIDDEN), type(WHITE_SPACE);
 
 mode TABLE_MODE;
-BLOCK_COMMENT_2        : BLOCK_COMMENT -> channel(COMMENTS), type(BLOCK_COMMENT);
+BLOCK_COMMENT_2        : BLOCK_COMMENT -> type(BLOCK_COMMENT);
 CL_0                   : CL            -> type(CL);
 EDGE_SYMBOL            : [rRfFpPnN*];
 ENDTABLE_0             : ENDTABLE -> type(ENDTABLE), popMode;
 GA_2                   : GA       -> channel(DIRECTIVES), type(GA), pushMode(DIRECTIVE_MODE);
 LEVEL_ONLY_SYMBOL      : [?bB];
-LINE_COMMENT_2         : LINE_COMMENT -> channel(COMMENTS), type(LINE_COMMENT);
+LINE_COMMENT_2         : LINE_COMMENT -> type(LINE_COMMENT);
 LP_0                   : LP           -> type(LP);
 MI_0                   : MI           -> type(MI);
 OUTPUT_OR_LEVEL_SYMBOL : [01xX];
@@ -320,7 +323,7 @@ UNDEF_DIRECTIVE : 'undef'                                -> channel(DIRECTIVES),
 MACRO_USAGE     : IDENTIFIER ( WHITE_SPACE? MACRO_ARGS)? -> channel(DIRECTIVES), popMode;
 
 mode BEGIN_KEYWORDS_DIRECTIVE_MODE;
-BLOCK_COMMENT_3 : BLOCK_COMMENT -> channel(COMMENTS), type(BLOCK_COMMENT);
+BLOCK_COMMENT_3 : BLOCK_COMMENT -> type(BLOCK_COMMENT);
 DQ_0            : DQ            -> channel(DIRECTIVES), type(DQ);
 NEWLINE_0       : NEWLINE       -> channel(HIDDEN), type(WHITE_SPACE), popMode;
 SPACE_TAB_0     : SPACE_TAB     -> channel(HIDDEN), type(WHITE_SPACE);
@@ -329,7 +332,7 @@ VERSION_SPECIFIER:
 ;
 
 mode DEFAULT_NETTYPE_DIRECTIVE_MODE;
-BLOCK_COMMENT_4: BLOCK_COMMENT -> channel(COMMENTS), type(BLOCK_COMMENT);
+BLOCK_COMMENT_4: BLOCK_COMMENT -> type(BLOCK_COMMENT);
 DEFAULT_NETTYPE_VALUE:
     (
         'wire'
@@ -383,7 +386,7 @@ SPACE_TAB_3       : SPACE_TAB       -> channel(HIDDEN), type(WHITE_SPACE);
 UNSIGNED_NUMBER_1 : UNSIGNED_NUMBER -> channel(DIRECTIVES), type(UNSIGNED_NUMBER);
 
 mode MACRO_TEXT_MODE;
-BLOCK_COMMENT_5   : BLOCK_COMMENT                                        -> channel(COMMENTS), type(BLOCK_COMMENT);
+BLOCK_COMMENT_5   : BLOCK_COMMENT                                        -> type(BLOCK_COMMENT);
 GA_3              : GA                                                   -> channel(DIRECTIVES), type(MACRO_TEXT);
 MACRO_DELIMITER   : '``'                                                 -> channel(DIRECTIVES);
 MACRO_ESC_NEWLINE : ESC_NEWLINE                                          -> channel(DIRECTIVES);
@@ -396,7 +399,7 @@ SL_2              : SL                                                   -> more
 STRING_0          : STRING                                               -> channel(DIRECTIVES), type(STRING);
 
 mode PRAGMA_DIRECTIVE_MODE;
-BLOCK_COMMENT_6     : BLOCK_COMMENT     -> channel(COMMENTS), type(BLOCK_COMMENT);
+BLOCK_COMMENT_6     : BLOCK_COMMENT     -> type(BLOCK_COMMENT);
 CO_2                : CO                -> channel(DIRECTIVES), type(CO);
 EQ_0                : EQ                -> channel(DIRECTIVES), type(EQ);
 LP_1                : LP                -> channel(DIRECTIVES), type(LP);
@@ -408,14 +411,14 @@ STRING_1            : STRING            -> channel(DIRECTIVES), type(STRING);
 UNSIGNED_NUMBER_2   : UNSIGNED_NUMBER   -> channel(DIRECTIVES), type(UNSIGNED_NUMBER);
 
 mode SOURCE_TEXT_MODE;
-BLOCK_COMMENT_7 : BLOCK_COMMENT                -> channel(COMMENTS), type(BLOCK_COMMENT);
+BLOCK_COMMENT_7 : BLOCK_COMMENT                -> type(BLOCK_COMMENT);
 GA_4            : GA                           -> channel(DIRECTIVES), type(GA), pushMode(DIRECTIVE_MODE);
-LINE_COMMENT_3  : LINE_COMMENT                 -> channel(COMMENTS), type(LINE_COMMENT);
+LINE_COMMENT_3  : LINE_COMMENT                 -> type(LINE_COMMENT);
 SL_0            : SL                           -> more;
 SOURCE_TEXT     : ASCII_NO_SLASH_GRAVE_ACCENT+ -> channel(DIRECTIVES);
 
 mode TIMESCALE_DIRECTIVE_MODE;
-BLOCK_COMMENT_8 : BLOCK_COMMENT         -> channel(COMMENTS), type(BLOCK_COMMENT);
+BLOCK_COMMENT_8 : BLOCK_COMMENT         -> type(BLOCK_COMMENT);
 NEWLINE_6       : NEWLINE               -> channel(HIDDEN), type(WHITE_SPACE), popMode;
 SL_1            : SL                    -> channel(DIRECTIVES), type(SL);
 SPACE_TAB_5     : SPACE_TAB             -> channel(HIDDEN), type(WHITE_SPACE);
@@ -423,7 +426,7 @@ TIME_UNIT       : [munpf]? 's'          -> channel(DIRECTIVES);
 TIME_VALUE      : ( '1' | '10' | '100') -> channel(DIRECTIVES);
 
 mode UNCONNECTED_DRIVE_DIRECTIVE_MODE;
-BLOCK_COMMENT_9         : BLOCK_COMMENT        -> channel(COMMENTS), type(BLOCK_COMMENT);
+BLOCK_COMMENT_9         : BLOCK_COMMENT        -> type(BLOCK_COMMENT);
 NEWLINE_7               : NEWLINE              -> channel(HIDDEN), type(WHITE_SPACE), popMode;
 SPACE_TAB_6             : SPACE_TAB            -> channel(HIDDEN), type(WHITE_SPACE);
 UNCONNECTED_DRIVE_VALUE : ( 'pull0' | 'pull1') -> channel(DIRECTIVES), popMode;
@@ -449,9 +452,9 @@ fragment ASCII_PRINTABLE_NO_SPACE           : [\u0021-\u007e];
 fragment CHAR_OCTAL                         : [0-7] [0-7]? [0-7]?;
 fragment ESC_ASCII_NO_NEWLINE               : '\\' ASCII_NO_NEWLINE;
 fragment ESC_ASCII_PRINTABLE                : '\\' ASCII_PRINTABLE;
-fragment ESC_NEWLINE                        : '\\' NEWLINE;
+fragment ESC_NEWLINE                        : '\\' '\r'? '\n';
 fragment ESC_SPECIAL_CHAR                   : '\\' ( [nt\\"] | CHAR_OCTAL);
 fragment IDENTIFIER                         : ESCAPED_IDENTIFIER | SIMPLE_IDENTIFIER;
 fragment MACRO_ARGS                         : '(' ( MACRO_ARGS | ASCII_NO_PARENTHESES)* ')';
-fragment NEWLINE                            : '\r'? '\n';
+//fragment NEWLINE                            : '\r'? '\n';
 fragment SPACE_TAB                          : [ \t]+;

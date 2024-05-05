@@ -84,7 +84,7 @@ begin
 
   if (( do_refresh == 1 ) | ( do_reada == 1 ) | ( do_writea == 1 ) | ( do_precharge == 1 ) | ( do_load_mode == 1 ))
     begin
-      command_delay <= 8 'b 11111111;
+      command_delay <= 8'b11111111;
       command_done <= 1;
       rw_flag <= do_reada;
     end

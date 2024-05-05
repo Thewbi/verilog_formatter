@@ -2092,13 +2092,13 @@ public class VerilogParserBaseListener implements VerilogParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterContinuous_assign(VerilogParser.Continuous_assignContext ctx) { }
+	@Override public void enterContinuous_assignment(VerilogParser.Continuous_assignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitContinuous_assign(VerilogParser.Continuous_assignContext ctx) { }
+	@Override public void exitContinuous_assignment(VerilogParser.Continuous_assignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -4595,6 +4595,42 @@ public class VerilogParserBaseListener implements VerilogParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitVariable_identifier(VerilogParser.Variable_identifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLine_comment(VerilogParser.Line_commentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLine_comment(VerilogParser.Line_commentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBlock_comment(VerilogParser.Block_commentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBlock_comment(VerilogParser.Block_commentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNew_line(VerilogParser.New_lineContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNew_line(VerilogParser.New_lineContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

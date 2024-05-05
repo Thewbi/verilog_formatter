@@ -1049,11 +1049,11 @@ public interface VerilogParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitName_of_udp_instance(VerilogParser.Name_of_udp_instanceContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link VerilogParser#continuous_assign}.
+	 * Visit a parse tree produced by {@link VerilogParser#continuous_assignment}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitContinuous_assign(VerilogParser.Continuous_assignContext ctx);
+	T visitContinuous_assignment(VerilogParser.Continuous_assignmentContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link VerilogParser#list_of_net_assignments}.
 	 * @param ctx the parse tree
@@ -2302,4 +2302,22 @@ public interface VerilogParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitVariable_identifier(VerilogParser.Variable_identifierContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link VerilogParser#line_comment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLine_comment(VerilogParser.Line_commentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link VerilogParser#block_comment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBlock_comment(VerilogParser.Block_commentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link VerilogParser#new_line}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNew_line(VerilogParser.New_lineContext ctx);
 }

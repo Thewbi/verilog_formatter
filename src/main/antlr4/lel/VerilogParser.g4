@@ -60,17 +60,25 @@ file_path_spec
 
 // A.1.2 Verilog source text
 source_text
-    : description* EOF
+    : (new_line | description)* EOF
     ;
 
 description
     : module_declaration
     | udp_declaration
     | config_declaration
+    | line_comment
+    | block_comment
+    | new_line
     ;
 
 module_declaration
-    : attribute_instance* module_keyword module_identifier module_parameter_port_list? list_of_port_declarations? ';' module_item* 'endmodule'
+    : 
+    attribute_instance* module_keyword module_identifier module_parameter_port_list? 
+    list_of_port_declarations? new_line* 
+    ';' new_line*
+    ( module_item new_line* )*
+    'endmodule' new_line*
     ;
 
 module_keyword
@@ -80,15 +88,17 @@ module_keyword
 
 // A.1.3 Module parameters and ports
 module_parameter_port_list
-    : '#' '(' parameter_declaration (',' parameter_declaration)* ')'
+    : '#' '(' (parameter_declaration new_line?) ( ',' parameter_declaration new_line? )* ')' new_line? 
     ;
 
 list_of_port_declarations
-    : '(' port_declaration (',' port_declaration)* ')'
-    | '(' port ( ',' port)+ ')'
-    | '(' port_implicit ')'
-    | '(' port_explicit ')'
-    | '(' ')'
+    : '(' ( new_line* port_declaration new_line* ) ( ',' new_line* port_declaration new_line* )* ')'
+    | '(' new_line* port new_line* ( ',' new_line* port new_line* )+ ')'
+    | '(' new_line* port_implicit new_line* ')'
+    | '(' new_line* port_explicit new_line* ')'
+    | '(' new_line* ')'
+    | new_line
+    new_line
     ;
 
 port
@@ -117,6 +127,7 @@ port_declaration
     : attribute_instance* inout_declaration
     | attribute_instance* input_declaration
     | attribute_instance* output_declaration
+    new_line*
     ;
 
 // A.1.4 Module items
@@ -127,13 +138,16 @@ module_item
     | specify_block
     | attribute_instance* parameter_declaration ';'
     | attribute_instance* specparam_declaration
+    | line_comment
+    | block_comment
+//    new_line* 
     ;
 
 module_or_generate_item
     : attribute_instance* module_or_generate_item_declaration
     | attribute_instance* local_parameter_declaration ';'
     | attribute_instance* parameter_override
-    | attribute_instance* continuous_assign
+    | attribute_instance* continuous_assignment
     | attribute_instance* gate_instantiation
     | attribute_instance* module_instantiation
     | attribute_instance* udp_instantiation
@@ -154,6 +168,8 @@ module_or_generate_item_declaration
     | genvar_declaration
     | task_declaration
     | function_declaration
+    | line_comment
+    | block_comment
     ;
 
 parameter_override
@@ -912,8 +928,8 @@ name_of_udp_instance
     ;
 
 // A.6.1 Continuous assignment statements
-continuous_assign
-    : 'assign' drive_strength? delay3? list_of_net_assignments ';'
+continuous_assignment
+    : ASSIGN drive_strength? delay3? list_of_net_assignments ';'
     ;
 
 list_of_net_assignments
@@ -930,7 +946,7 @@ initial_construct
     ;
 
 always_construct
-    : 'always' statement
+    : 'always' new_line* statement new_line*
     ;
 
 blocking_assignment
@@ -939,11 +955,12 @@ blocking_assignment
 
 nonblocking_assignment
     : variable_lvalue '<=' delay_or_event_control? expression
+    //new_line*
     ;
 
 procedural_continuous_assignments
-    : 'assign' variable_assignment
-    | 'deassign' variable_lvalue
+    : ASSIGN variable_assignment
+    | DEASSIGN variable_lvalue
     | 'force' variable_assignment
     | 'release' variable_lvalue
     ;
@@ -962,7 +979,13 @@ block_name
     ;
 
 seq_block
-    : 'begin' (block_name block_item_declaration*)? statement* 'end'
+    : 'begin' new_line*
+    ( 
+        block_name new_line* 
+        block_item_declaration* new_line*
+    )? 
+    (statement new_line* )*
+    'end' new_line*
     ;
 
 // A.6.4 Statements
@@ -981,6 +1004,7 @@ statement
     | attribute_instance* system_task_enable
     | attribute_instance* task_enable
     | attribute_instance* wait_statement
+//    new_line*
     ;
 
 statement_or_null
@@ -1030,10 +1054,11 @@ event_expression
 procedural_timing_control
     : delay_control
     | event_control
+    new_line*
     ;
 
 procedural_timing_control_statement
-    : procedural_timing_control statement_or_null
+    : procedural_timing_control new_line* statement_or_null
     ;
 
 wait_statement
@@ -1042,7 +1067,14 @@ wait_statement
 
 // A.6.6 Conditional statements
 conditional_statement
-    : 'if' '(' expression ')' statement_or_null ('else' statement_or_null)?
+    : 
+    'if' '(' expression ')' new_line* 
+    statement_or_null new_line* 
+    ( 
+        'else' new_line* 
+        statement_or_null new_line* 
+    )?
+    new_line* 
     ;
 
 // A.6.7 Case statements
@@ -1936,4 +1968,16 @@ udp_instance_identifier
 
 variable_identifier
     : identifier
+    ;
+
+line_comment
+    : LINE_COMMENT
+    ;
+
+block_comment
+    : BLOCK_COMMENT
+    ;
+
+new_line
+    : NEWLINE
     ;

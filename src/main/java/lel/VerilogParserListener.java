@@ -1738,15 +1738,15 @@ public interface VerilogParserListener extends ParseTreeListener {
 	 */
 	void exitName_of_udp_instance(VerilogParser.Name_of_udp_instanceContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link VerilogParser#continuous_assign}.
+	 * Enter a parse tree produced by {@link VerilogParser#continuous_assignment}.
 	 * @param ctx the parse tree
 	 */
-	void enterContinuous_assign(VerilogParser.Continuous_assignContext ctx);
+	void enterContinuous_assignment(VerilogParser.Continuous_assignmentContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link VerilogParser#continuous_assign}.
+	 * Exit a parse tree produced by {@link VerilogParser#continuous_assignment}.
 	 * @param ctx the parse tree
 	 */
-	void exitContinuous_assign(VerilogParser.Continuous_assignContext ctx);
+	void exitContinuous_assignment(VerilogParser.Continuous_assignmentContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link VerilogParser#list_of_net_assignments}.
 	 * @param ctx the parse tree
@@ -3827,4 +3827,34 @@ public interface VerilogParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVariable_identifier(VerilogParser.Variable_identifierContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link VerilogParser#line_comment}.
+	 * @param ctx the parse tree
+	 */
+	void enterLine_comment(VerilogParser.Line_commentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link VerilogParser#line_comment}.
+	 * @param ctx the parse tree
+	 */
+	void exitLine_comment(VerilogParser.Line_commentContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link VerilogParser#block_comment}.
+	 * @param ctx the parse tree
+	 */
+	void enterBlock_comment(VerilogParser.Block_commentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link VerilogParser#block_comment}.
+	 * @param ctx the parse tree
+	 */
+	void exitBlock_comment(VerilogParser.Block_commentContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link VerilogParser#new_line}.
+	 * @param ctx the parse tree
+	 */
+	void enterNew_line(VerilogParser.New_lineContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link VerilogParser#new_line}.
+	 * @param ctx the parse tree
+	 */
+	void exitNew_line(VerilogParser.New_lineContext ctx);
 }
