@@ -20,7 +20,7 @@
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
     <antlr4.visitor>true</antlr4.visitor>
-        <antlr4.listener>true</antlr4.listener>
+    <antlr4.listener>true</antlr4.listener>
   </properties>
 
   <dependencies>

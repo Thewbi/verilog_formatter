@@ -69,12 +69,11 @@ description
     | config_declaration
     | line_comment
     | block_comment
-    | new_line
     ;
 
 module_declaration
     : 
-    attribute_instance* module_keyword module_identifier module_parameter_port_list? 
+    attribute_instance* module_keyword module_identifier new_line* module_parameter_port_list? 
     list_of_port_declarations? new_line* 
     ';' new_line*
     ( module_item new_line* )*
@@ -787,7 +786,7 @@ if_generate_construct
     ;
 
 case_generate_construct
-    : 'case' '(' constant_expression ')' case_generate_item+ 'endcase'
+    : 'case' '(' constant_expression ')' new_line* case_generate_item+ 'endcase'
     ;
 
 case_generate_item
@@ -797,7 +796,7 @@ case_generate_item
 
 generate_block
     : module_or_generate_item
-    | 'begin' generate_block_name? module_or_generate_item* 'end'
+    | 'begin' new_line* generate_block_name? ( module_or_generate_item new_line* )* 'end' new_line* 
     ;
 
 generate_block_name
@@ -983,8 +982,9 @@ seq_block
     ( 
         block_name new_line* 
         block_item_declaration* new_line*
-    )? 
-    (statement new_line* )*
+    )?
+    ( line_comment new_line* )* 
+    (  statement new_line* )*
     'end' new_line*
     ;
 
@@ -1079,9 +1079,9 @@ conditional_statement
 
 // A.6.7 Case statements
 case_statement
-    : 'case' '(' expression ')' case_item+ 'endcase'
-    | 'casez' '(' expression ')' case_item+ 'endcase'
-    | 'casex' '(' expression ')' case_item+ 'endcase'
+    : 'case' '(' expression ')' new_line* case_item+ 'endcase'
+    | 'casez' '(' expression ')' new_line* case_item+ 'endcase'
+    | 'casex' '(' expression ')' new_line* case_item+ 'endcase'
     ;
 
 case_item
