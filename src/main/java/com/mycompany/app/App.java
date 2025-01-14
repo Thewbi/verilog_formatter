@@ -47,7 +47,7 @@ public class App {
     */
     public static void mainVerilog(String[] args) throws IOException {
 
-        System.out.println("Lexing ...");
+        //System.out.println("Lexing ...");
 
         //String file = "src/test/resources/verilog_samples/command.v";
         //String file = "src/test/resources/verilog_samples/module.v";
@@ -57,9 +57,10 @@ public class App {
         //String file = "src/test/resources/verilog_samples/double_click.v";
         //String file = "src/test/resources/verilog_samples/loopback_device.v";
         //String file = "src/test/resources/verilog_samples/simple_module.v";
+        //String file = "src/test/resources/verilog_samples/uart_top.v";
+        String file = "src/test/resources/verilog_samples/module_with_parameters.v";
 
         // String file = "src/test/resources/system_verilog_samples/package.sv";
-        String file = "src/test/resources/verilog_samples/uart_top.v";
 
         final CharStream charStream = CharStreams.fromFileName(file);
 
@@ -67,39 +68,52 @@ public class App {
         final CommonTokenStream tokens = new CommonTokenStream(lexer);
 
         System.out.println("Parsing ...");
-        System.out.println("");
 
         final VerilogParser parser = new VerilogParser(tokens);
         final lel.VerilogParser.Source_textContext root = parser.source_text();
         //final lel.VerilogParser.Always_constructContext root =
         //parser.always_construct();
         //final lel.VerilogParser.Always_constructContext root =
-        parser.module_declaration();
+        //parser.module_declaration();
+
+        System.out.println("Parsing done.");
 
         boolean print = false;
         //boolean print = true;
         if (print) {
+
+            System.out.println("Raw Output Traversal ...");
+            System.out.println("");
 
             RawOutputListener printListener = new RawOutputListener();
 
             // Create a generic parse tree walker that can trigger callbacks
             final ParseTreeWalker walker = new ParseTreeWalker();
             walker.walk(printListener, root);
+
+            System.out.println("Raw Output Traversal done.");
+
         }
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter("test.txt"));
+        boolean output = false;
+        //boolean print = true;
+        if (output) {
 
-        final FormattingVerilogParserVisitor formatterVisitor = new
-        FormattingVerilogParserVisitor();
-        formatterVisitor.setBufferedWriter(writer);
-        formatterVisitor.visit(root);
+            BufferedWriter writer = new BufferedWriter(new FileWriter("test.txt"));
 
-        writer.flush();
-        writer.close();
+            final FormattingVerilogParserVisitor formatterVisitor = new
+            FormattingVerilogParserVisitor();
+            formatterVisitor.setBufferedWriter(writer);
+            formatterVisitor.visit(root);
+
+            writer.flush();
+            writer.close();
+
+        }
 
         // final SimpleVerilogParserVisitor formatterVisitor = new
         //SimpleVerilogParserVisitor();
-        // formatterVisitor.visit(root);
+        //formatterVisitor.visit(root);
     }
 
     public static void mainSystemVerilog(String[] args) throws IOException {

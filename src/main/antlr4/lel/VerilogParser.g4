@@ -62,7 +62,7 @@ file_path_spec
 
 // A.1.2 Verilog source text
 source_text
-    : (new_line | description)* EOF
+    : ( new_line | description )* EOF
     ;
 
 description
@@ -74,8 +74,7 @@ description
     ;
 
 module_declaration
-    :
-    attribute_instance* module_keyword module_identifier new_line* module_parameter_port_list?
+    : attribute_instance* module_keyword module_identifier new_line* module_parameter_port_list?
     list_of_port_declarations? new_line*
     ';' new_line*
     ( module_item new_line* )*
@@ -126,7 +125,7 @@ port_expression
     ;
 
 port_reference
-    : port_identifier ('[' constant_range_expression ']')?
+    : port_identifier ( '[' constant_range_expression ']' )?
     ;
 
 port_declaration
@@ -1592,7 +1591,7 @@ constant_expression
     ;
 
 constant_mintypmax_expression
-    : constant_expression (':' constant_expression ':' constant_expression)?
+    : constant_expression ( ':' constant_expression ':' constant_expression )?
     ;
 
 constant_range_expression
