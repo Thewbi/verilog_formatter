@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+// Start Symbol: source_text
+
 // $antlr-format alignTrailingComments true, columnLimit 150, minEmptyLines 1, maxEmptyLinesToKeep 1, reflowComments false, useTab false
 // $antlr-format allowShortRulesOnASingleLine false, allowShortBlocksOnASingleLine true, alignSemicolons hanging, alignColons hanging
 
@@ -72,9 +74,9 @@ description
     ;
 
 module_declaration
-    : 
-    attribute_instance* module_keyword module_identifier new_line* module_parameter_port_list? 
-    list_of_port_declarations? new_line* 
+    :
+    attribute_instance* module_keyword module_identifier new_line* module_parameter_port_list?
+    list_of_port_declarations? new_line*
     ';' new_line*
     ( module_item new_line* )*
     'endmodule' new_line*
@@ -87,17 +89,22 @@ module_keyword
 
 // A.1.3 Module parameters and ports
 module_parameter_port_list
-    : '#' '(' (parameter_declaration new_line?) ( ',' parameter_declaration new_line? )* ')' new_line? 
+    : '#' '(' (parameter_declaration new_line?) ( ',' parameter_declaration new_line? )* ')' new_line?
     ;
 
 list_of_port_declarations
-    : '(' ( new_line* port_declaration new_line* ) ( ',' new_line* port_declaration new_line* )* ')'
-    | '(' new_line* port new_line* ( ',' new_line* port new_line* )+ ')'
-    | '(' new_line* port_implicit new_line* ')'
-    | '(' new_line* port_explicit new_line* ')'
-    | '(' new_line* ')'
-    | new_line
-    new_line
+    :
+    '(' ( new_line* port_declaration new_line* ) ( line_comment* ',' line_comment* new_line* ( line_comment new_line )* port_declaration line_comment* new_line* )* ')'
+    |
+    '(' ( new_line* port             new_line* ) ( line_comment* ',' line_comment* new_line* ( line_comment new_line )* port             line_comment* new_line* )+ ')'
+    |
+    '(' ( new_line* port_implicit    new_line* )                                               ')'
+    |
+    '(' ( new_line* port_explicit    new_line* )                                               ')'
+    |
+    '(' ( new_line*                            )                                               ')'
+    |
+    new_line new_line
     ;
 
 port
@@ -139,7 +146,7 @@ module_item
     | attribute_instance* specparam_declaration
     | line_comment
     | block_comment
-//    new_line* 
+//    new_line*
     ;
 
 module_or_generate_item
@@ -796,7 +803,7 @@ case_generate_item
 
 generate_block
     : module_or_generate_item
-    | 'begin' new_line* generate_block_name? ( module_or_generate_item new_line* )* 'end' new_line* 
+    | 'begin' new_line* generate_block_name? ( module_or_generate_item new_line* )* 'end' new_line*
     ;
 
 generate_block_name
@@ -979,11 +986,11 @@ block_name
 
 seq_block
     : 'begin' new_line*
-    ( 
-        block_name new_line* 
+    (
+        block_name new_line*
         block_item_declaration* new_line*
     )?
-    ( line_comment new_line* )* 
+    ( line_comment new_line* )*
     (  statement new_line* )*
     'end' new_line*
     ;
@@ -1067,14 +1074,14 @@ wait_statement
 
 // A.6.6 Conditional statements
 conditional_statement
-    : 
-    'if' '(' expression ')' new_line* 
-    statement_or_null new_line* 
-    ( 
-        'else' new_line* 
-        statement_or_null new_line* 
+    :
+    'if' '(' expression ')' new_line*
+    statement_or_null new_line*
+    (
+        'else' new_line*
+        statement_or_null new_line*
     )?
-    new_line* 
+    new_line*
     ;
 
 // A.6.7 Case statements

@@ -26,7 +26,7 @@ KW_DOLAR_UNIT: '$unit';
 KW_DOLAR_WARNING: '$warning';
 KW_DOLAR_WIDTH: '$width';
 KW_1STEP: '1step';
-KW_PATHPULSEDOLAR_: 'PATHPULSE$';
+KW_PATHPULSE_DOLAR_: 'PATHPULSE$';
 KW_ACCEPT_ON: 'accept_on';
 KW_ALIAS: 'alias';
 KW_ALWAYS: 'always';
@@ -281,17 +281,17 @@ EDGE_CONTROL_SPECIFIER:
  'edge' LSQUARE_BR EDGE_DESCRIPTOR ( COMMA EDGE_DESCRIPTOR )* RSQUARE_BR;
 
 TIME_LITERAL:
- ( UNSIGNED_NUMBER 
-  | FIXED_POINT_NUMBER 
+ ( UNSIGNED_NUMBER
+  | FIXED_POINT_NUMBER
   ) TIME_UNIT;
 
 ANY_BASED_NUMBER:
- OCTAL_NUMBER 
-  | DECIMAL_NUMBER_WITH_BASE 
-  | BINARY_NUMBER 
-  | DECIMAL_INVALID_NUMBER_WITH_BASE 
-  | DECIMAL_TRISTATE_NUMBER_WITH_BASE 
-  | HEX_NUMBER 
+ OCTAL_NUMBER
+  | DECIMAL_NUMBER_WITH_BASE
+  | BINARY_NUMBER
+  | DECIMAL_INVALID_NUMBER_WITH_BASE
+  | DECIMAL_TRISTATE_NUMBER_WITH_BASE
+  | HEX_NUMBER
  ;
 BASED_NUMBER_WITH_SIZE:
     UNSIGNED_NUMBER ANY_BASED_NUMBER;
@@ -303,14 +303,14 @@ FIXED_POINT_NUMBER:
  UNSIGNED_NUMBER DOT UNSIGNED_NUMBER;
 
 UNSIGNED_NUMBER:
- DECIMAL_DIGIT ( UNDERSCORE 
-                  | DECIMAL_DIGIT 
+ DECIMAL_DIGIT ( UNDERSCORE
+                  | DECIMAL_DIGIT
                   )*;
 
 UNBASED_UNSIZED_LITERAL:
- APOSTROPHE Z_OR_X 
-  | '\'0' 
-  | '\'1' 
+ APOSTROPHE Z_OR_X
+  | '\'0'
+  | '\'1'
  ;
 
 STRING_LITERAL:
@@ -410,8 +410,8 @@ DOUBLE_HASH: '##';
 TRIPLE_AND: '&&&';
 
 ONE_LINE_COMMENT:
- '//' .*? ( '\r' )? ( EOF 
-                  | '\n' 
+ '//' .*? ( '\r' )? ( EOF
+                  | '\n'
                   ) -> channel(HIDDEN);
 
 BLOCK_COMMENT:
@@ -420,10 +420,10 @@ BLOCK_COMMENT:
 WHITE_SPACE: [ \t\n\r\f] + -> channel(HIDDEN);
 
 fragment EDGE_DESCRIPTOR:
- Z_OR_X ZERO_OR_ONE 
-  | ZERO_OR_ONE Z_OR_X 
-  | '01' 
-  | '10' 
+ Z_OR_X ZERO_OR_ONE
+  | ZERO_OR_ONE Z_OR_X
+  | '01'
+  | '10'
  ;
 
 fragment ZERO_OR_ONE: [01];
@@ -431,12 +431,12 @@ fragment ZERO_OR_ONE: [01];
 fragment Z_OR_X: [xXzZ];
 
 fragment TIME_UNIT:
- 's' 
-  | 'ms' 
-  | 'us' 
-  | 'ns' 
-  | 'ps' 
-  | 'fs' 
+ 's'
+  | 'ms'
+  | 'us'
+  | 'ns'
+  | 'ps'
+  | 'fs'
  ;
 
 fragment DECIMAL_NUMBER_WITH_BASE:
@@ -458,30 +458,30 @@ fragment HEX_NUMBER:
  HEX_BASE HEX_VALUE;
 
 fragment SIGN:
- PLUS 
-  | MINUS 
+ PLUS
+  | MINUS
  ;
 fragment SIZE: NON_ZERO_UNSIGNED_NUMBER;
 
 fragment NON_ZERO_UNSIGNED_NUMBER:
- NON_ZERO_DECIMAL_DIGIT ( UNDERSCORE 
-                          | DECIMAL_DIGIT 
+ NON_ZERO_DECIMAL_DIGIT ( UNDERSCORE
+                          | DECIMAL_DIGIT
                           )*;
 fragment EXP: [eE];
 
 fragment BINARY_VALUE:
- BINARY_DIGIT ( UNDERSCORE 
-                  | BINARY_DIGIT 
+ BINARY_DIGIT ( UNDERSCORE
+                  | BINARY_DIGIT
                   )*;
 
 fragment OCTAL_VALUE:
- OCTAL_DIGIT ( UNDERSCORE 
-              | OCTAL_DIGIT 
+ OCTAL_DIGIT ( UNDERSCORE
+              | OCTAL_DIGIT
               )*;
 
 fragment HEX_VALUE:
- HEX_DIGIT ( UNDERSCORE 
-              | HEX_DIGIT 
+ HEX_DIGIT ( UNDERSCORE
+              | HEX_DIGIT
               )*;
 
 fragment DECIMAL_BASE:
@@ -495,46 +495,46 @@ fragment HEX_BASE:
 fragment NON_ZERO_DECIMAL_DIGIT: [1-9];
 fragment DECIMAL_DIGIT: [0-9];
 fragment BINARY_DIGIT:
- X_DIGIT 
-  | Z_DIGIT 
-  | [01] 
+ X_DIGIT
+  | Z_DIGIT
+  | [01]
  ;
 fragment OCTAL_DIGIT:
- X_DIGIT 
-  | Z_DIGIT 
-  | [0-7] 
+ X_DIGIT
+  | Z_DIGIT
+  | [0-7]
  ;
 fragment HEX_DIGIT:
- X_DIGIT 
-  | Z_DIGIT 
-  | [0-9a-fA-F] 
+ X_DIGIT
+  | Z_DIGIT
+  | [0-9a-fA-F]
  ;
 fragment X_DIGIT: [xX];
 fragment Z_DIGIT:
- QUESTIONMARK 
-  | [zZ] 
+ QUESTIONMARK
+  | [zZ]
  ;
 fragment DBLQUOTE: '"';
 fragment UNDERSCORE: '_';
 fragment ANY_ASCII_CHARACTERS:
- ~["\\\r\n] 
-  | '\\\n' 
-  | '\\\r\n' 
-  | '\\' [nt\\"vfa%] 
-  | '\\' [0-9] [0-9]? [0-9]? 
-  | '\\' 'x' [0-9A-Fa-f] [0-9A-Fa-f]? 
+ ~["\\\r\n]
+  | '\\\n'
+  | '\\\r\n'
+  | '\\' [nt\\"vfa%]
+  | '\\' [0-9] [0-9]? [0-9]?
+  | '\\' 'x' [0-9A-Fa-f] [0-9A-Fa-f]?
  ;
 fragment ANY_PRINTABLE_ASCII_CHARACTER_EXCEPT_WHITE_SPACE: '\u0021'..'\u007E';
 
 mode TABLE_MODE;
     KW_ENDTABLE: 'endtable' -> popMode;
     LEVEL_SYMBOL:
- QUESTIONMARK 
-  | [01xXbB] 
+ QUESTIONMARK
+  | [01xXbB]
  ;
     EDGE_SYMBOL:
- MUL 
-  | [rRfFpPnN] 
+ MUL
+  | [rRfFpPnN]
  ;
     TABLE_MODE_BLOCK_COMMENT:
  '/*' .*? '*/' -> channel(HIDDEN),type(BLOCK_COMMENT);
@@ -542,8 +542,8 @@ mode TABLE_MODE;
     TABLE_MODE_LPAREN: '(' -> type(LPAREN);
     TABLE_MODE_MINUS: '-' -> type(MINUS);
     TABLE_MODE_ONE_LINE_COMMENT:
- '//' .*? ( '\r' )? ( EOF 
-                  | '\n' 
+ '//' .*? ( '\r' )? ( EOF
+                  | '\n'
                   ) -> channel(HIDDEN),type(ONE_LINE_COMMENT);
     TABLE_MODE_RPAREN: ')' -> type(RPAREN);
     TABLE_MODE_SEMI: ';' -> type(SEMI);

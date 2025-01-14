@@ -26,7 +26,7 @@ description:
 /******************************************** token groups ************************************************************/
 assignment_operator:
    ASSIGN
-   | PLUS_ASSIGN
+   /*| PLUS_ASSIGN
    | MINUS_ASSIGN
    | MUL_ASSIGN
    | DIV_ASSIGN
@@ -37,7 +37,7 @@ assignment_operator:
    | SHIFT_LEFT_ASSIGN
    | SHIFT_RIGHT_ASSIGN
    | ARITH_SHIFT_LEFT_ASSIGN
-   | ARITH_SHIFT_RIGHT_ASSIGN
+   | ARITH_SHIFT_RIGHT_ASSIGN*/
 ;
 edge_identifier:
    KW_POSEDGE
@@ -1485,7 +1485,7 @@ specparam_assignment:
 error_limit_value: mintypmax_expression;
 reject_limit_value: mintypmax_expression;
 pulse_control_specparam:
-  KW_PATHPULSE_DOLAR
+  KW_PATHPULSE_DOLAR_
        ( specify_input_terminal_descriptor DOLAR specify_output_terminal_descriptor )?
        ASSIGN LPAREN reject_limit_value ( COMMA error_limit_value )? RPAREN;
 identifier_doted_index_at_end:
