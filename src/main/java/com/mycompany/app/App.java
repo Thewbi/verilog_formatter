@@ -57,8 +57,10 @@ public class App {
         //String file = "src/test/resources/verilog_samples/double_click.v";
         //String file = "src/test/resources/verilog_samples/loopback_device.v";
         //String file = "src/test/resources/verilog_samples/simple_module.v";
-        //String file = "src/test/resources/verilog_samples/uart_top.v";
-        String file = "src/test/resources/verilog_samples/module_with_parameters.v";
+        String file = "src/test/resources/verilog_samples/uart_top.v";
+        //String file = "src/test/resources/verilog_samples/module_with_parameters.v";
+        //String file = "src/test/resources/verilog_samples/module_instantiation.v";
+        //String file = "src/test/resources/verilog_samples/module_instantiation2.v";
 
         // String file = "src/test/resources/system_verilog_samples/package.sv";
 

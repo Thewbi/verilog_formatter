@@ -93,9 +93,9 @@ module_parameter_port_list
 
 list_of_port_declarations
     :
-    '(' ( new_line* port_declaration new_line* ) ( line_comment* ',' line_comment* new_line* ( line_comment new_line )* port_declaration line_comment* new_line* )* ')'
+    '(' ( new_line* port_declaration new_line* ) ( ( line_comment | new_line )* ',' ( line_comment | new_line )* port_declaration line_comment* new_line* line_comment* )* ( line_comment | new_line )* ')'
     |
-    '(' ( new_line* port             new_line* ) ( line_comment* ',' line_comment* new_line* ( line_comment new_line )* port             line_comment* new_line* )+ ')'
+    '(' ( new_line* port             new_line* ) ( ( line_comment | new_line )* ',' ( line_comment | new_line )* port             line_comment* new_line* line_comment* )+ ( line_comment | new_line )* ')'
     |
     '(' ( new_line* port_implicit    new_line* )                                               ')'
     |
@@ -125,7 +125,7 @@ port_expression
     ;
 
 port_reference
-    : port_identifier ( '[' constant_range_expression ']' )?
+    : port_identifier ( '[' block_comment* constant_range_expression ']' )?
     ;
 
 port_declaration
@@ -439,11 +439,11 @@ net_decl_assignment
     ;
 
 param_assignment
-    : parameter_identifier '=' constant_mintypmax_expression
+    : parameter_identifier '=' ( block_comment )* constant_mintypmax_expression
     ;
 
 specparam_assignment
-    : specparam_identifier '=' constant_mintypmax_expression
+    : specparam_identifier '=' ( block_comment )* constant_mintypmax_expression
     | pulse_control_specparam
     ;
 
@@ -468,11 +468,11 @@ limit_value
 
 // A.2.5 Declaration ranges
 dimension
-    : '[' dimension_constant_expression ':' dimension_constant_expression ']'
+    : '[' block_comment* dimension_constant_expression ':' dimension_constant_expression ']'
     ;
 
 range_
-    : '[' msb_constant_expression ':' lsb_constant_expression ']'
+    : '[' block_comment* msb_constant_expression ':' lsb_constant_expression ']'
     ;
 
 // A.2.6 Function declarations
@@ -712,7 +712,7 @@ pass_switchtype
 
 // A.4.1 Module instantiation
 module_instantiation
-    : module_identifier parameter_value_assignment? module_instance (',' module_instance)* ';'
+    : module_identifier parameter_value_assignment? module_instance ( ',' module_instance )* ';'
     ;
 
 parameter_value_assignment
@@ -720,8 +720,8 @@ parameter_value_assignment
     ;
 
 list_of_parameter_assignments
-    : ordered_parameter_assignment (',' ordered_parameter_assignment)*
-    | named_parameter_assignment ( ',' named_parameter_assignment)*
+    : ordered_parameter_assignment new_line* ( new_line* ',' ordered_parameter_assignment new_line* )*
+    | named_parameter_assignment new_line* ( new_line* ',' named_parameter_assignment new_line* )*
     ;
 
 ordered_parameter_assignment
@@ -733,7 +733,7 @@ named_parameter_assignment
     ;
 
 module_instance
-    : name_of_module_instance '(' list_of_port_connections ')'
+    : name_of_module_instance new_line* '(' block_comment* new_line* list_of_port_connections new_line* ')'
     ;
 
 name_of_module_instance
@@ -741,8 +741,8 @@ name_of_module_instance
     ;
 
 list_of_port_connections
-    : ordered_port_connection (',' ordered_port_connection)*
-    | named_port_connection ( ',' named_port_connection)*
+    : ( line_comment | new_line )* ordered_port_connection ( line_comment | new_line )* ( ( line_comment | new_line )* ',' ( line_comment | new_line )* ordered_port_connection ( line_comment | new_line )* )*
+    | ( line_comment | new_line )* named_port_connection ( line_comment | new_line )* ( ( line_comment | new_line )* ',' ( line_comment | new_line )* named_port_connection ( line_comment | new_line )* )*
     ;
 
 ordered_port_connection
@@ -1177,11 +1177,11 @@ list_of_path_outputs
 
 // A.7.3 Specify block terminals
 specify_input_terminal_descriptor
-    : input_identifier ('[' constant_range_expression ']')?
+    : input_identifier ('[' block_comment* constant_range_expression ']')?
     ;
 
 specify_output_terminal_descriptor
-    : output_identifier ('[' constant_range_expression ']')?
+    : output_identifier ('[' block_comment* constant_range_expression ']')?
     ;
 
 input_identifier
@@ -1428,11 +1428,11 @@ data_event
     ;
 
 delayed_data
-    : terminal_identifier ('[' constant_mintypmax_expression ']')?
+    : terminal_identifier ('[' block_comment* constant_mintypmax_expression ']')?
     ;
 
 delayed_reference
-    : terminal_identifier ('[' constant_mintypmax_expression ']')?
+    : terminal_identifier ('[' block_comment* constant_mintypmax_expression ']')?
     ;
 
 end_edge_offset
@@ -1492,7 +1492,7 @@ specify_terminal_descriptor
     ;
 
 edge_control_specifier
-    : 'edge' '[' edge_descriptor (',' edge_descriptor)* ']'
+    : 'edge' '[' block_comment* edge_descriptor (',' edge_descriptor)* ']'
     ;
 
 edge_descriptor
@@ -1664,7 +1664,7 @@ width_constant_expression
 // A.8.4 Primaries
 constant_primary
     : number
-    | identifier ( '[' constant_range_expression ']')?
+    | identifier ( '[' block_comment* constant_range_expression ']')?
     | constant_concatenation
     | constant_multiple_concatenation
     | constant_function_call
@@ -1695,11 +1695,11 @@ primary
     ;
 
 select_
-    : bit_select? '[' range_expression ']'
+    : bit_select? '[' block_comment* range_expression ']'
     ;
 
 bit_select
-    : ('[' expression ']')+
+    : ('[' block_comment* expression ']')+
     ;
 
 // A.8.5 Expression left-side values
@@ -1709,11 +1709,11 @@ net_lvalue
     ;
 
 const_select
-    : const_bit_select? '[' constant_range_expression ']'
+    : const_bit_select? '[' block_comment* constant_range_expression ']'
     ;
 
 const_bit_select
-    : ('[' constant_expression ']')+
+    : ('[' block_comment* constant_expression ']')+
     ;
 
 variable_lvalue

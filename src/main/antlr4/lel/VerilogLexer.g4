@@ -241,23 +241,23 @@ UNSIGNED_NUMBER      : [0-9] [0-9_]*;
 WHITE_SPACE          : [ \t]+ -> channel(HIDDEN);
 
 mode BINARY_NUMBER_MODE;
-BINARY_VALUE  : [01xXzZ?] [01xXzZ?_]* -> popMode;
-WHITE_SPACE_0 : WHITE_SPACE           -> channel(HIDDEN), type(WHITE_SPACE);
+BINARY_VALUE        : [01xXzZ?] [01xXzZ?_]* -> popMode;
+WHITE_SPACE_0       : WHITE_SPACE           -> channel(HIDDEN), type(WHITE_SPACE);
 
 mode DECIMAL_NUMBER_MODE;
-UNSIGNED_NUMBER_0 : UNSIGNED_NUMBER -> type(UNSIGNED_NUMBER), popMode;
-WHITE_SPACE_1     : WHITE_SPACE     -> channel(HIDDEN), type(WHITE_SPACE);
-X_OR_Z_UNDERSCORE : [xXzZ?] '_'*    -> popMode;
+UNSIGNED_NUMBER_0   : UNSIGNED_NUMBER -> type(UNSIGNED_NUMBER), popMode;
+WHITE_SPACE_1       : WHITE_SPACE     -> channel(HIDDEN), type(WHITE_SPACE);
+X_OR_Z_UNDERSCORE   : [xXzZ?] '_'*    -> popMode;
 
 mode EDGE_MODE;
-BLOCK_COMMENT_0 : BLOCK_COMMENT -> type(BLOCK_COMMENT);
-CO_0            : CO            -> type(CO);
-EDGE_DESCRIPTOR : '01' | '10' | [xXzZ] [01] | [01] [xXzZ];
-GA_0            : GA           -> channel(DIRECTIVES), type(GA), pushMode(DIRECTIVE_MODE);
-LB_0            : LB           -> type(LB);
-LINE_COMMENT_0  : LINE_COMMENT -> type(LINE_COMMENT);
-RB_0            : RB           -> type(RB), popMode;
-WHITE_SPACE_2   : WHITE_SPACE  -> channel(HIDDEN), type(WHITE_SPACE);
+BLOCK_COMMENT_0     : BLOCK_COMMENT -> type(BLOCK_COMMENT);
+CO_0                : CO            -> type(CO);
+EDGE_DESCRIPTOR     : '01' | '10' | [xXzZ] [01] | [01] [xXzZ];
+GA_0                : GA           -> channel(DIRECTIVES), type(GA), pushMode(DIRECTIVE_MODE);
+LB_0                : LB           -> type(LB);
+LINE_COMMENT_0      : LINE_COMMENT -> type(LINE_COMMENT);
+RB_0                : RB           -> type(RB), popMode;
+WHITE_SPACE_2       : WHITE_SPACE  -> channel(HIDDEN), type(WHITE_SPACE);
 
 mode HEX_NUMBER_MODE;
 HEX_VALUE     : [0-9a-fA-FxXzZ?] [0-9a-fA-FxXzZ?_]* -> popMode;
@@ -280,19 +280,19 @@ OCTAL_VALUE   : [0-7xXzZ?] [0-7xXzZ?_]* -> popMode;
 WHITE_SPACE_5 : WHITE_SPACE             -> channel(HIDDEN), type(WHITE_SPACE);
 
 mode TABLE_MODE;
-BLOCK_COMMENT_2        : BLOCK_COMMENT -> type(BLOCK_COMMENT);
-CL_0                   : CL            -> type(CL);
+BLOCK_COMMENT_2        : BLOCK_COMMENT  -> type(BLOCK_COMMENT);
+CL_0                   : CL             -> type(CL);
 EDGE_SYMBOL            : [rRfFpPnN*];
-ENDTABLE_0             : ENDTABLE -> type(ENDTABLE), popMode;
-GA_2                   : GA       -> channel(DIRECTIVES), type(GA), pushMode(DIRECTIVE_MODE);
+ENDTABLE_0             : ENDTABLE       -> type(ENDTABLE), popMode;
+GA_2                   : GA             -> channel(DIRECTIVES), type(GA), pushMode(DIRECTIVE_MODE);
 LEVEL_ONLY_SYMBOL      : [?bB];
-LINE_COMMENT_2         : LINE_COMMENT -> type(LINE_COMMENT);
-LP_0                   : LP           -> type(LP);
-MI_0                   : MI           -> type(MI);
+LINE_COMMENT_2         : LINE_COMMENT   -> type(LINE_COMMENT);
+LP_0                   : LP             -> type(LP);
+MI_0                   : MI             -> type(MI);
 OUTPUT_OR_LEVEL_SYMBOL : [01xX];
-RP_0                   : RP          -> type(RP);
-SC_1                   : SC          -> type(SC);
-WHITE_SPACE_6          : WHITE_SPACE -> channel(HIDDEN), type(WHITE_SPACE);
+RP_0                   : RP             -> type(RP);
+SC_1                   : SC             -> type(SC);
+WHITE_SPACE_6          : WHITE_SPACE    -> channel(HIDDEN), type(WHITE_SPACE);
 
 mode DIRECTIVE_MODE;
 BEGIN_KEYWORDS_DIRECTIVE:
@@ -319,8 +319,8 @@ TIMESCALE_DIRECTIVE           : 'timescale'           -> channel(DIRECTIVES), mo
 UNCONNECTED_DRIVE_DIRECTIVE:
     'unconnected_drive' -> channel(DIRECTIVES), mode(UNCONNECTED_DRIVE_DIRECTIVE_MODE)
 ;
-UNDEF_DIRECTIVE : 'undef'                                -> channel(DIRECTIVES), mode(UNDEF_DIRECTIVE_MODE);
-MACRO_USAGE     : IDENTIFIER ( WHITE_SPACE? MACRO_ARGS)? -> channel(DIRECTIVES), popMode;
+UNDEF_DIRECTIVE : 'undef'                                   -> channel(DIRECTIVES), mode(UNDEF_DIRECTIVE_MODE);
+MACRO_USAGE     : IDENTIFIER ( WHITE_SPACE? MACRO_ARGS )?  -> channel(DIRECTIVES), popMode;
 
 mode BEGIN_KEYWORDS_DIRECTIVE_MODE;
 BLOCK_COMMENT_3 : BLOCK_COMMENT -> type(BLOCK_COMMENT);

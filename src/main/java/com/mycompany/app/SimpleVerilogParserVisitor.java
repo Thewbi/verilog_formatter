@@ -9,8 +9,6 @@ import lel.VerilogParser.Net_typeContext;
 import lel.VerilogParser.ExpressionContext;
 
 /**
- * TODO:
- * 
  * During the output phase, it is valid to collaps several, consecutive empty
  * lines into a single one
  */
@@ -73,7 +71,7 @@ public class SimpleVerilogParserVisitor extends VerilogParserBaseVisitor<String>
 
     /**
      * e.g.
-     * 
+     *
      * <pre>
      * reg btn_now, btn_last, collect;
      * </pre>
@@ -122,7 +120,7 @@ public class SimpleVerilogParserVisitor extends VerilogParserBaseVisitor<String>
 
     /**
      * Declaration of a wire
-     * 
+     *
      * <pre>
      * wire btn_down = btn_now & ~btn_last;
      * </pre>

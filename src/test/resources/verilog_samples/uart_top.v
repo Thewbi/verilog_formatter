@@ -132,10 +132,10 @@
 //
 //
 // synopsys translate_off
-`include "timescale.v"
+//disabled//`include "timescale.v"
 // synopsys translate_on
 
-`include "uart_defines.v"
+//disabled//`include "uart_defines.v"
 
 module uart_top	(
 	wb_clk_i,
@@ -150,13 +150,13 @@ module uart_top	(
 
 	// modem signals
 	rts_pad_o, cts_pad_i, dtr_pad_o, dsr_pad_i, ri_pad_i, dcd_pad_i
-`ifdef UART_HAS_BAUDRATE_OUTPUT
+//disabled//`ifdef UART_HAS_BAUDRATE_OUTPUT
 	, baud_o
-`endif
+//disabled//`endif
 	);
 
-parameter 							 uart_data_width = `UART_DATA_WIDTH;
-parameter 							 uart_addr_width = `UART_ADDR_WIDTH;
+parameter 							 uart_data_width = /*`UART_DATA_WIDTH*/ 0;
+parameter 							 uart_addr_width = /*`UART_ADDR_WIDTH*/ 0;
 
 input 								 wb_clk_i;
 
@@ -183,9 +183,9 @@ input 								 ri_pad_i;
 input 								 dcd_pad_i;
 
 // optional baudrate output
-`ifdef UART_HAS_BAUDRATE_OUTPUT
+//disabled//`ifdef UART_HAS_BAUDRATE_OUTPUT
     output	baud_o;
-`endif
+//disabled//`endif
 
 
 wire 									 stx_pad_o;
@@ -207,9 +207,9 @@ wire		          	     re_o;	// Read enable for registers
 // MODULE INSTANCES
 //
 
-`ifdef DATA_BUS_WIDTH_8
+//disabled//`ifdef DATA_BUS_WIDTH_8
     // nothing in the if branch
-`else
+//disabled//`else
     // debug interface wires
     wire	[3:0] ier;
     wire	[3:0] iir;
@@ -218,13 +218,13 @@ wire		          	     re_o;	// Read enable for registers
     wire	[7:0] lcr;
     wire	[7:0] msr;
     wire	[7:0] lsr;
-    wire	[`UART_FIFO_COUNTER_W-1:0] rf_count;
-    wire	[`UART_FIFO_COUNTER_W-1:0] tf_count;
+    wire	[/*`UART_FIFO_COUNTER_W*/0-1:0] rf_count;
+    wire	[/*`UART_FIFO_COUNTER_W*/0-1:0] tf_count;
     wire	[2:0] tstate;
     wire	[3:0] rstate;
-`endif
+//disabled//`endif
 
-`ifdef DATA_BUS_WIDTH_8
+//disabled//`ifdef DATA_BUS_WIDTH_8
     ////  WISHBONE interface module
     uart_wb wb_interface(
         .clk(		wb_clk_i		),
@@ -244,7 +244,7 @@ wire		          	     re_o;	// Read enable for registers
         .we_o(		we_o		),
         .re_o(re_o)
     );
-`else
+//disabled//`else
     uart_wb wb_interface(
         .clk(		wb_clk_i		),
         .wb_rst_i(	wb_rst_i	),
@@ -263,7 +263,7 @@ wire		          	     re_o;	// Read enable for registers
         .we_o(		we_o		),
         .re_o(re_o)
     );
-`endif
+//disabled//`endif
 
 // Registers
 uart_regs	regs(
@@ -277,9 +277,9 @@ uart_regs	regs(
 	.modem_inputs(	{cts_pad_i, dsr_pad_i,	ri_pad_i,  dcd_pad_i}	),
 	.stx_pad_o(		stx_pad_o		),
 	.srx_pad_i(		srx_pad_i		),
-`ifdef DATA_BUS_WIDTH_8
+//disabled//`ifdef DATA_BUS_WIDTH_8
     // nothing in the if branch
-`else
+//disabled//`else
     // debug interface signals	enabled
     .ier(ier),
     .iir(iir),
@@ -292,24 +292,24 @@ uart_regs	regs(
     .tf_count(tf_count),
     .tstate(tstate),
     .rstate(rstate),
-`endif
+//disabled//`endif
 	.rts_pad_o(		rts_pad_o		),
 	.dtr_pad_o(		dtr_pad_o		),
 	.int_o(		int_o		)
-`ifdef UART_HAS_BAUDRATE_OUTPUT
+//disabled//`ifdef UART_HAS_BAUDRATE_OUTPUT
 	, .baud_o(baud_o)
-`endif
+//disabled//`endif
 
 );
 
-`ifdef DATA_BUS_WIDTH_8
+//disabled//`ifdef DATA_BUS_WIDTH_8
     // nothing in the if branch
-`else
+//disabled//`else
     uart_debug_if dbg(/*AUTOINST*/
         // Outputs
         .wb_dat32_o				 (wb_dat32_o[31:0]),
         // Inputs
-        .wb_adr_i				 (wb_adr_int[`UART_ADDR_WIDTH-1:0]),
+        .wb_adr_i				 (wb_adr_int[/*`UART_ADDR_WIDTH*/0-1:0]),
         .ier						 (ier[3:0]),
         .iir						 (iir[3:0]),
         .fcr						 (fcr[1:0]),
@@ -317,26 +317,26 @@ uart_regs	regs(
         .lcr						 (lcr[7:0]),
         .msr						 (msr[7:0]),
         .lsr						 (lsr[7:0]),
-        .rf_count				 (rf_count[`UART_FIFO_COUNTER_W-1:0]),
-        .tf_count				 (tf_count[`UART_FIFO_COUNTER_W-1:0]),
+        .rf_count				 (rf_count[/*`UART_FIFO_COUNTER_W*/0-1:0]),
+        .tf_count				 (tf_count[/*`UART_FIFO_COUNTER_W*/0-1:0]),
         .tstate					 (tstate[2:0]),
-        .rstate					 (rstate[3:0]));
-`endif
+        .rstate					 (rstate[3:0])
+    );
+//disabled//`endif
 
-initial
-begin
+initial begin
 
-	`ifdef DATA_BUS_WIDTH_8
+	//disabled//`ifdef DATA_BUS_WIDTH_8
 		$display("(%m) UART INFO: Data bus width is 8. No Debug interface.\n");
-	`else
+	//disabled//`else
 		$display("(%m) UART INFO: Data bus width is 32. Debug Interface present.\n");
-	`endif
+	//disabled//`endif
 
-	`ifdef UART_HAS_BAUDRATE_OUTPUT
+	//disabled//`ifdef UART_HAS_BAUDRATE_OUTPUT
 		$display("(%m) UART INFO: Has baudrate output\n");
-	`else
+	//disabled//`else
 		$display("(%m) UART INFO: Doesn't have baudrate output\n");
-	`endif
+	//disabled//`endif
 
 end
 
