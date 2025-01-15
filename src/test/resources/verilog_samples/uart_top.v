@@ -131,6 +131,8 @@
 // Initial revision
 //
 //
+
+
 // synopsys translate_off
 //disabled//`include "timescale.v"
 // synopsys translate_on
@@ -155,8 +157,8 @@ module uart_top	(
 //disabled//`endif
 	);
 
-parameter 							 uart_data_width = /*`UART_DATA_WIDTH*/ 0;
-parameter 							 uart_addr_width = /*`UART_ADDR_WIDTH*/ 0;
+parameter 							 uart_data_width = /*`UART_DATA_WIDTH*/ 8;
+parameter 							 uart_addr_width = /*`UART_ADDR_WIDTH*/ 8;
 
 input 								 wb_clk_i;
 
@@ -218,14 +220,14 @@ wire		          	     re_o;	// Read enable for registers
     wire	[7:0] lcr;
     wire	[7:0] msr;
     wire	[7:0] lsr;
-    wire	[/*`UART_FIFO_COUNTER_W*/0-1:0] rf_count;
-    wire	[/*`UART_FIFO_COUNTER_W*/0-1:0] tf_count;
+    wire	[/*`UART_FIFO_COUNTER_W*/8-1:0] rf_count;
+    wire	[/*`UART_FIFO_COUNTER_W*/8-1:0] tf_count;
     wire	[2:0] tstate;
     wire	[3:0] rstate;
 //disabled//`endif
 
 //disabled//`ifdef DATA_BUS_WIDTH_8
-    ////  WISHBONE interface module
+    //  WISHBONE interface module
     uart_wb wb_interface(
         .clk(		wb_clk_i		),
         .wb_rst_i(	wb_rst_i	),
@@ -309,7 +311,7 @@ uart_regs	regs(
         // Outputs
         .wb_dat32_o				 (wb_dat32_o[31:0]),
         // Inputs
-        .wb_adr_i				 (wb_adr_int[/*`UART_ADDR_WIDTH*/0-1:0]),
+        .wb_adr_i				 (wb_adr_int[/*`UART_ADDR_WIDTH*/8-1:0]),
         .ier						 (ier[3:0]),
         .iir						 (iir[3:0]),
         .fcr						 (fcr[1:0]),
@@ -317,15 +319,17 @@ uart_regs	regs(
         .lcr						 (lcr[7:0]),
         .msr						 (msr[7:0]),
         .lsr						 (lsr[7:0]),
-        .rf_count				 (rf_count[/*`UART_FIFO_COUNTER_W*/0-1:0]),
-        .tf_count				 (tf_count[/*`UART_FIFO_COUNTER_W*/0-1:0]),
+        .rf_count				 (rf_count[/*`UART_FIFO_COUNTER_W*/8-1:0]),
+        .tf_count				 (tf_count[/*`UART_FIFO_COUNTER_W*/8-1:0]),
         .tstate					 (tstate[2:0]),
         .rstate					 (rstate[3:0])
     );
 //disabled//`endif
 
+
 initial begin
 
+    /**/
 	//disabled//`ifdef DATA_BUS_WIDTH_8
 		$display("(%m) UART INFO: Data bus width is 8. No Debug interface.\n");
 	//disabled//`else
@@ -338,7 +342,19 @@ initial begin
 		$display("(%m) UART INFO: Doesn't have baudrate output\n");
 	//disabled//`endif
 
+
+    //disabled
+
+    $display("(%m) UART INFO: Data bus width is 8. No Debug interface.\n");
+
+    //disabled
+
+    #30 $finish;
+
+    //disabled
+
 end
+
 
 endmodule
 

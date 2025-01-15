@@ -989,8 +989,7 @@ seq_block
         block_name new_line*
         block_item_declaration* new_line*
     )?
-    ( line_comment new_line* )*
-    (  statement new_line* )*
+    ( ( line_comment | block_comment | statement ) new_line* )*
     'end' new_line*
     ;
 

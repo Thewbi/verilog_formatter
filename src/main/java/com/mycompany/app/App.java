@@ -80,8 +80,8 @@ public class App {
 
         System.out.println("Parsing done.");
 
-        boolean print = false;
         //boolean print = true;
+        boolean print = false;
         if (print) {
 
             System.out.println("Raw Output Traversal ...");
@@ -97,14 +97,13 @@ public class App {
 
         }
 
-        boolean output = false;
-        //boolean print = true;
+        boolean output = true;
+        //boolean output = false;
         if (output) {
 
             BufferedWriter writer = new BufferedWriter(new FileWriter("test.txt"));
 
-            final FormattingVerilogParserVisitor formatterVisitor = new
-            FormattingVerilogParserVisitor();
+            final FormattingVerilogParserVisitor formatterVisitor = new FormattingVerilogParserVisitor();
             formatterVisitor.setBufferedWriter(writer);
             formatterVisitor.visit(root);
 

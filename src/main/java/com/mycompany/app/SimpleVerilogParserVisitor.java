@@ -7,6 +7,7 @@ import lel.VerilogParser;
 import lel.VerilogParserBaseVisitor;
 import lel.VerilogParser.Net_typeContext;
 import lel.VerilogParser.ExpressionContext;
+import lel.VerilogParser.Named_port_connectionContext;
 
 /**
  * During the output phase, it is valid to collaps several, consecutive empty

@@ -8,6 +8,11 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import lel.VerilogLexer;
 import lel.VerilogParser;
+import lel.VerilogParser.Module_identifierContext;
+import lel.VerilogParser.Module_instanceContext;
+import lel.VerilogParser.Module_instantiationContext;
+import lel.VerilogParser.Name_of_module_instanceContext;
+import lel.VerilogParser.Named_port_connectionContext;
 import lel.VerilogParserBaseVisitor;
 
 public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<String> {
@@ -32,7 +37,7 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
     }
 
     public void prnt(final String data) {
-        System.out.print(data);
+        // System.out.print(data);
         try {
             bufferedWriter.write(data);
         } catch (IOException e) {
@@ -44,22 +49,7 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
         prnt(data);
     }
 
-    // // public void prntln(final String data) {
-    //     System.out.println(data);
-    //     try {
-    //         bufferedWriter.write(data + "\n");
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
-
     private void newLine() {
-        // System.out.println("");
-        // try {
-        //     bufferedWriter.write("\n");
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
         firstTokenInRow = true;
     }
 
@@ -71,12 +61,14 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
         firstTokenInRow = true;
     }
 
-    private void incIndent() {
+    private void incIndent(final String label) {
         indent++;
+        System.out.println("inc " + label + " " + indent);
     }
 
-    private void decIndent() {
+    private void decIndent(final String label) {
         indent--;
+        System.out.println("dec " + label + " " + indent);
     }
 
     @Override
@@ -95,7 +87,7 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
             newLine();
         }
 
-        incIndent();
+        incIndent("visitSeq_block");
 
         String result = this.defaultResult();
         int n = ctx.getChildCount();
@@ -106,7 +98,8 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
             result = this.aggregateResult(result, childResult);
         }
 
-        decIndent();
+        decIndent("visitSeq_block");
+
         newLineWidthIndent();
 
         // end
@@ -119,8 +112,6 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
     public String visitConditional_statement(VerilogParser.Conditional_statementContext ctx) {
 
         String result = this.defaultResult();
-
-        // newLineWidthIndent();
 
         // if
         prnt(ctx.IF().toString());
@@ -136,7 +127,7 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
         // ')' (RP = right paranthesis)
         prnt(ctx.RP().toString());
 
-        incIndent();
+        incIndent("visitConditional");
 
         // output if-branch statements
         ParseTree ifBranchStatements = ctx.getChild(4);
@@ -145,12 +136,12 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
 
         if (ctx.ELSE() != null) {
 
-            decIndent();
+            decIndent("visitConditional");
             newLineWidthIndent();
 
             prnt(ctx.ELSE().toString());
 
-            incIndent();
+            // incIndent("visitConditional");
 
             // output else-branch statements
             ParseTree elseBranchStatements = ctx.getChild(6);
@@ -162,19 +153,16 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
 
         }
 
-        decIndent();
+        decIndent("visitConditional");
 
         return result;
     }
 
     @Override
     public String visitAlways_construct(VerilogParser.Always_constructContext ctx) {
-
-        // newLineWidthIndent();
         newLineWidthIndent();
 
         preventNewLine = true;
-        // displaceBeginEnd = true;
         return visitChildren(ctx);
     }
 
@@ -203,7 +191,7 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
 
         firstTokenInRow = true;
 
-        incIndent();
+        incIndent("visitList_of_port_declarations");
 
         String result = this.defaultResult();
         int n = ctx.getChildCount();
@@ -220,6 +208,79 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
     }
 
     @Override
+    public String visitModule_instantiation(Module_instantiationContext ctx) {
+
+        // incIndent("visitModule_instantiation");
+
+        newLineWidthIndent();
+
+        String result = this.defaultResult();
+        int n = ctx.getChildCount();
+
+        for (int i = 0; (i < n) && this.shouldVisitNextChild(ctx, result); ++i) {
+
+            ParseTree c = ctx.getChild(i);
+
+            if (c instanceof Module_identifierContext) {
+
+                prntln(c.getText() + " ");
+
+            } else {
+
+                String childResult = c.accept(this);
+                // result = this.aggregateResult(result, childResult);
+
+            }
+        }
+
+        // decIndent("visitModule_instantiation");
+
+        return this.defaultResult();
+    }
+
+    @Override
+    public String visitModule_instance(Module_instanceContext ctx) {
+
+        incIndent("visitModule_instance");
+
+        newLineWidthIndent();
+
+        String result = this.defaultResult();
+        int n = ctx.getChildCount();
+
+        for (int i = 0; (i < n) && this.shouldVisitNextChild(ctx, result); ++i) {
+
+            ParseTree c = ctx.getChild(i);
+
+            if (c instanceof TerminalNode) {
+
+                TerminalNode terminalNode = (TerminalNode) c;
+
+                if (terminalNode.getText().equalsIgnoreCase("(")) {
+                    newLineWidthIndent();
+                    prntln("(");
+                } else if (terminalNode.getText().equalsIgnoreCase(")")) {
+                    decIndent("visitModule_instance");
+                    newLineWidthIndent();
+                    prntln(")");
+                } else if (terminalNode.getText().equalsIgnoreCase(";")) {
+                    // nothing
+                }
+
+            } else {
+
+                String childResult = c.accept(this);
+                // result = this.aggregateResult(result, childResult);
+
+            }
+        }
+
+        // decIndent("visitModule_instance");
+
+        return this.defaultResult();
+    }
+
+    @Override
     public String visitPort(VerilogParser.PortContext ctx) {
         newLineWidthIndent();
         return visitChildren(ctx);
@@ -229,6 +290,17 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
     public String visitPort_declaration(VerilogParser.Port_declarationContext ctx) {
         newLineWidthIndent();
         return visitChildren(ctx);
+    }
+
+    /**
+     * e.g.
+     * .ier   (ier[3:0]),
+     */
+    @Override
+    public String visitNamed_port_connection(Named_port_connectionContext ctx) {
+        newLineWidthIndent();
+        prntln(ctx.getText());
+        return this.defaultResult();
     }
 
     @Override
@@ -249,7 +321,8 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
     @Override
     public String visitLine_comment(VerilogParser.Line_commentContext ctx) {
         newLineWidthIndent();
-        return visitChildren(ctx);
+        visitChildren(ctx);
+        return defaultResult();
     }
 
     @Override
@@ -275,7 +348,6 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
 
     @Override
     public String visitNew_line(VerilogParser.New_lineContext ctx) {
-        //prnt("%%");
         return visitChildren(ctx);
     }
 
@@ -286,7 +358,8 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
             return this.defaultResult();
         }
         if (node.getSymbol().getType() == VerilogLexer.BLOCK_COMMENT) {
-            prnt(node.toString() + "\n");
+            //prnt(node.toString() + "\n");
+            prnt(node.toString());
             return this.defaultResult();
         }
 
@@ -294,7 +367,7 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
 
         if (data.equals("endmodule")) {
 
-            decIndent();
+            // decIndent("visitTerminal");
             newLineWidthIndent();
 
             prntln(node.toString());
