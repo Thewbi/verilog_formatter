@@ -49,6 +49,8 @@ public class App {
 
         //System.out.println("Lexing ...");
 
+        //String file = "src/test/resources/verilog_samples/if_continuous_assignment.v";
+        String file = "src/test/resources/verilog_samples/if_continuous_assignment_extended.v";
         //String file = "src/test/resources/verilog_samples/command.v";
         //String file = "src/test/resources/verilog_samples/module.v";
         //String file = "src/test/resources/verilog_samples/if_procedural.v";
@@ -57,7 +59,7 @@ public class App {
         //String file = "src/test/resources/verilog_samples/double_click.v";
         //String file = "src/test/resources/verilog_samples/loopback_device.v";
         //String file = "src/test/resources/verilog_samples/simple_module.v";
-        String file = "src/test/resources/verilog_samples/uart_top.v";
+        //String file = "src/test/resources/verilog_samples/uart_top.v";
         //String file = "src/test/resources/verilog_samples/module_with_parameters.v";
         //String file = "src/test/resources/verilog_samples/module_instantiation.v";
         //String file = "src/test/resources/verilog_samples/module_instantiation2.v";
@@ -97,8 +99,8 @@ public class App {
 
         }
 
-        boolean output = true;
-        //boolean output = false;
+        //boolean output = true;
+        boolean output = false;
         if (output) {
 
             BufferedWriter writer = new BufferedWriter(new FileWriter("test.txt"));
@@ -109,6 +111,29 @@ public class App {
 
             writer.flush();
             writer.close();
+
+        }
+
+        boolean buildAST = true;
+        //boolean buildAST = false;
+        if (buildAST) {
+
+            System.out.println("AST Output Traversal ...");
+            System.out.println("");
+
+            ASTVerilogParserListener astVerilogParserListener = new ASTVerilogParserListener();
+
+            // Create a generic parse tree walker that can trigger callbacks
+            final ParseTreeWalker walker = new ParseTreeWalker();
+            walker.walk(astVerilogParserListener, root);
+
+            System.out.println("AST Output Traversal done.");
+            System.out.println("");
+
+            StringBuilder stringBuilder = new StringBuilder();
+            astVerilogParserListener.currentNode.printRecursive(stringBuilder, 0);
+
+            System.out.println(stringBuilder.toString());
 
         }
 
