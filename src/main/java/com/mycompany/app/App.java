@@ -56,6 +56,7 @@ public class App {
         //String file = "src/test/resources/verilog_samples/if_procedural.v";
         //String file = "src/test/resources/verilog_samples/if_large.v";
         //String file = "src/test/resources/verilog_samples/if_else_chain.v";
+        //String file = "src/test/resources/verilog_samples/if_else_chain_simple.v";
         //String file = "src/test/resources/verilog_samples/double_click.v";
         //String file = "src/test/resources/verilog_samples/loopback_device.v";
         //String file = "src/test/resources/verilog_samples/simple_module.v";

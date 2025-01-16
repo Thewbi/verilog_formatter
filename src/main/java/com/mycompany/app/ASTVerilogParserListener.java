@@ -1,8 +1,8 @@
 package com.mycompany.app;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
+
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import lel.VerilogParser;
 import lel.VerilogParserBaseListener;
@@ -11,73 +11,105 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     public ASTNode currentNode;
 
-    //public List<ExpressionStatementASTNode> expressionList = new ArrayList<>();
     public Stack<ExpressionStatementASTNode> expressionStack = new Stack<>();
 
     @Override
     public void enterModule_declaration(VerilogParser.Module_declarationContext ctx) {
-
         ModuleDeclaractionASTNode moduleDeclaractionASTNode = new ModuleDeclaractionASTNode();
         moduleDeclaractionASTNode.value = "module_decl";
         moduleDeclaractionASTNode.name = ctx.getChild(1).getText();
-
         currentNode = moduleDeclaractionASTNode;
     }
 
-    // @Override
-    // public void enterModule_identifier(VerilogParser.Module_identifierContext ctx) {
+    @Override
+    public void enterIf_generate_construct(VerilogParser.If_generate_constructContext ctx) {
+        IfStatementASTNode astNode = new IfStatementASTNode();
+        currentNode.children.add(astNode);
+        astNode.parent = currentNode;
+        currentNode = astNode;
+    }
 
-    //     ASTNode astNode = new ASTNode();
-    //     astNode.value = ctx.getText();
-
-    //     currentNode.children.add(astNode);
-    // }
+    @Override
+    public void enterConditional_statement(VerilogParser.Conditional_statementContext ctx) {
+        IfStatementASTNode astNode = new IfStatementASTNode();
+        currentNode.children.add(astNode);
+        astNode.parent = currentNode;
+        currentNode = astNode;
+    }
 
     @Override
     public void exitIf_generate_construct(VerilogParser.If_generate_constructContext ctx) {
+        getAstNode();
+    }
 
-        IfStatementASTNode astNode = new IfStatementASTNode();
-        astNode.value = "if_statement";
+    @Override
+    public void exitConditional_statement(VerilogParser.Conditional_statementContext ctx) {
+        getAstNode();
+    }
 
+    private void getAstNode() {
+        currentNode.value = "if_statement";
+        ((IfStatementASTNode) currentNode).expression = expressionStack.pop();
+        currentNode = currentNode.parent;
+    }
+
+    @Override public void exitNet_assignment(VerilogParser.Net_assignmentContext ctx) {
+        ParseTree child0 = ctx.getChild(0);
+        NetAssignmentASTNode astNode = new NetAssignmentASTNode();
+        astNode.target = child0.getText();
+        astNode.value = "net_assignment_statement (=)";
         astNode.expression = expressionStack.pop();
-        expressionStack.clear();
-
         currentNode.children.add(astNode);
     }
 
-    @Override public void exitConstant_expression(VerilogParser.Constant_expressionContext ctx) {
+    @Override
+    public void exitConstant_expression(VerilogParser.Constant_expressionContext ctx) {
+
+        int childCount = ctx.getChildCount();
+        String text = ctx.getText();
+        ParseTree child0 = ctx.getChild(0);
+        ParseTree child1 = ctx.getChild(1);
+
+        processExpression(childCount, text, child0, child1);
+    }
+
+    @Override
+    public void exitExpression(VerilogParser.ExpressionContext ctx) {
+
+        int childCount = ctx.getChildCount();
+        String text = ctx.getText();
+        ParseTree child0 = ctx.getChild(0);
+        ParseTree child1 = ctx.getChild(1);
+
+        processExpression(childCount, text, child0, child1);
+    }
+
+    private void processExpression(int childCount, String text, ParseTree child0, ParseTree child1) {
 
         ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
 
-        if (ctx.getChildCount() == 1) {
+        if (childCount == 1) {
 
-            astNode.value = ctx.getText();
+            astNode.value = text;
             astNode.operator = null;
 
-            //expressionList.add(astNode);
+        } else if (childCount == 2) {
 
-        } else if (ctx.getChildCount() == 2) {
-
-            astNode.operator = ctx.getChild(0).getText();
+            astNode.operator = child0.getText();
 
             ExpressionStatementASTNode operand = new ExpressionStatementASTNode();
-            operand.value = ctx.getChild(1).getText();
+            operand.value = child1.getText();
             astNode.rhs = operand;
 
-            // expressionStack.clear();
+        } else if (childCount == 3) {
 
-        } else if (ctx.getChildCount() == 3) {
-
-            astNode.operator = ctx.getChild(1).getText();
+            astNode.operator = child1.getText();
             astNode.rhs = expressionStack.pop();
             astNode.lhs = expressionStack.pop();
-
-            // expressionList.clear();
 
         }
 
         expressionStack.push(astNode);
-
-     }
+    }
 
 }

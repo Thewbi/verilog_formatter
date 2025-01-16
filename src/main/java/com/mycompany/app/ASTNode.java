@@ -5,6 +5,8 @@ import java.util.List;
 
 public class ASTNode {
 
+    public ASTNode parent;
+
     public List<ASTNode> children = new ArrayList<>();
 
     public String value;
