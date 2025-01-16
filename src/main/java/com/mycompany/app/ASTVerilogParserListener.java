@@ -53,7 +53,8 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         currentNode = currentNode.parent;
     }
 
-    @Override public void exitNet_assignment(VerilogParser.Net_assignmentContext ctx) {
+    @Override
+    public void exitNet_assignment(VerilogParser.Net_assignmentContext ctx) {
         ParseTree child0 = ctx.getChild(0);
         NetAssignmentASTNode astNode = new NetAssignmentASTNode();
         astNode.target = child0.getText();
@@ -63,24 +64,30 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void exitConstant_expression(VerilogParser.Constant_expressionContext ctx) {
+    public void exitNonblocking_assignment(VerilogParser.Nonblocking_assignmentContext ctx) {
+        ParseTree child0 = ctx.getChild(0);
+        NonblockingAssignmentASTNode astNode = new NonblockingAssignmentASTNode();
+        astNode.target = child0.getText();
+        astNode.value = "nonblocking_assignment_statement (<=)";
+        astNode.expression = expressionStack.pop();
+        currentNode.children.add(astNode);
+    }
 
+    @Override
+    public void exitConstant_expression(VerilogParser.Constant_expressionContext ctx) {
         int childCount = ctx.getChildCount();
         String text = ctx.getText();
         ParseTree child0 = ctx.getChild(0);
         ParseTree child1 = ctx.getChild(1);
-
         processExpression(childCount, text, child0, child1);
     }
 
     @Override
     public void exitExpression(VerilogParser.ExpressionContext ctx) {
-
         int childCount = ctx.getChildCount();
         String text = ctx.getText();
         ParseTree child0 = ctx.getChild(0);
         ParseTree child1 = ctx.getChild(1);
-
         processExpression(childCount, text, child0, child1);
     }
 
