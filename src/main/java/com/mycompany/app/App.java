@@ -49,8 +49,8 @@ public class App {
 
         //System.out.println("Lexing ...");
 
-        //String file = "src/test/resources/verilog_samples/if_continuous_assignment.v";
-        //String file = "src/test/resources/verilog_samples/if_continuous_assignment_extended.v";
+//        String file = "src/test/resources/verilog_samples/if_continuous_assignment.v";
+//        String file = "src/test/resources/verilog_samples/if_continuous_assignment_extended.v";
         //String file = "src/test/resources/verilog_samples/command.v";
         //String file = "src/test/resources/verilog_samples/module.v";
         //String file = "src/test/resources/verilog_samples/if_procedural.v";

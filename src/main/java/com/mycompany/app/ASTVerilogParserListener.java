@@ -91,22 +91,52 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         processExpression(childCount, text, child0, child1);
     }
 
+    @Override
+    public void exitEvent_expression(VerilogParser.Event_expressionContext ctx) {
+        int childCount = ctx.getChildCount();
+        String text = ctx.getText();
+        ParseTree child0 = ctx.getChild(0);
+        ParseTree child1 = ctx.getChild(1);
+        processExpression(childCount, text, child0, child1);
+    }
+
+    @Override
+    public void exitConstant_primary(VerilogParser.Constant_primaryContext ctx) {
+
+        ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
+        astNode.value = ctx.getText();
+        astNode.operator = null;
+
+        expressionStack.push(astNode);
+    }
+
+    @Override
+    public void exitPrimary(VerilogParser.PrimaryContext ctx) {
+
+        ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
+        astNode.value = ctx.getText();
+        astNode.operator = null;
+
+        expressionStack.push(astNode);
+    }
+
     private void processExpression(int childCount, String text, ParseTree child0, ParseTree child1) {
 
         ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
 
-        if (childCount == 1) {
+        if (childCount == 2) {
 
-            astNode.value = text;
-            astNode.operator = null;
-
-        } else if (childCount == 2) {
-
+            //
+            // child 0
+            //
             astNode.operator = child0.getText();
 
-            ExpressionStatementASTNode operand = new ExpressionStatementASTNode();
-            operand.value = child1.getText();
-            astNode.rhs = operand;
+            //
+            // child 1
+            //
+            astNode.rhs = expressionStack.pop();
+
+            expressionStack.push(astNode);
 
         } else if (childCount == 3) {
 
@@ -114,9 +144,27 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
             astNode.rhs = expressionStack.pop();
             astNode.lhs = expressionStack.pop();
 
-        }
+            expressionStack.push(astNode);
 
-        expressionStack.push(astNode);
+        }
+    }
+
+    /**
+     * for @always
+     */
+    @Override
+    public void enterProcedural_timing_control_statement(VerilogParser.Procedural_timing_control_statementContext ctx) {
+        AlwaysConstructASTNode astNode = new AlwaysConstructASTNode();
+        astNode.value = "Procedural_timing_control_statement - always";
+        currentNode.children.add(astNode);
+        astNode.parent = currentNode;
+        currentNode = astNode;
+    }
+
+    @Override
+    public void exitProcedural_timing_control_statement(VerilogParser.Procedural_timing_control_statementContext ctx) {
+        ((AlwaysConstructASTNode) currentNode).expression = expressionStack.pop();
+        currentNode = currentNode.parent;
     }
 
 }

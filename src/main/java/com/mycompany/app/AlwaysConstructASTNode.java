@@ -1,8 +1,11 @@
 package com.mycompany.app;
 
-public class IfStatementASTNode extends ASTNode {
+/**
+ * Maybe needs to be renamed to ProceduralTimingControlStatementASTNode
+ */
+public class AlwaysConstructASTNode extends ASTNode {
 
-    public ASTNode expression;
+    public ExpressionStatementASTNode expression;
 
     public void printRecursive(StringBuilder stringBuilder, int indent) {
 
@@ -19,7 +22,7 @@ public class IfStatementASTNode extends ASTNode {
         stringBuilder.append("expression:").append("\n");
         expression.printRecursive(stringBuilder, indent + 2);
 
-        // children
+        // all children
         for (ASTNode child : children) {
             child.printRecursive(stringBuilder, indent + 2);
         }

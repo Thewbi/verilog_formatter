@@ -26,6 +26,8 @@ SOFTWARE.
 // $antlr-format allowShortRulesOnASingleLine true, allowShortBlocksOnASingleLine true, minEmptyLines 0, alignSemicolons ownLine
 // $antlr-format alignColons trailing, singleLineOverrulesHangingColon true, alignLexerCommands true, alignLabels true, alignTrailers true
 
+// Start Symbol: source_text
+
 lexer grammar VerilogLexer;
 channels {
     COMMENTS,
