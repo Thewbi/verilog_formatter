@@ -1,6 +1,6 @@
 module design_top;
 
-always @(posedge CLK ) begin
+always @(posedge CLK) begin
 
         if ( do_refresh==1 ) begin                        // Refresh: S=00, RAS=0, CAS=0, WE=1
                 RAS_N <= 0;

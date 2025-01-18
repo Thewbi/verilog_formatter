@@ -1,8 +1,8 @@
 package com.mycompany.app;
 
-public class IfStatementASTNode extends ASTNode {
+public class ConditionalStatementASTNode extends ASTNode {
 
-    public ASTNode expression;
+    public boolean elseState;
 
     public void printRecursive(StringBuilder stringBuilder, int indent) {
 
@@ -12,19 +12,9 @@ public class IfStatementASTNode extends ASTNode {
         }
         stringBuilder.append(value).append("\n");
 
-        // indent and expression
-        for (int i = 0; i < indent + 1; i++) {
-            stringBuilder.append("  ");
-        }
-        stringBuilder.append("expression:").append("\n");
-        if (expression != null) {
-            expression.printRecursive(stringBuilder, indent + 2);
-        }
-
         // children
         for (ASTNode child : children) {
             child.printRecursive(stringBuilder, indent + 1);
         }
     }
-
 }

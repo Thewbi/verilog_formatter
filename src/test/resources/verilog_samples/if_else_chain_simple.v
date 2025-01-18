@@ -1,15 +1,18 @@
 module design_top;
     always @(posedge CLK) begin
         if (do_refresh == 1) begin
-            RAS_N <= 2;
-            CAS_N <= 3;
-            WE_N  <= 4;
+            WE_A  <= 1;
+            WE_B  <= 2;
         end
-    end
-    always @(posedge CLK or negedge RESET_N)
-    begin
-        if (do_refresh == 1) begin
-            RAS_N <= 2;
+        else if (do_refresh == 2) begin
+            RAS_N <= 3;
+            if (do_refresh == 1) begin
+                WE_A  <= 1;
+                WE_B  <= 2;
+            end
+        end
+        else begin
+            RAS_N <= 4;
         end
     end
 endmodule
