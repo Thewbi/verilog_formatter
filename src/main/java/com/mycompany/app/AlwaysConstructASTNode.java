@@ -24,7 +24,7 @@ public class AlwaysConstructASTNode extends ASTNode {
 
         // all children
         for (ASTNode child : children) {
-            child.printRecursive(stringBuilder, indent + 2);
+            child.printRecursive(stringBuilder, indent + 1);
         }
     }
 

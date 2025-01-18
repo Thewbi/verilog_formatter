@@ -1663,7 +1663,7 @@ width_constant_expression
 // A.8.4 Primaries
 constant_primary
     : number
-    | identifier ( '[' block_comment* constant_range_expression ']')?
+    | hierarchical_identifier ( '[' block_comment* constant_range_expression ']')?
     | constant_concatenation
     | constant_multiple_concatenation
     | constant_function_call

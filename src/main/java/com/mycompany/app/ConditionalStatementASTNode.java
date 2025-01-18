@@ -1,5 +1,12 @@
 package com.mycompany.app;
 
+/**
+ * Currently the ConditionalStatementASTNode is used for if statements.
+ * All children of this node need to be connected via else branches!
+ * They are not independent from each other, but every child is a sub branch
+ * of a single, large if statement. The last statement is the else branch and
+ * does not have to be of type IfStatementASTNode. It can be a general AST node.
+ */
 public class ConditionalStatementASTNode extends ASTNode {
 
     public boolean elseState;

@@ -49,15 +49,20 @@ public class App {
 
         //System.out.println("Lexing ...");
 
+        String file = "src/test/resources/verilog_samples/assignment_from_array_with_index.v";
 //        String file = "src/test/resources/verilog_samples/if_continuous_assignment.v";
 //        String file = "src/test/resources/verilog_samples/if_continuous_assignment_extended.v";
+//        String file = "src/test/resources/verilog_samples/if_else_without_begin_end.v";
         //String file = "src/test/resources/verilog_samples/command.v";
         //String file = "src/test/resources/verilog_samples/module.v";
         //String file = "src/test/resources/verilog_samples/if_procedural.v";
-        //String file = "src/test/resources/verilog_samples/if_large.v";
+//        String file = "src/test/resources/verilog_samples/if_large.v";
+//        String file = "src/test/resources/verilog_samples/if_large_fixed.v";
 //        String file = "src/test/resources/verilog_samples/if_without_else.v";
 //        String file = "src/test/resources/verilog_samples/if_else_chain.v";
-        String file = "src/test/resources/verilog_samples/if_else_chain_simple.v";
+//        String file = "src/test/resources/verilog_samples/if_complex_expression.v";
+//        String file = "src/test/resources/verilog_samples/if_else_chain_simple.v";
+//        String file = "src/test/resources/verilog_samples/if_else_chain_nested_if.v";
         //String file = "src/test/resources/verilog_samples/double_click.v";
         //String file = "src/test/resources/verilog_samples/loopback_device.v";
         //String file = "src/test/resources/verilog_samples/simple_module.v";

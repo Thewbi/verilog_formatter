@@ -6,6 +6,10 @@ module design_top;
         end
         else if (do_refresh == 2) begin
             RAS_N <= 3;
+            if (do_refresh == 1) begin
+                WE_A  <= 1;
+                WE_B  <= 2;
+            end
         end
         else begin
             RAS_N <= 4;

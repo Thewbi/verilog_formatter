@@ -45,9 +45,9 @@ begin
 	begin
 		do_initial <= 0;
 
+
 	// Refresh
-	if ((REF_REQ == 1 | REFRESH == 1) & command_done == 0 & do_refresh == 0 & rp_done == 0
-	& do_reada == 0 & do_writea == 0)
+	if ((REF_REQ == 1 | REFRESH == 1) & command_done == 0 & do_refresh == 0 & rp_done == 0 & do_reada == 0 & do_writea == 0)
 	do_refresh <= 1;
 	else
 	do_refresh <= 0;
@@ -132,8 +132,10 @@ begin
 	end
 end
 end
+
 end
 end
+
 
 always @(posedge CLK or negedge RESET_N)
 begin
@@ -150,8 +152,10 @@ begin
                 begin
                         if (do_writea == 1)
                         begin
-                                if (SC_BL == 1)                       //  Set the shift register to the appropriate
-                                        oe_shift <= 0;                // value based on burst length.
+                                //  Set the shift register to the appropriate
+                                // value based on burst length.
+                                if (SC_BL == 1)
+                                        oe_shift <= 0;
                                 else if (SC_BL == 2)
                                         oe_shift <= 1;
                                 else if (SC_BL == 4)
@@ -175,7 +179,8 @@ begin
                 end
                 else
                 begin
-                        if (do_writea == 1)                                    // OE generation for page mode accesses
+                        // OE generation for page mode accesses
+                        if (do_writea == 1)
                                 oe4   <= 1;
                         else if (do_precharge == 1 | do_reada == 1 | do_refresh==1 | do_initial == 1 | PM_STOP==1 )
                                 oe4   <= 0;
@@ -185,4 +190,5 @@ begin
         end
 
 end
+
 endmodule

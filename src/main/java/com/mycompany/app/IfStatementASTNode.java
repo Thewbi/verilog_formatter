@@ -17,9 +17,7 @@ public class IfStatementASTNode extends ASTNode {
             stringBuilder.append("  ");
         }
         stringBuilder.append("expression:").append("\n");
-        if (expression != null) {
-            expression.printRecursive(stringBuilder, indent + 2);
-        }
+        expression.printRecursive(stringBuilder, indent + 2);
 
         // children
         for (ASTNode child : children) {

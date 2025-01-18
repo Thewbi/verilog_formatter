@@ -27681,8 +27681,8 @@ public class VerilogParser extends Parser {
 		public NumberContext number() {
 			return getRuleContext(NumberContext.class,0);
 		}
-		public IdentifierContext identifier() {
-			return getRuleContext(IdentifierContext.class,0);
+		public Hierarchical_identifierContext hierarchical_identifier() {
+			return getRuleContext(Hierarchical_identifierContext.class,0);
 		}
 		public TerminalNode LB() { return getToken(VerilogParser.LB, 0); }
 		public Constant_range_expressionContext constant_range_expression() {
@@ -27753,7 +27753,7 @@ public class VerilogParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(4778);
-				identifier();
+				hierarchical_identifier();
 				setState(4789);
 				_errHandler.sync(this);
 				switch ( getInterpreter().adaptivePredict(_input,543,_ctx) ) {
@@ -33749,8 +33749,8 @@ public class VerilogParser extends Parser {
 		"\5\u0260\u0131\2\u12a4\u12a5\7\u00ae\2\2\u12a5\u12a6\5\u027a\u013e\2\u12a6"+
 		"\u12a8\3\2\2\2\u12a7\u129a\3\2\2\2\u12a7\u129b\3\2\2\2\u12a7\u129f\3\2"+
 		"\2\2\u12a7\u12a3\3\2\2\2\u12a8\u0279\3\2\2\2\u12a9\u12aa\5\u0264\u0133"+
-		"\2\u12aa\u027b\3\2\2\2\u12ab\u12c3\5\u0292\u014a\2\u12ac\u12b7\5\u02d4"+
-		"\u016b\2\u12ad\u12b1\7\u00a6\2\2\u12ae\u12b0\5\u0300\u0181\2\u12af\u12ae"+
+		"\2\u12aa\u027b\3\2\2\2\u12ab\u12c3\5\u0292\u014a\2\u12ac\u12b7\5\u02d0"+
+		"\u0169\2\u12ad\u12b1\7\u00a6\2\2\u12ae\u12b0\5\u0300\u0181\2\u12af\u12ae"+
 		"\3\2\2\2\u12b0\u12b3\3\2\2\2\u12b1\u12af\3\2\2\2\u12b1\u12b2\3\2\2\2\u12b2"+
 		"\u12b4\3\2\2\2\u12b3\u12b1\3\2\2\2\u12b4\u12b5\5\u0268\u0135\2\u12b5\u12b6"+
 		"\7\u00b4\2\2\u12b6\u12b8\3\2\2\2\u12b7\u12ad\3\2\2\2\u12b7\u12b8\3\2\2"+

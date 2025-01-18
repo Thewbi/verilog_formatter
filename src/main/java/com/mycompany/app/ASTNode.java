@@ -11,6 +11,8 @@ public class ASTNode {
 
     public String value;
 
+    public Object ctx;
+
     public void printRecursive(StringBuilder stringBuilder, int indent) {
         for (int i = 0; i < indent; i++) {
             stringBuilder.append("  ");
