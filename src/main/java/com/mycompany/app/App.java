@@ -49,7 +49,8 @@ public class App {
 
         //System.out.println("Lexing ...");
 
-        String file = "src/test/resources/verilog_samples/case_statement.v";
+        //String file = "src/test/resources/verilog_samples/case_statement.v";
+        String file = "src/test/resources/verilog_samples/case_statement_simple.v";
 
 //        String file = "src/test/resources/verilog_samples/assignment_from_array_with_index.v";
 //        String file = "src/test/resources/verilog_samples/if_continuous_assignment.v";
