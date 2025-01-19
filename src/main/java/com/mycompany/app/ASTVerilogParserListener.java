@@ -24,9 +24,58 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
+    public void enterCase_statement(VerilogParser.Case_statementContext ctx) {
+
+        CaseStatementASTNode astNode = new CaseStatementASTNode();
+        astNode.value = "case_stmt";
+
+        // connect parent and child
+        currentNode.children.add(astNode);
+        astNode.parent = currentNode;
+
+        // decend
+        currentNode = astNode;
+    }
+
+    @Override
+    public void exitCase_statement(VerilogParser.Case_statementContext ctx) {
+
+        ((CaseStatementASTNode) currentNode).expression = expressionStack.pop();
+
+        // ascend
+        currentNode = currentNode.parent;
+    }
+
+    @Override
+    public void enterCase_item(VerilogParser.Case_itemContext ctx) {
+        CaseStatementItemASTNode astNode = new CaseStatementItemASTNode();
+        astNode.value = "case_item";
+
+        // connect parent and child
+        currentNode.children.add(astNode);
+        astNode.parent = currentNode;
+
+        // decend
+        currentNode = astNode;
+    }
+
+    @Override
+    public void exitCase_item(VerilogParser.Case_itemContext ctx) {
+
+        if (currentNode.value.equalsIgnoreCase("default_case_item")) {
+            // nop
+        } else {
+            ((CaseStatementItemASTNode) currentNode).expression = expressionStack.pop();
+        }
+
+        // ascend
+        currentNode = currentNode.parent;
+    }
+
+    @Override
     public void enterIf_generate_construct(VerilogParser.If_generate_constructContext ctx) {
         if (currentNode instanceof ConditionalStatementASTNode) {
-
+            // nop
         } else {
             ConditionalStatementASTNode astNode = new ConditionalStatementASTNode();
             astNode.ctx = ctx;
@@ -98,15 +147,11 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void exitNet_assignment(VerilogParser.Net_assignmentContext ctx) {
-        // ParseTree child0 = ctx.getChild(0);
         NetAssignmentASTNode astNode = new NetAssignmentASTNode();
         astNode.ctx = ctx;
 
         astNode.expression = expressionStack.pop();
-
-        //astNode.target = child0.getText();
         astNode.target = expressionStack.pop();
-
         astNode.value = "net_assignment_statement (=)";
 
         currentNode.children.add(astNode);
@@ -114,15 +159,11 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void exitNonblocking_assignment(VerilogParser.Nonblocking_assignmentContext ctx) {
-        // ParseTree child0 = ctx.getChild(0);
         NonblockingAssignmentASTNode astNode = new NonblockingAssignmentASTNode();
         astNode.ctx = ctx;
 
         astNode.expression = expressionStack.pop();
-
-        //astNode.target = child0.getText();
         astNode.target = expressionStack.pop();
-
         astNode.value = "nonblocking_assignment_statement (<=)";
 
         currentNode.children.add(astNode);
@@ -155,31 +196,8 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         processExpression(childCount, text, child0, child1);
     }
 
-    // @Override
-    // public void exitConstant_primary(VerilogParser.Constant_primaryContext ctx) {
-
-    //     ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
-    //     astNode.ctx = ctx;
-    //     astNode.value = ctx.getText();
-    //     astNode.operator = null;
-
-    //     expressionStack.push(astNode);
-    // }
-
-    // @Override
-    // public void exitPrimary(VerilogParser.PrimaryContext ctx) {
-
-    //     ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
-    //     astNode.ctx = ctx;
-    //     astNode.value = ctx.getText();
-    //     astNode.operator = null;
-
-    //     expressionStack.push(astNode);
-    // }
-
     @Override
-    public
-    void exitHierarchical_identifier(VerilogParser.Hierarchical_identifierContext ctx) {
+    public void exitHierarchical_identifier(VerilogParser.Hierarchical_identifierContext ctx) {
 
         ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
         astNode.ctx = ctx;
@@ -198,7 +216,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         astNode.operator = null;
 
         expressionStack.push(astNode);
-     }
+    }
 
     private void processExpression(int childCount, String text, ParseTree child0, ParseTree child1) {
 
@@ -251,7 +269,8 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     @Override
     public void visitTerminal(TerminalNode node) {
 
-        // because if-statements have no explicit node, they are detected via the terminal
+        // because if-statements have no explicit node, they are detected via the
+        // terminal
         if (node.getText().equalsIgnoreCase("if")) {
 
             IfStatementASTNode astNode = new IfStatementASTNode();
@@ -263,6 +282,10 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
             // new current node
             currentNode = astNode;
+
+        } else if (node.getText().equalsIgnoreCase("default")) {
+
+            ((CaseStatementItemASTNode) currentNode).value = "default_case_item";
 
         }
 
