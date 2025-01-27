@@ -1073,13 +1073,13 @@ wait_statement
 // A.6.6 Conditional statements
 conditional_statement
     :
-    'if' '(' expression ')' new_line*
-    statement_or_null new_line*
+    'if' '(' expression ')' line_comment* new_line*
+    statement_or_null line_comment* new_line*
     (
-        'else' new_line*
-        statement_or_null new_line*
+        (line_comment | new_line )* 'else' line_comment* new_line*
+        statement_or_null line_comment* new_line*
     )?
-    new_line*
+    line_comment* new_line*
     ;
 
 // A.6.7 Case statements

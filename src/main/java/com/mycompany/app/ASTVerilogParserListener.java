@@ -2,10 +2,12 @@ package com.mycompany.app;
 
 import java.util.Stack;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import lel.VerilogParser;
+import lel.VerilogParser.Event_expressionContext;
 import lel.VerilogParserBaseListener;
 
 public class ASTVerilogParserListener extends VerilogParserBaseListener {
@@ -107,21 +109,30 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         if (currentNode instanceof ConditionalStatementASTNode) {
 
         } else {
-            ConditionalStatementASTNode astNode = new ConditionalStatementASTNode();
-            astNode.value = "conditional_stmt";
-            astNode.ctx = ctx;
-
-            // connect parent and child
-            currentNode.children.add(astNode);
-            astNode.parent = currentNode;
-
-            // decend
-            currentNode = astNode;
+            descendIntoConditionalStatementASTNode(ctx);
         }
+    }
+
+    private void descendIntoConditionalStatementASTNode(ParserRuleContext ctx) {
+
+        ConditionalStatementASTNode astNode = new ConditionalStatementASTNode();
+        astNode.value = "conditional_stmt";
+        astNode.ctx = ctx;
+
+        // connect parent and child
+        currentNode.children.add(astNode);
+        astNode.parent = currentNode;
+
+        // decend
+        currentNode = astNode;
     }
 
     @Override
     public void exitConditional_statement(VerilogParser.Conditional_statementContext ctx) {
+        ascendFromConditionalStatementASTNode(ctx);
+    }
+
+    private void ascendFromConditionalStatementASTNode(ParserRuleContext ctx) {
         // exit if statement
         if (currentNode instanceof IfStatementASTNode) {
             ((IfStatementASTNode) currentNode).expression = expressionStack.pop();
@@ -175,7 +186,25 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         String text = ctx.getText();
         ParseTree child0 = ctx.getChild(0);
         ParseTree child1 = ctx.getChild(1);
-        processExpression(childCount, text, child0, child1);
+        processExpression(ctx, childCount, text, child0, child1);
+    }
+
+    @Override
+    public void enterExpression(VerilogParser.ExpressionContext ctx) {
+
+        if (ctx.getChildCount() > 2) {
+
+            // try to turn an elvis operator (?:) into an if-statment
+            ParseTree operatorChildParseTree = ctx.getChild(1);
+            if (operatorChildParseTree.getText().equalsIgnoreCase("?")) {
+
+                System.out.println("Elvis has entered the building!");
+
+                // descendIntoConditionalStatementASTNode(ctx);
+            }
+
+        }
+
     }
 
     @Override
@@ -184,7 +213,9 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         String text = ctx.getText();
         ParseTree child0 = ctx.getChild(0);
         ParseTree child1 = ctx.getChild(1);
-        processExpression(childCount, text, child0, child1);
+        processExpression(ctx, childCount, text, child0, child1);
+
+        // ascendFromConditionalStatementASTNode(ctx);
     }
 
     @Override
@@ -193,7 +224,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         String text = ctx.getText();
         ParseTree child0 = ctx.getChild(0);
         ParseTree child1 = ctx.getChild(1);
-        processExpression(childCount, text, child0, child1);
+        processExpression(ctx, childCount, text, child0, child1);
     }
 
     @Override
@@ -218,31 +249,47 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         expressionStack.push(astNode);
     }
 
-    private void processExpression(int childCount, String text, ParseTree child0, ParseTree child1) {
+    private void processExpression(ParseTree ctx, int childCount, String text, ParseTree child0, ParseTree child1) {
 
-        ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
+        ExpressionStatementASTNode expressionStatementASTNode = new ExpressionStatementASTNode();
 
         if (childCount == 2) {
 
             //
             // child 0
             //
-            astNode.operator = child0.getText();
+            expressionStatementASTNode.operator = child0.getText();
 
             //
             // child 1
             //
-            astNode.rhs = expressionStack.pop();
+            expressionStatementASTNode.rhs = expressionStack.pop();
 
-            expressionStack.push(astNode);
+            expressionStack.push(expressionStatementASTNode);
 
         } else if (childCount == 3) {
 
-            astNode.operator = child1.getText();
-            astNode.rhs = expressionStack.pop();
-            astNode.lhs = expressionStack.pop();
+            expressionStatementASTNode.operator = child1.getText();
+            expressionStatementASTNode.rhs = expressionStack.pop();
+            expressionStatementASTNode.lhs = expressionStack.pop();
 
-            expressionStack.push(astNode);
+            expressionStack.push(expressionStatementASTNode);
+
+        } else if (childCount == 5) {
+
+            ParseTree operatorChildParseTree = ctx.getChild(1);
+            if (operatorChildParseTree.getText().equalsIgnoreCase("?")) {
+
+                expressionStatementASTNode.operator = child1.getText();
+                expressionStatementASTNode.rhs = expressionStack.pop();
+                expressionStatementASTNode.lhs = expressionStack.pop();
+                expressionStatementASTNode.predicate = expressionStack.pop();
+
+                expressionStack.push(expressionStatementASTNode);
+
+            } else {
+                throw new RuntimeException("Not implemented yet!");
+            }
 
         }
     }

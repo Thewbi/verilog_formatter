@@ -40,6 +40,7 @@ public class App {
 
     public static void main(String[] args) throws IOException {
         mainVerilog(args);
+        //mainSystemVerilog(args);
     }
 
     /**
@@ -49,7 +50,17 @@ public class App {
 
         //System.out.println("Lexing ...");
 
-        String file = "src/test/resources/verilog_samples/case_statement.v";
+        //String file = "src/test/resources/verilog_samples/elvis_operator.v";
+        //String file = "src/test/resources/verilog_samples/elvis_operator_simple.v";
+
+        //String file = "src/test/resources/verilog_samples/temporal_construct.v";
+//        String file = "src/test/resources/verilog_samples/fetch_stage.v";
+        //String file = "src/test/resources/verilog_samples/if_else_if_else.v";
+
+//        String file = "src/test/resources/verilog_samples/scratchpad.v";
+//        String file = "src/test/resources/verilog_samples/if_else_without_begin_end_without_else.v";
+
+//        String file = "src/test/resources/verilog_samples/case_statement.v";
 //        String file = "src/test/resources/verilog_samples/case_statement_simple.v";
 
 //        String file = "src/test/resources/verilog_samples/assignment_from_array_with_index.v";
@@ -70,7 +81,8 @@ public class App {
         //String file = "src/test/resources/verilog_samples/loopback_device.v";
         //String file = "src/test/resources/verilog_samples/simple_module.v";
         //String file = "src/test/resources/verilog_samples/uart_top.v";
-        //String file = "src/test/resources/verilog_samples/module_with_parameters.v";
+
+        String file = "src/test/resources/verilog_samples/module_with_parameters.v";
         //String file = "src/test/resources/verilog_samples/module_instantiation.v";
         //String file = "src/test/resources/verilog_samples/module_instantiation2.v";
 
@@ -92,9 +104,9 @@ public class App {
 
         System.out.println("Parsing done.");
 
-        //boolean print = true;
-        boolean print = false;
-        if (print) {
+        //boolean printParseTree = true;
+        boolean printParseTree = false;
+        if (printParseTree) {
 
             System.out.println("Raw Output Traversal ...");
             System.out.println("");
@@ -171,7 +183,9 @@ public class App {
 
         //String file = "src/test/resources/verilog_samples/wire_delay.v";
         //String file = "src/test/resources/verilog_samples/user_defined_primitive.v";
-        String file = "src/test/resources/verilog_samples/uart_top.v";
+        //String file = "src/test/resources/verilog_samples/uart_top.v";
+
+        String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/riscvsingle.sv";
 
         final CharStream charStream = CharStreams.fromFileName(file);
 

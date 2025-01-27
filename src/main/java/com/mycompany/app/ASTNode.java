@@ -13,11 +13,15 @@ public class ASTNode {
 
     public Object ctx;
 
-    public void printRecursive(StringBuilder stringBuilder, int indent) {
+    public void printRecursive(final StringBuilder stringBuilder, final int indent) {
+
+        // indent and operator or symbol
         for (int i = 0; i < indent; i++) {
             stringBuilder.append("  ");
         }
         stringBuilder.append(value).append("\n");
+
+        // all children
         for (ASTNode child : children) {
             child.printRecursive(stringBuilder, indent + 1);
         }
