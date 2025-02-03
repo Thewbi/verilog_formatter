@@ -1,0 +1,344 @@
+# Documentation
+
+IEEE Standard for SystemVerilog — Unified Hardware Design, Specification, and Verification Language
+
+IEEE Std 1800™-2023
+(Revision of IEEE Std 1800-2017)
+
+Page 63 - Scheduling Semantics
+
+# The Standard SystemVerilog Reference Algorithm for Simulation (SSVRAS)
+
+## Processes
+
+Processes are objects that can be evaluated, that can have state, and that can
+respond to changes on their inputs to produce outputs.
+
+Processes are concurrently scheduled elements, such as initial procedures.
+
+Examples of processes include, but are not limited to, primitives; initial,
+always, always_comb, always_latch, and always_ff procedures; continuous assignments;
+asynchronous tasks; and procedural assignment statements.
+
+## Update and Evaluation Events
+
+Every change in state of a net or variable in the system description being simulated
+is considered an update event. Processes are sensitive to update events. When an
+update event is executed, all the processes that are sensitive to that event are
+considered for evaluation in an arbitrary order. The evaluation of a process is also
+an event, known as an evaluation event.
+
+--> Write a class for variables. Whenever that value of the variable is changed, the
+class will automatically emit an event.
+--> Write a class for processes. Whenever a process starts evaluating, the class
+automatically throws an evaluation event.
+
+## Assertion Rules
+
+Sampling in the Preponed region is equivalent to sampling in the previous Postponed region. (see 4.4.2.1)
+
+## Strategy
+
+I think the Standard SystemVerilog Reference Algorithm for Simulation (SSVRAS)
+first sorts all events into timeslots according to the timestamp they occur.
+
+In a first step, all events are inserted into the active region of that time slot.
+
+The algorithm iterates over all events in the active region and applies rules.
+
+4.4.2.3 says "an explicit #0 delay control requires the process to be
+suspended and an event to be scheduled into the Inactive region of the current time slot"
+This means that if an event is #0 delay, this event is removed from the active
+region and an event is added to the inactive region of the current timeslots
+
+4.4.2.4 says that nonblocking assignments (<=) are removed from active and added to NBA.
+[2] says that for nonblocking assignments, the right hand side is evaluated (but not assigned yet) and then
+an event for NBA assignment with the evaluated value is inserted into the NBA region.
+In a non-blocking procedural assignment, the expression is evaluated when the
+statement is encountered, and assignment is postponed until the end of the time-step.
+
+[2] says that blocking assignments (=) are executed here: "All the blocking assignments in the module block."
+[2] says that all module continuous assignments are executed here: "All module continuous assignments in the module block."
+[2] says: "Evaluate inputs and update outputs of Verilog primitives."
+[2] says: "Execute the $display and $finish commands."
+
+[2] says: NBA Region: In this region, the Left- Hand-side variables of non-blocking
+assignment statements in the module block get updated. The assignment is actually made.
+
+[2] says: Observed Region: The concurrent assertions are evaluated in this region.
+Also, clocking block inputs with explicit #0 step delay are sampled in the Observed region.
+
+There is a duality between the active and the reactive region because events
+are first inserted into the reactive reagion and then those events might be moved
+to other reagions when certain rules apply. The rules and the other reagions
+are similar to the active rules and regions.
+
+4.4.2.7 says "an explicit #0 delay control requires the process to be
+suspended and an event to be scheduled into the Re-Inactive region of the current time slot"
+
+4.4.2.8 says that nonblocking assignments are removed from reactive and added to Re-NBA.
+
+4.9.1 says that continuous assignments can be modeled by a process that is
+sensitive to all the variables used in the RHS of the continuous assignment.
+That way, continious assignments do not need any special implementation in the
+simulator. Whenever a value in the RHS changes, an update event is added to
+the active region. This active update event is treated like all other events
+in the active region.
+
+4.5. outlines how processes are scheduled.
+
+```
+execute_region {
+    while (region is nonempty) {
+        E = any event from region;
+        remove E from the region;
+        if (E is an update event) {
+            update the modified object;
+            schedule evaluation event for any process sensitive to the object;
+        } else {
+            /* E is an evaluation event */
+            evaluate the process associated with the event and possibly;
+            schedule further events for execution;
+        }
+    }
+}
+```
+
+The simulator will check all processes of the current module to see if
+they are triggered once an update event is executed.
+
+When a region is executed and an update event is encountered, the object is
+updated but at the same time all processes are checked if the event is part
+of their sensitivity list. If this is the case, the process is not run
+immediately but instead an evaluation event is inserted into the executed region.
+
+When the evaluation event is executed sometime during the simulation, then
+the process (stored inside the evaluation event) is executed step by step
+procedurally which may create new events which are then inserted into the
+current region. Those new events are inserted into the currently executed region.
+
+A region execution loops over all events in the current region and executes
+the events. This can cause new events be added into the current region again.
+The region is done executing  when there are no more events in the region.
+(Hint: Java implementation: Iterating lists is not possible. Have a while
+loop that looks at a set of events. Once that set is empty, abort the while
+loop. Events can then be added and removed from the loop as the execution
+takes place.)
+
+4.5. outlines how initial (processes) are scheduled and variables are initialized
+
+```
+execute_simulation {
+    T = 0;
+    initialize the values of all nets and variables;
+    schedule all initialization events into time zero slot;
+    while (some time slot is nonempty) {
+        move to the first nonempty time slot and set T;
+        execute_time_slot (T);
+    }
+}
+```
+
+For each initial block, a process is modeled so that no special implementation
+is needed for the initial block. An initial event is added to the active
+region of timeslot zero. The initial event contains a pointer to the process
+created for the initial block. When this event is executed, the initial block
+is executed. Since the initial block is executed only once, the intial process
+will have an empty sensitivity list and the event to trigger it is created
+by the simulator itself as described above.
+
+$monitor, $strobe, and other similar events are scheduled in the Postponed region.
+
+# $display and $write system tasks
+source: https://www.chipverify.com/verilog/verilog-display-tasks
+
+$display is a asynchronous (system) task. A asynchronous (system) task in
+system verilog is a special kind of process.
+
+4.3 Event simulation says:
+A SystemVerilog description consists of connected threads of execution or processes. Processes are objects
+that can be evaluated, that can have state, and that can respond to changes on their inputs to produce outputs.
+Processes are concurrently scheduled elements, such as initial procedures.
+Examples of processes include, but are not limited to,
+- primitives;
+- initial, always, always_comb, always_latch, and always_ff procedures;
+- continuous assignments;
+- asynchronous tasks;
+- and procedural assignment statements.
+
+$display is execute, when it is encountered in a process with blocking
+assignments (<=) or if it is used along with non-blocking assignments (=)
+then it is executed sometime. When a $display task is encountered, an event
+is inserted. The event contains the string to output and the command
+to perform, printing to the console in that case. That event is then executed
+later. (Maybe this is overkill and instead, whenever $display is encountered,
+the string is printed and that is it!).
+
+NEXT STEPS: implement this:
+
+```
+module tb;
+  initial begin
+    $display ("This ends with a new line ");
+    $write ("This does not,");
+    $write ("like this. To start new line, use newline char");
+    $display ("This always start on a new line !");
+  end
+endmodule
+```
+
+
+
+
+# Links
+
+[1] https://www.chipverify.com/systemverilog/systemverilog-event#google_vignette
+[2] https://www.maven-silicon.com/blog/systemverilog-event-scheduler/
+[3] https://www.chipverify.com/verilog/verilog-blocking-non-blocking-statements
+[4] https://medium.com/verilog-novice-to-wizard/assignments-in-verilog-cef1795f4160
+
+
+
+# Blocking assignments
+
+See: https://www.chipverify.com/verilog/verilog-blocking-non-blocking-statements
+
+Blocking assignment statements are assigned using = and are executed one after
+the other in a procedural block. However, this will not prevent execution of
+statments that run in a parallel block.
+
+Example:
+```
+module tb;
+  reg [7:0] a, b, c, d, e;
+
+  initial begin
+    a = 8'hDA;
+    $display ("[%0t] a=0x%0h b=0x%0h c=0x%0h", $time, a, b, c);
+    b = 8'hF1;
+    $display ("[%0t] a=0x%0h b=0x%0h c=0x%0h", $time, a, b, c);
+    c = 8'h30;
+    $display ("[%0t] a=0x%0h b=0x%0h c=0x%0h", $time, a, b, c);
+  end
+
+  initial begin
+    d = 8'hAA;
+    $display ("[%0t] d=0x%0h e=0x%0h", $time, d, e);
+ 	e = 8'h55;
+    $display ("[%0t] d=0x%0h e=0x%0h", $time, d, e);
+  end
+endmodule
+```
+
+Output:
+
+```
+ncsim> run
+[0] a=0xda b=0xx c=0xx
+[0] a=0xda b=0xf1 c=0xx
+[0] a=0xda b=0xf1 c=0x30
+[0] d=0xaa e=0xx
+[0] d=0xaa e=0x55
+ncsim: *W,RNQUIE: Simulation is complete.
+```
+
+# Assignments
+
+Source: [4]
+
+There are two types of assignments in veriolg
+
+1. Procedural Assignment
+2. Continuous Assignment
+
+1. Procedural Assignment
+```
+[ delay ] register_name = [ delay ] expression;     // blocking
+[ delay ] register_name <= [ delay ] expression;    // non-blocking
+```
+
+In a non-blocking procedural assignment (<=), the expression is evaluated when the
+statement is encountered, and assignment is postponed until the end of the time-step.
+
+A blocking assignment (=) is executed directly.
+
+Example:
+
+```
+begin
+  a = 0;
+  #10 a = 1;
+  #5 a = 2;
+end             // time 0: a=0; time 10: a=1; time 15 (#10+#5): a=2;
+begin
+  a <= 0;
+  #10 a <= 1;
+  #5 a <= 2;
+end            // time 0: a=0; time 5: a=2; time 10: a=1;
+begin
+  a <= b;
+  b <= a;
+end            // both assignments are evaluated before a or b changes
+```
+
+## Continuous Assignments
+
+https://medium.com/verilog-novice-to-wizard/assignments-in-verilog-cef1795f4160
+
+A continuous assignment drives a value into a net.
+They are either implicit or explicit.
+
+```
+net_data_type [ strength ] [ delay ] [ size ] net_name = expression;     // implicit
+assign [ strength ] [ #( delay ) ] net_name = expression;                // explicit
+```
+
+```
+wire Out;
+assign Out = A & B;
+assign {COut, Sum} = A + B + CIn;
+wire #50 Out = A & B;
+```
+
+The word continuous is used because a value is assigned to a net once and stays
+assigned and active continously. In contrast to procedural assignments which only
+take place when statements are executed inside a process, the continous assignment
+takes place contiously and instantly as soon as an expression changes. Procedural
+assignments only take place, when a process is triggered.
+
+https://www.chipverify.com/verilog/verilog-assignments
+
+
+```
+module my_block;
+	reg [31:0] data = 32'hdead_cafe;
+
+	initial begin
+		#20  data = 32'h1234_5678;    // data will have dead_cafe from time 0 to time 20
+		                              // At time 20, data will get 12345678
+	end
+endmodule
+```
+
+If the variable is initialized during declaration and at time 0 in an initial
+block as shown below, the order of evaluation is not guaranteed, and hence can
+have either 8'h05 or 8'hee.
+
+```
+module my_block;
+	reg [7:0]  addr = 8'h05;
+
+	initial
+		addr = 8'hee;
+endmodule
+```
+
+
+# SystemVerilog Direct Programming Interface (DPI)
+Source: https://www.doulos.com/knowhow/systemverilog/systemverilog-tutorials/systemverilog-dpi-tutorial/
+
+# SystemVerilog Programming Language Interface (PLI)
+Source: https://www.asic-world.com/verilog/pli1.html#Introduction
+
+# SystemVerilog Universal Verification Methodology (UVM)
+Source: https://www.chipverify.com/tutorials/uvm
