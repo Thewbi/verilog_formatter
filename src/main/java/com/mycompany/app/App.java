@@ -185,7 +185,9 @@ public class App {
         //String file = "src/test/resources/verilog_samples/user_defined_primitive.v";
         //String file = "src/test/resources/verilog_samples/uart_top.v";
 
-        String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/riscvsingle.sv";
+        //String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/riscvsingle.sv";
+
+        String file = "src/test/resources/system_verilog_samples/initial_block.sv";
 
         final CharStream charStream = CharStreams.fromFileName(file);
 

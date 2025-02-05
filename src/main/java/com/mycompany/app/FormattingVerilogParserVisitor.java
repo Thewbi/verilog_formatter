@@ -21,16 +21,6 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
     private int indent = 0;
     private boolean preventNewLine;
     private boolean displaceBeginEnd;
-    // private boolean firstTokenInRow = true;
-
-    // public boolean isFirstTokenInRow() {
-    //     return firstTokenInRow;
-    // }
-
-    // public void setFirstTokenInRow(boolean firstTokenInRow) {
-    //     this.firstTokenInRow = firstTokenInRow;
-    // }
-
     private BufferedWriter bufferedWriter;
 
     public void prntIndt(final TerminalNode terminalNode) {
@@ -57,7 +47,6 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
     }
 
     private void newLine() {
-        // setFirstTokenInRow(true);
     }
 
     public void newLineWidthIndent() {
@@ -65,7 +54,6 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
         for (int i = 0; i < indent; i++) {
             prnt(INDENT);
         }
-        // setFirstTokenInRow(true);
     }
 
     private void incIndent(final String label) {
@@ -197,9 +185,7 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
             if (elseBranchStatements != null) {
                 childResult = elseBranchStatements.accept(this);
                 result = this.aggregateResult(result, childResult);
-
             }
-
         }
 
         decIndent("visitConditional");
@@ -268,8 +254,6 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
 
     @Override
     public String visitList_of_port_declarations(VerilogParser.List_of_port_declarationsContext ctx) {
-
-        // setFirstTokenInRow(true);
 
         incIndent("visitList_of_port_declarations");
 
@@ -469,14 +453,10 @@ public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<Str
             //     prnt(" ");
             // }
 
-
             //prnt(node.toString() + " ");
             prnt(node.toString());
 
         }
-
-        // setFirstTokenInRow(false);
-
 
         return this.defaultResult();
     }

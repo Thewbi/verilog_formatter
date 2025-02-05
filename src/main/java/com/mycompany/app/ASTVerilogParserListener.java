@@ -7,7 +7,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import lel.VerilogParser;
-import lel.VerilogParser.Event_expressionContext;
 import lel.VerilogParserBaseListener;
 
 public class ASTVerilogParserListener extends VerilogParserBaseListener {
@@ -107,7 +106,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     @Override
     public void enterConditional_statement(VerilogParser.Conditional_statementContext ctx) {
         if (currentNode instanceof ConditionalStatementASTNode) {
-
+            // nop
         } else {
             descendIntoConditionalStatementASTNode(ctx);
         }

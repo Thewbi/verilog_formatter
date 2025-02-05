@@ -37,6 +37,88 @@ automatically throws an evaluation event.
 
 Sampling in the Preponed region is equivalent to sampling in the previous Postponed region. (see 4.4.2.1)
 
+
+
+
+## Initial Block
+
+https://www.chipverify.com/verilog/verilog-initial-block
+
+An initial block is not synthesizable.
+
+A set of Verilog statements are usually executed sequentially in a simulation.
+These statements are placed inside a procedural block. There are mainly two types
+of procedural blocks in Verilog - initial and always
+
+```
+initial
+	[single statement]
+
+initial begin
+	[multiple statements]
+end
+```
+
+An initial block is started at the beginning of a simulation at time 0 unit.
+This block will be executed only once during the entire simulation.
+Execution of an initial block finishes once all the statements within the block
+are executed.
+
+https://vlsiverify.com/system-verilog/systemverilog-scheduling-semantics/:
+The initial blocks within program blocks are scheduled in the reactive region
+whereas initial blocks within module blocks are scheduled in the active region.
+This avoids race around conditions between design and testbench code.
+
+TODO:
+An initial block is treated like a process but this process has no sensitivity list.
+When there is an initial block in a module, an evaluation event is inserted
+into the active region by the simulator. When the evaluation event is executed
+in the active region, the initial block is executed just like a normal process.
+
+What happens when there is a delay in an initial block? The delayed assignment
+is then scheduled for execution after the delay even though it is placed in
+an initial block.
+
+```
+module behave;
+    reg[1:0] a, b;
+
+    initial begin
+            a = 2'b10;
+        #10 b = 2'b00; // after 10ns, b will be assigned 00
+    end
+endmodule
+```
+
+https://chipdemy.com/initial-block/#:~:text=The%20initial%20block%20in%20Verilog,before%20the%20main%20simulation%20begins.
+
+```
+module initial_block;
+  reg [4:0] abc;
+    initial begin   //block 1
+        abc = 8'd3;
+        #10;
+        abc = 7'd5;
+    end
+    initial begin    //block 2
+        #12;
+        abc = 3'd6;
+    end
+    initial begin    // block 3
+      $monitor("at [%0t], abc = %0d", $time, abc);
+    end
+endmodule
+```
+
+Output
+
+```
+# At [0], abc = 3
+# At [10], abc = 5
+# At [12], abc = 6
+```
+
+
 ## Strategy
 
 I think the Standard SystemVerilog Reference Algorithm for Simulation (SSVRAS)
@@ -67,6 +149,8 @@ assignment statements in the module block get updated. The assignment is actuall
 
 [2] says: Observed Region: The concurrent assertions are evaluated in this region.
 Also, clocking block inputs with explicit #0 step delay are sampled in the Observed region.
+Variables used in concurrent assertions are sampled in the preponed region, see:
+https://verificationguide.com/systemverilog/systemverilog-scheduling-semantics/
 
 There is a duality between the active and the reactive region because events
 are first inserted into the reactive reagion and then those events might be moved
@@ -139,6 +223,7 @@ execute_simulation {
 }
 ```
 
+TODO:
 For each initial block, a process is modeled so that no special implementation
 is needed for the initial block. An initial event is added to the active
 region of timeslot zero. The initial event contains a pointer to the process
@@ -150,26 +235,48 @@ by the simulator itself as described above.
 $monitor, $strobe, and other similar events are scheduled in the Postponed region.
 
 # $display and $write system tasks
-source: https://www.chipverify.com/verilog/verilog-display-tasks
 
-$display is a asynchronous (system) task. A asynchronous (system) task in
-system verilog is a special kind of process.
+source: https://www.chipverify.com/verilog/verilog-display-tasks
+source: https://vlsiverify.com/system-verilog/systemverilog-scheduling-semantics/
+
+$display is a asynchronous (system) task.
+A asynchronous (system) task in system verilog is a special kind of process.
 
 4.3 Event simulation says:
-A SystemVerilog description consists of connected threads of execution or processes. Processes are objects
-that can be evaluated, that can have state, and that can respond to changes on their inputs to produce outputs.
+A SystemVerilog description consists of connected threads of execution or processes.
+Processes are objects that can be evaluated, that can have state, and that can
+respond to changes on their inputs to produce outputs.
 Processes are concurrently scheduled elements, such as initial procedures.
-Examples of processes include, but are not limited to,
-- primitives;
-- initial, always, always_comb, always_latch, and always_ff procedures;
-- continuous assignments;
-- asynchronous tasks;
-- and procedural assignment statements.
 
-$display is execute, when it is encountered in a process with blocking
+Examples of processes include, but are not limited to
+- primitives
+- initial, always, always_comb, always_latch, and always_ff procedures
+- continuous assignments
+- asynchronous tasks
+- procedural assignment statements
+
+https://verificationguide.com/systemverilog/systemverilog-scheduling-semantics/
+says that $display is executed whenever it is encountered in the active region:
+
+```
+Active region
+The Active region holds current events being evaluated and can be processed in any order.
+* Execute all module blocking assignments.
+* Evaluate the Right-Hand-Side (RHS) of all nonblocking assignments and schedule updates into the NBA region.
+* Execute all module continuous assignments
+* Evaluate inputs and update outputs of Verilog primitives.
+* Execute the $display and $finish commands
+```
+
+Also https://vlsiverify.com/system-verilog/systemverilog-scheduling-semantics/ has
+a diagram that shows that $display is executed in the active region.
+
+$display is executed, when it is encountered in a process with blocking
 assignments (<=) or if it is used along with non-blocking assignments (=)
 then it is executed sometime. When a $display task is encountered, an event
-is inserted. The event contains the string to output and the command
+is inserted into the active reagion.
+
+The event contains the string to output and the command
 to perform, printing to the console in that case. That event is then executed
 later. (Maybe this is overkill and instead, whenever $display is encountered,
 the string is printed and that is it!).
@@ -187,15 +294,19 @@ module tb;
 endmodule
 ```
 
+Example taken from: https://www.tutorialspoint.com/compile_verilog_online.php
+```
+module main;
+  initial
+    begin
+      $display("Hello, World");
+      $finish;
+    end
+endmodule
+```
 
 
 
-# Links
-
-[1] https://www.chipverify.com/systemverilog/systemverilog-event#google_vignette
-[2] https://www.maven-silicon.com/blog/systemverilog-event-scheduler/
-[3] https://www.chipverify.com/verilog/verilog-blocking-non-blocking-statements
-[4] https://medium.com/verilog-novice-to-wizard/assignments-in-verilog-cef1795f4160
 
 
 
@@ -241,6 +352,9 @@ ncsim> run
 [0] d=0xaa e=0x55
 ncsim: *W,RNQUIE: Simulation is complete.
 ```
+
+
+
 
 # Assignments
 
@@ -308,7 +422,6 @@ assignments only take place, when a process is triggered.
 
 https://www.chipverify.com/verilog/verilog-assignments
 
-
 ```
 module my_block;
 	reg [31:0] data = 32'hdead_cafe;
@@ -334,6 +447,36 @@ endmodule
 ```
 
 
+
+
+# timescale
+
+https://www.chipverify.com/verilog/verilog-timescale
+
+https://systemverilog.dev/6.html
+
+```
+`timescale 1ns/10ps
+module A;
+logic a;
+initial begin
+    #1.2 a = 1;
+end
+endmodule
+
+`timescale 1us/10ns
+
+module B;
+logic b;
+initial begin
+    #3.4 b = 1;
+end
+endmodule
+```
+
+
+
+
 # SystemVerilog Direct Programming Interface (DPI)
 Source: https://www.doulos.com/knowhow/systemverilog/systemverilog-tutorials/systemverilog-dpi-tutorial/
 
@@ -342,3 +485,73 @@ Source: https://www.asic-world.com/verilog/pli1.html#Introduction
 
 # SystemVerilog Universal Verification Methodology (UVM)
 Source: https://www.chipverify.com/tutorials/uvm
+
+# SystemVerilog ??? (VPI)
+
+
+
+
+# Links
+
+[1] https://www.chipverify.com/systemverilog/systemverilog-event#google_vignette
+[2] https://www.maven-silicon.com/blog/systemverilog-event-scheduler/
+[3] https://www.chipverify.com/verilog/verilog-blocking-non-blocking-statements
+[4] https://medium.com/verilog-novice-to-wizard/assignments-in-verilog-cef1795f4160
+
+
+
+
+# Appendix - SystemVerilog simulation reference algorithm
+
+Taken from the System Verilog specification chapter 4.5.
+
+```
+execute_simulation {
+
+    T = 0;
+
+    initialize the values of all nets and variables;
+    schedule all initialization events into time zero slot;
+
+    while (some time slot is nonempty) {
+        move to the first nonempty time slot and set T;
+        execute_time_slot (T);
+    }
+}
+
+execute_time_slot {
+    execute_region (Preponed);
+    execute_region (Pre-Active);
+    while (any region in [Active ... Pre-Postponed] is nonempty) {
+        while (any region in [Active ... Post-Observed] is nonempty) {
+            execute_region (Active);
+            R = first nonempty region in [Active ... Post-Observed];
+            if (R is nonempty)
+                move events in R to the Active region;
+        }
+        while (any region in [Reactive ... Post-Re-NBA] is nonempty) {
+            execute_region (Reactive);
+            R = first nonempty region in [Reactive ... Post-Re-NBA];
+            if (R is nonempty)
+                move events in R to the Reactive region;
+        }
+        if (all regions in [Active ... Post-Re-NBA] are empty)
+            execute_region (Pre-Postponed);
+    }
+    execute_region (Postponed);
+}
+
+execute_region {
+    while (region is nonempty) {
+        E = any event from region;
+        remove E from the region;
+        if (E is an update event) {
+            update the modified object;
+            schedule evaluation event for any process sensitive to the object;
+        } else {
+            /* E is an evaluation event */
+            evaluate the process associated with the event and possibly schedule further events for execution;
+        }
+    }
+}
+```
