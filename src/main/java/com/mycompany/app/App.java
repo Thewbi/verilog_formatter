@@ -9,16 +9,12 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import lel.VerilogLexer;
-import lel.VerilogParser;
+import verilog.VerilogLexer;
+import verilog.VerilogParser;
 
-// import lel.VerilogLexer;
-// import lel.VerilogParser;
-
-import lul.sv2017Lexer;
-import lul.sv2017Parser;
-
-import lul.sv2017Parser.Source_textContext;
+import systemverilog.sv2017Lexer;
+import systemverilog.sv2017Parser;
+import systemverilog.sv2017Parser.Source_textContext;
 
 /**
  * Created with:
@@ -39,8 +35,8 @@ import lul.sv2017Parser.Source_textContext;
 public class App {
 
     public static void main(String[] args) throws IOException {
-        mainVerilog(args);
-        //mainSystemVerilog(args);
+        //mainVerilog(args);
+        mainSystemVerilog(args);
     }
 
     /**
@@ -96,7 +92,7 @@ public class App {
         System.out.println("Parsing ...");
 
         final VerilogParser parser = new VerilogParser(tokens);
-        final lel.VerilogParser.Source_textContext root = parser.source_text();
+        final verilog.VerilogParser.Source_textContext root = parser.source_text();
         //final lel.VerilogParser.Always_constructContext root =
         //parser.always_construct();
         //final lel.VerilogParser.Always_constructContext root =
@@ -133,7 +129,6 @@ public class App {
 
             writer.flush();
             writer.close();
-
         }
 
         boolean buildAST = true;
@@ -156,7 +151,6 @@ public class App {
             astVerilogParserListener.currentNode.printRecursive(stringBuilder, 0);
 
             System.out.println(stringBuilder.toString());
-
         }
 
         // final SimpleVerilogParserVisitor formatterVisitor = new
@@ -211,8 +205,9 @@ public class App {
         //Function_block_declarationContext root = parser.function_block_declaration();
         final Source_textContext root = parser.source_text();
 
-        SystemVerilogListener listener = new SystemVerilogListener();
+        //SystemVerilogListener listener = new SystemVerilogListener();
         // DefaultStructuredTextListener listener = new DefaultStructuredTextListener();
+        ASTSystemVerilogParserListener listener = new ASTSystemVerilogParserListener();
 
         // create a generic parse tree walker that can trigger callbacks
         final ParseTreeWalker walker = new ParseTreeWalker();
@@ -224,8 +219,15 @@ public class App {
         // Node rootNode = listener.getRootNode();
         // rootNode.print(0);
 
-        System.out.println();
+        // System.out.println();
 
+        System.out.println("AST Output Traversal done.");
+        System.out.println("");
+
+        StringBuilder stringBuilder = new StringBuilder();
+        listener.currentNode.printRecursive(stringBuilder, 0);
+
+        System.out.println(stringBuilder.toString());
     }
 
 }

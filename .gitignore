@@ -25,3 +25,5 @@ replay_pid*
 
 # Maven files
 target/
+src/main/java/systemverilog
+src/main/java/verilog

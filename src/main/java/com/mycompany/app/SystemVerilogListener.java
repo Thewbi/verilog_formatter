@@ -3,10 +3,10 @@ package com.mycompany.app;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import lul.sv2017ParserBaseListener;
+import systemverilog.sv2017ParserBaseListener;
 
 public class SystemVerilogListener extends sv2017ParserBaseListener {
-    
+
     private int indent;
 
     @Override

@@ -6,17 +6,17 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import verilog.VerilogParser;
-import verilog.VerilogParserBaseListener;
+import systemverilog.sv2017Parser;
+import systemverilog.sv2017ParserBaseListener;
 
-public class ASTVerilogParserListener extends VerilogParserBaseListener {
+public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
     public ASTNode currentNode;
 
     public Stack<ExpressionStatementASTNode> expressionStack = new Stack<>();
 
     @Override
-    public void enterModule_declaration(VerilogParser.Module_declarationContext ctx) {
+    public void enterModule_declaration(sv2017Parser.Module_declarationContext ctx) {
         ModuleDeclaractionASTNode moduleDeclaractionASTNode = new ModuleDeclaractionASTNode();
         moduleDeclaractionASTNode.ctx = ctx;
         moduleDeclaractionASTNode.value = "module_decl";
@@ -25,7 +25,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void enterCase_statement(VerilogParser.Case_statementContext ctx) {
+    public void enterCase_statement(sv2017Parser.Case_statementContext ctx) {
 
         CaseStatementASTNode astNode = new CaseStatementASTNode();
         astNode.value = "case_stmt";
@@ -39,7 +39,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void exitCase_statement(VerilogParser.Case_statementContext ctx) {
+    public void exitCase_statement(sv2017Parser.Case_statementContext ctx) {
 
         ((CaseStatementASTNode) currentNode).expression = expressionStack.pop();
 
@@ -48,7 +48,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void enterCase_item(VerilogParser.Case_itemContext ctx) {
+    public void enterCase_item(sv2017Parser.Case_itemContext ctx) {
         CaseStatementItemASTNode astNode = new CaseStatementItemASTNode();
         astNode.value = "case_item";
 
@@ -61,7 +61,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void exitCase_item(VerilogParser.Case_itemContext ctx) {
+    public void exitCase_item(sv2017Parser.Case_itemContext ctx) {
 
         if (currentNode.value.equalsIgnoreCase("default_case_item")) {
             // nop
@@ -74,7 +74,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void enterIf_generate_construct(VerilogParser.If_generate_constructContext ctx) {
+    public void enterIf_generate_construct(sv2017Parser.If_generate_constructContext ctx) {
         if (currentNode instanceof ConditionalStatementASTNode) {
             // nop
         } else {
@@ -92,7 +92,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void exitIf_generate_construct(VerilogParser.If_generate_constructContext ctx) {
+    public void exitIf_generate_construct(sv2017Parser.If_generate_constructContext ctx) {
         // exit if statement
         if (currentNode instanceof IfStatementASTNode) {
             ((IfStatementASTNode) currentNode).expression = expressionStack.pop();
@@ -104,7 +104,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void enterConditional_statement(VerilogParser.Conditional_statementContext ctx) {
+    public void enterConditional_statement(sv2017Parser.Conditional_statementContext ctx) {
         if (currentNode instanceof ConditionalStatementASTNode) {
             // nop
         } else {
@@ -127,7 +127,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void exitConditional_statement(VerilogParser.Conditional_statementContext ctx) {
+    public void exitConditional_statement(sv2017Parser.Conditional_statementContext ctx) {
         ascendFromConditionalStatementASTNode(ctx);
     }
 
@@ -147,7 +147,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
      * the seq_block non-terminal
      */
     @Override
-    public void exitSeq_block(VerilogParser.Seq_blockContext ctx) {
+    public void exitSeq_block(sv2017Parser.Seq_blockContext ctx) {
         // exit if statement
         if (currentNode instanceof IfStatementASTNode) {
             ((IfStatementASTNode) currentNode).expression = expressionStack.pop();
@@ -156,7 +156,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void exitNet_assignment(VerilogParser.Net_assignmentContext ctx) {
+    public void exitNet_decl_assignment(sv2017Parser.Net_decl_assignmentContext ctx) {
         NetAssignmentASTNode astNode = new NetAssignmentASTNode();
         astNode.ctx = ctx;
 
@@ -168,7 +168,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void exitNonblocking_assignment(VerilogParser.Nonblocking_assignmentContext ctx) {
+    public void exitNonblocking_assignment(sv2017Parser.Nonblocking_assignmentContext ctx) {
         NonblockingAssignmentASTNode astNode = new NonblockingAssignmentASTNode();
         astNode.ctx = ctx;
 
@@ -180,7 +180,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void exitConstant_expression(VerilogParser.Constant_expressionContext ctx) {
+    public void exitConstant_expression(sv2017Parser.Constant_expressionContext ctx) {
         int childCount = ctx.getChildCount();
         String text = ctx.getText();
         ParseTree child0 = ctx.getChild(0);
@@ -189,7 +189,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void enterExpression(VerilogParser.ExpressionContext ctx) {
+    public void enterExpression(sv2017Parser.ExpressionContext ctx) {
 
         if (ctx.getChildCount() > 2) {
 
@@ -207,7 +207,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void exitExpression(VerilogParser.ExpressionContext ctx) {
+    public void exitExpression(sv2017Parser.ExpressionContext ctx) {
         int childCount = ctx.getChildCount();
         String text = ctx.getText();
         ParseTree child0 = ctx.getChild(0);
@@ -218,7 +218,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void exitEvent_expression(VerilogParser.Event_expressionContext ctx) {
+    public void exitEvent_expression(sv2017Parser.Event_expressionContext ctx) {
         int childCount = ctx.getChildCount();
         String text = ctx.getText();
         ParseTree child0 = ctx.getChild(0);
@@ -227,7 +227,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void exitHierarchical_identifier(VerilogParser.Hierarchical_identifierContext ctx) {
+    public void exitHierarchical_identifier(sv2017Parser.Hierarchical_identifierContext ctx) {
 
         ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
         astNode.ctx = ctx;
@@ -238,7 +238,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void exitNumber(VerilogParser.NumberContext ctx) {
+    public void exitNumber(sv2017Parser.NumberContext ctx) {
 
         ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
         astNode.ctx = ctx;
@@ -297,7 +297,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
      * for @always
      */
     @Override
-    public void enterProcedural_timing_control_statement(VerilogParser.Procedural_timing_control_statementContext ctx) {
+    public void enterProcedural_timing_control_statement(sv2017Parser.Procedural_timing_control_statementContext ctx) {
         AlwaysConstructASTNode astNode = new AlwaysConstructASTNode();
         astNode.ctx = ctx;
         astNode.value = "Procedural_timing_control_statement - always";
@@ -307,7 +307,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     @Override
-    public void exitProcedural_timing_control_statement(VerilogParser.Procedural_timing_control_statementContext ctx) {
+    public void exitProcedural_timing_control_statement(sv2017Parser.Procedural_timing_control_statementContext ctx) {
         ((AlwaysConstructASTNode) currentNode).expression = expressionStack.pop();
         currentNode = currentNode.parent;
     }

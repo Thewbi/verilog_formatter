@@ -6,14 +6,14 @@ import java.io.IOException;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import lel.VerilogLexer;
-import lel.VerilogParser;
-import lel.VerilogParser.Module_declarationContext;
-import lel.VerilogParser.Module_identifierContext;
-import lel.VerilogParser.Module_instanceContext;
-import lel.VerilogParser.Module_instantiationContext;
-import lel.VerilogParser.Named_port_connectionContext;
-import lel.VerilogParserBaseVisitor;
+import verilog.VerilogLexer;
+import verilog.VerilogParser;
+import verilog.VerilogParser.Module_declarationContext;
+import verilog.VerilogParser.Module_identifierContext;
+import verilog.VerilogParser.Module_instanceContext;
+import verilog.VerilogParser.Module_instantiationContext;
+import verilog.VerilogParser.Named_port_connectionContext;
+import verilog.VerilogParserBaseVisitor;
 
 public class FormattingVerilogParserVisitor extends VerilogParserBaseVisitor<String> {
 

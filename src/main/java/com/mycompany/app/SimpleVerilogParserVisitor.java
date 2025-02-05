@@ -2,12 +2,11 @@ package com.mycompany.app;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import lel.VerilogLexer;
-import lel.VerilogParser;
-import lel.VerilogParserBaseVisitor;
-import lel.VerilogParser.Net_typeContext;
-import lel.VerilogParser.ExpressionContext;
-import lel.VerilogParser.Named_port_connectionContext;
+import verilog.VerilogLexer;
+import verilog.VerilogParser;
+import verilog.VerilogParserBaseVisitor;
+import verilog.VerilogParser.Net_typeContext;
+import verilog.VerilogParser.ExpressionContext;
 
 /**
  * During the output phase, it is valid to collaps several, consecutive empty

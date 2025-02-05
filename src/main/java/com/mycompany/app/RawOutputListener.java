@@ -3,7 +3,7 @@ package com.mycompany.app;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import lel.VerilogParserBaseListener;
+import verilog.VerilogParserBaseListener;
 
 
 public class RawOutputListener extends VerilogParserBaseListener {
