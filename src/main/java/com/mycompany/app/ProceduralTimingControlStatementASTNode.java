@@ -3,9 +3,12 @@ package com.mycompany.app;
 /**
  * Maybe needs to be renamed to ProceduralTimingControlStatementASTNode
  */
-public class AlwaysConstructASTNode extends ASTNode {
+public class ProceduralTimingControlStatementASTNode extends ASTNode {
 
     public ExpressionStatementASTNode expression;
+
+    /** This node is a initial block in a module! */
+    public boolean initial;
 
     public void printRecursive(StringBuilder stringBuilder, int indent) {
 

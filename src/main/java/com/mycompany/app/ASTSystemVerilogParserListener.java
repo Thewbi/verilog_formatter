@@ -352,7 +352,7 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
     @Override
     public void enterProcedural_timing_control_statement(sv2017Parser.Procedural_timing_control_statementContext ctx) {
 
-        AlwaysConstructASTNode astNode = new AlwaysConstructASTNode();
+        ProceduralTimingControlStatementASTNode astNode = new ProceduralTimingControlStatementASTNode();
         astNode.ctx = ctx;
         astNode.value = "Procedural_timing_control_statement - always";
 
@@ -367,7 +367,7 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
     @Override
     public void exitProcedural_timing_control_statement(sv2017Parser.Procedural_timing_control_statementContext ctx) {
 
-        ((AlwaysConstructASTNode) currentNode).expression = expressionStack.pop();
+        ((ProceduralTimingControlStatementASTNode) currentNode).expression = expressionStack.pop();
 
         // ascend
         currentNode = currentNode.parent;
@@ -400,9 +400,10 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
     @Override
     public void enterInitial_construct(sv2017Parser.Initial_constructContext ctx) {
 
-        AlwaysConstructASTNode astNode = new AlwaysConstructASTNode();
+        ProceduralTimingControlStatementASTNode astNode = new ProceduralTimingControlStatementASTNode();
         astNode.ctx = ctx;
         astNode.value = "Procedural_timing_control_statement - initial";
+        astNode.initial = true;
 
         // connect parent and child
         currentNode.children.add(astNode);
