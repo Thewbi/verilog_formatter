@@ -1,4 +1,4 @@
-package com.mycompany.app;
+package com.mycompany.app.ast;
 
 /**
  * Maybe needs to be renamed to ProceduralTimingControlStatementASTNode

@@ -6,6 +6,19 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import com.mycompany.app.ast.ASTNode;
+import com.mycompany.app.ast.CaseStatementASTNode;
+import com.mycompany.app.ast.CaseStatementItemASTNode;
+import com.mycompany.app.ast.ConditionalStatementASTNode;
+import com.mycompany.app.ast.ExpressionStatementASTNode;
+import com.mycompany.app.ast.IfStatementASTNode;
+import com.mycompany.app.ast.ModuleDeclaractionASTNode;
+import com.mycompany.app.ast.NetAssignmentASTNode;
+import com.mycompany.app.ast.NonblockingAssignmentASTNode;
+import com.mycompany.app.ast.ParameterListASTNode;
+import com.mycompany.app.ast.PrimaryTfCallASTNode;
+import com.mycompany.app.ast.ProceduralTimingControlStatementASTNode;
+
 import systemverilog.sv2017Parser;
 import systemverilog.sv2017ParserBaseListener;
 
@@ -432,9 +445,16 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
     @Override
     public void enterPrimaryTfCall(sv2017Parser.PrimaryTfCallContext ctx) {
 
-        ConditionalStatementASTNode astNode = new ConditionalStatementASTNode();
+        PrimaryTfCallASTNode astNode = new PrimaryTfCallASTNode();
         astNode.ctx = ctx;
         astNode.value = "primitive_stmt - tf call " + ctx.getChild(0).getText();
+
+        String primaryTfCall = ctx.getChild(0).getText().toLowerCase();
+        if (primaryTfCall.contains("$display")) {
+            astNode.primaryType = PrimaryType.DISPLAY;
+        } else if (primaryTfCall.contains("$finish")) {
+            astNode.primaryType = PrimaryType.FINISH;
+        }
 
         // connect parent and child
         currentNode.children.add(astNode);
@@ -487,43 +507,43 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         currentNode = currentNode.parent;
     }
 
-    @Override
-    public void enterProperty_list_of_arguments(sv2017Parser.Property_list_of_argumentsContext ctx) {
-        System.out.println("enterProperty_list_of_arguments");
-    }
+    // @Override
+    // public void enterProperty_list_of_arguments(sv2017Parser.Property_list_of_argumentsContext ctx) {
+    //     System.out.println("enterProperty_list_of_arguments");
+    // }
 
-    @Override
-    public void exitProperty_list_of_arguments(sv2017Parser.Property_list_of_argumentsContext ctx) {
-        System.out.println("exitProperty_list_of_arguments");
-    }
+    // @Override
+    // public void exitProperty_list_of_arguments(sv2017Parser.Property_list_of_argumentsContext ctx) {
+    //     System.out.println("exitProperty_list_of_arguments");
+    // }
 
-    @Override
-    public void enterTf_port_list(sv2017Parser.Tf_port_listContext ctx) {
-        System.out.println("enterTf_port_list");
-    }
+    // @Override
+    // public void enterTf_port_list(sv2017Parser.Tf_port_listContext ctx) {
+    //     System.out.println("enterTf_port_list");
+    // }
 
-    @Override
-    public void exitTf_port_list(sv2017Parser.Tf_port_listContext ctx) {
-        System.out.println("exitTf_port_list");
-    }
+    // @Override
+    // public void exitTf_port_list(sv2017Parser.Tf_port_listContext ctx) {
+    //     System.out.println("exitTf_port_list");
+    // }
 
-    @Override
-    public void enterTf_port_item(sv2017Parser.Tf_port_itemContext ctx) {
-        System.out.println("enterTf_port_item");
-    }
+    // @Override
+    // public void enterTf_port_item(sv2017Parser.Tf_port_itemContext ctx) {
+    //     System.out.println("enterTf_port_item");
+    // }
 
-    @Override
-    public void exitTf_port_item(sv2017Parser.Tf_port_itemContext ctx) {
-        System.out.println("exitTf_port_item");
-    }
+    // @Override
+    // public void exitTf_port_item(sv2017Parser.Tf_port_itemContext ctx) {
+    //     System.out.println("exitTf_port_item");
+    // }
 
-    @Override
-    public void enterTf_port_declaration(sv2017Parser.Tf_port_declarationContext ctx) {
-        System.out.println("enterTf_port_declaration");
-    }
+    // @Override
+    // public void enterTf_port_declaration(sv2017Parser.Tf_port_declarationContext ctx) {
+    //     System.out.println("enterTf_port_declaration");
+    // }
 
-    @Override
-    public void exitTf_port_declaration(sv2017Parser.Tf_port_declarationContext ctx) {
-        System.out.println("exitTf_port_declaration");
-    }
+    // @Override
+    // public void exitTf_port_declaration(sv2017Parser.Tf_port_declarationContext ctx) {
+    //     System.out.println("exitTf_port_declaration");
+    // }
 }

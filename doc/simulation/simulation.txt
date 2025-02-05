@@ -118,7 +118,6 @@ Output
 # At [12], abc = 6
 ```
 
-
 ## Strategy
 
 I think the Standard SystemVerilog Reference Algorithm for Simulation (SSVRAS)

@@ -1,4 +1,6 @@
-package com.mycompany.app;
+package com.mycompany.app.ast;
+
+import com.mycompany.app.PrimaryType;
 
 /**
  * Currently the ConditionalStatementASTNode is used for if statements.

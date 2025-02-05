@@ -1,4 +1,4 @@
-package com.mycompany.app;
+package com.mycompany.app.ast;
 
 /**
  * Represents a case statement. Contains the case and default branches as

@@ -1,26 +1,18 @@
-package com.mycompany.app;
+package com.mycompany.app.ast;
 
-public class NetAssignmentASTNode extends ASTNode {
+public class IfStatementASTNode extends ASTNode {
 
     public ASTNode expression;
 
-    public ASTNode target;
-
     public void printRecursive(StringBuilder stringBuilder, int indent) {
 
-        // assignment node
+        // indent and name
         for (int i = 0; i < indent; i++) {
             stringBuilder.append("  ");
         }
         stringBuilder.append(value).append("\n");
 
-        // target
-        for (int i = 0; i < indent + 1; i++) {
-            stringBuilder.append("  ");
-        }
-        stringBuilder.append("target: ").append(target.value).append("\n");
-
-        // expression
+        // indent and expression
         for (int i = 0; i < indent + 1; i++) {
             stringBuilder.append("  ");
         }
@@ -29,7 +21,8 @@ public class NetAssignmentASTNode extends ASTNode {
 
         // children
         for (ASTNode child : children) {
-            child.printRecursive(stringBuilder, indent + 2);
+            child.printRecursive(stringBuilder, indent + 1);
         }
     }
+
 }

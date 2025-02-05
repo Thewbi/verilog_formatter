@@ -6,6 +6,17 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import com.mycompany.app.ast.ASTNode;
+import com.mycompany.app.ast.CaseStatementASTNode;
+import com.mycompany.app.ast.CaseStatementItemASTNode;
+import com.mycompany.app.ast.ConditionalStatementASTNode;
+import com.mycompany.app.ast.ExpressionStatementASTNode;
+import com.mycompany.app.ast.IfStatementASTNode;
+import com.mycompany.app.ast.ModuleDeclaractionASTNode;
+import com.mycompany.app.ast.NetAssignmentASTNode;
+import com.mycompany.app.ast.NonblockingAssignmentASTNode;
+import com.mycompany.app.ast.ProceduralTimingControlStatementASTNode;
+
 import verilog.VerilogParser;
 import verilog.VerilogParserBaseListener;
 
@@ -309,7 +320,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
      */
     @Override
     public void enterProcedural_timing_control_statement(VerilogParser.Procedural_timing_control_statementContext ctx) {
-        AlwaysConstructASTNode astNode = new AlwaysConstructASTNode();
+        ProceduralTimingControlStatementASTNode astNode = new ProceduralTimingControlStatementASTNode();
         astNode.ctx = ctx;
         astNode.value = "Procedural_timing_control_statement - always";
         currentNode.children.add(astNode);
@@ -319,7 +330,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void exitProcedural_timing_control_statement(VerilogParser.Procedural_timing_control_statementContext ctx) {
-        ((AlwaysConstructASTNode) currentNode).expression = expressionStack.pop();
+        ((ProceduralTimingControlStatementASTNode) currentNode).expression = expressionStack.pop();
         currentNode = currentNode.parent;
     }
 

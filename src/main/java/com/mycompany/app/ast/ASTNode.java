@@ -1,4 +1,4 @@
-package com.mycompany.app;
+package com.mycompany.app.ast;
 
 import java.util.ArrayList;
 import java.util.List;

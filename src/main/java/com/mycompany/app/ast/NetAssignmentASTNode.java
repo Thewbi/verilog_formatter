@@ -1,6 +1,6 @@
-package com.mycompany.app;
+package com.mycompany.app.ast;
 
-public class NonblockingAssignmentASTNode  extends ASTNode {
+public class NetAssignmentASTNode extends ASTNode {
 
     public ASTNode expression;
 
@@ -32,5 +32,4 @@ public class NonblockingAssignmentASTNode  extends ASTNode {
             child.printRecursive(stringBuilder, indent + 2);
         }
     }
-
 }
