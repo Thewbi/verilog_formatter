@@ -1,6 +1,5 @@
 module main;
-    initial
-    begin
+    initial begin
         $display("Hello, World", "a");
         $finish;
     end

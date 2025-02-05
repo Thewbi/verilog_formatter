@@ -17,10 +17,13 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
     @Override
     public void enterModule_declaration(sv2017Parser.Module_declarationContext ctx) {
+
         ModuleDeclaractionASTNode moduleDeclaractionASTNode = new ModuleDeclaractionASTNode();
         moduleDeclaractionASTNode.ctx = ctx;
         moduleDeclaractionASTNode.value = "module_decl";
-        moduleDeclaractionASTNode.name = ctx.getChild(1).getText();
+        moduleDeclaractionASTNode.name = ctx.getChild(0).getChild(1).getText();
+
+        // decend
         currentNode = moduleDeclaractionASTNode;
     }
 
@@ -49,6 +52,7 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
     @Override
     public void enterCase_item(sv2017Parser.Case_itemContext ctx) {
+
         CaseStatementItemASTNode astNode = new CaseStatementItemASTNode();
         astNode.value = "case_item";
 
@@ -75,6 +79,7 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
     @Override
     public void enterIf_generate_construct(sv2017Parser.If_generate_constructContext ctx) {
+
         if (currentNode instanceof ConditionalStatementASTNode) {
             // nop
         } else {
@@ -86,25 +91,29 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
             currentNode.children.add(astNode);
             astNode.parent = currentNode;
 
-            // decend
+            // descend
             currentNode = astNode;
         }
     }
 
     @Override
     public void exitIf_generate_construct(sv2017Parser.If_generate_constructContext ctx) {
+
         // exit if statement
         if (currentNode instanceof IfStatementASTNode) {
             ((IfStatementASTNode) currentNode).expression = expressionStack.pop();
+            // ascend
             currentNode = currentNode.parent;
         }
         if (ctx.hashCode() == currentNode.ctx.hashCode()) {
+            // ascend
             currentNode = currentNode.parent;
         }
     }
 
     @Override
     public void enterConditional_statement(sv2017Parser.Conditional_statementContext ctx) {
+
         if (currentNode instanceof ConditionalStatementASTNode) {
             // nop
         } else {
@@ -122,7 +131,7 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         currentNode.children.add(astNode);
         astNode.parent = currentNode;
 
-        // decend
+        // descend
         currentNode = astNode;
     }
 
@@ -132,12 +141,18 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
     }
 
     private void ascendFromConditionalStatementASTNode(ParserRuleContext ctx) {
+
         // exit if statement
         if (currentNode instanceof IfStatementASTNode) {
+
             ((IfStatementASTNode) currentNode).expression = expressionStack.pop();
+
+            // ascend
             currentNode = currentNode.parent;
         }
         if (ctx.hashCode() == currentNode.ctx.hashCode()) {
+
+            // ascend
             currentNode = currentNode.parent;
         }
     }
@@ -148,18 +163,22 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
      */
     @Override
     public void exitSeq_block(sv2017Parser.Seq_blockContext ctx) {
+
         // exit if statement
         if (currentNode instanceof IfStatementASTNode) {
+
             ((IfStatementASTNode) currentNode).expression = expressionStack.pop();
+
+            // ascend
             currentNode = currentNode.parent;
         }
     }
 
     @Override
     public void exitNet_decl_assignment(sv2017Parser.Net_decl_assignmentContext ctx) {
+
         NetAssignmentASTNode astNode = new NetAssignmentASTNode();
         astNode.ctx = ctx;
-
         astNode.expression = expressionStack.pop();
         astNode.target = expressionStack.pop();
         astNode.value = "net_assignment_statement (=)";
@@ -169,9 +188,9 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
     @Override
     public void exitNonblocking_assignment(sv2017Parser.Nonblocking_assignmentContext ctx) {
+
         NonblockingAssignmentASTNode astNode = new NonblockingAssignmentASTNode();
         astNode.ctx = ctx;
-
         astNode.expression = expressionStack.pop();
         astNode.target = expressionStack.pop();
         astNode.value = "nonblocking_assignment_statement (<=)";
@@ -181,10 +200,12 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
     @Override
     public void exitConstant_expression(sv2017Parser.Constant_expressionContext ctx) {
+
         int childCount = ctx.getChildCount();
         String text = ctx.getText();
         ParseTree child0 = ctx.getChild(0);
         ParseTree child1 = ctx.getChild(1);
+
         processExpression(ctx, childCount, text, child0, child1);
     }
 
@@ -198,31 +219,29 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
             if (operatorChildParseTree.getText().equalsIgnoreCase("?")) {
 
                 System.out.println("Elvis has entered the building!");
-
-                // descendIntoConditionalStatementASTNode(ctx);
             }
-
         }
-
     }
 
     @Override
     public void exitExpression(sv2017Parser.ExpressionContext ctx) {
+
         int childCount = ctx.getChildCount();
         String text = ctx.getText();
         ParseTree child0 = ctx.getChild(0);
         ParseTree child1 = ctx.getChild(1);
-        processExpression(ctx, childCount, text, child0, child1);
 
-        // ascendFromConditionalStatementASTNode(ctx);
+        processExpression(ctx, childCount, text, child0, child1);
     }
 
     @Override
     public void exitEvent_expression(sv2017Parser.Event_expressionContext ctx) {
+
         int childCount = ctx.getChildCount();
         String text = ctx.getText();
         ParseTree child0 = ctx.getChild(0);
         ParseTree child1 = ctx.getChild(1);
+
         processExpression(ctx, childCount, text, child0, child1);
     }
 
@@ -234,7 +253,11 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         astNode.value = ctx.getText();
         astNode.operator = null;
 
-        expressionStack.push(astNode);
+        if (currentNode instanceof ParameterListASTNode) {
+            currentNode.children.add(astNode);
+        } else {
+            expressionStack.push(astNode);
+        }
     }
 
     @Override
@@ -245,14 +268,44 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         astNode.value = ctx.getText();
         astNode.operator = null;
 
-        expressionStack.push(astNode);
+        if (currentNode instanceof ParameterListASTNode) {
+            currentNode.children.add(astNode);
+        } else {
+            expressionStack.push(astNode);
+        }
     }
 
-    private void processExpression(ParseTree ctx, int childCount, String text, ParseTree child0, ParseTree child1) {
+    @Override
+    public void exitPrimary_literal(sv2017Parser.Primary_literalContext ctx) {
+
+        ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
+        astNode.ctx = ctx;
+        astNode.value = ctx.getText();
+        astNode.operator = null;
+
+        if (currentNode instanceof ParameterListASTNode) {
+            currentNode.children.add(astNode);
+        } else {
+            expressionStack.push(astNode);
+        }
+    }
+
+    private void processExpression(final ParseTree ctx, final int childCount, final String text, final ParseTree child0,
+            final ParseTree child1) {
 
         ExpressionStatementASTNode expressionStatementASTNode = new ExpressionStatementASTNode();
 
-        if (childCount == 2) {
+        if (childCount == 1) {
+
+            // nop
+            //
+            // single nodes are not precessed. The visitor sent on it's way
+            // traveling to the leaves.
+            // Once it arrives at a leave, a specific handler function will have
+            // to take care of that leave.
+            System.out.println("a");
+
+        } else if (childCount == 2) {
 
             //
             // child 0
@@ -298,17 +351,25 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
      */
     @Override
     public void enterProcedural_timing_control_statement(sv2017Parser.Procedural_timing_control_statementContext ctx) {
+
         AlwaysConstructASTNode astNode = new AlwaysConstructASTNode();
         astNode.ctx = ctx;
         astNode.value = "Procedural_timing_control_statement - always";
+
+        // connect parent and child
         currentNode.children.add(astNode);
         astNode.parent = currentNode;
+
+        // descend
         currentNode = astNode;
     }
 
     @Override
     public void exitProcedural_timing_control_statement(sv2017Parser.Procedural_timing_control_statementContext ctx) {
+
         ((AlwaysConstructASTNode) currentNode).expression = expressionStack.pop();
+
+        // ascend
         currentNode = currentNode.parent;
     }
 
@@ -326,7 +387,7 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
             currentNode.children.add(astNode);
             astNode.parent = currentNode;
 
-            // new current node
+            // descend - new current node
             currentNode = astNode;
 
         } else if (node.getText().equalsIgnoreCase("default")) {
@@ -334,6 +395,134 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
             ((CaseStatementItemASTNode) currentNode).value = "default_case_item";
 
         }
+    }
 
+    @Override
+    public void enterInitial_construct(sv2017Parser.Initial_constructContext ctx) {
+
+        AlwaysConstructASTNode astNode = new AlwaysConstructASTNode();
+        astNode.ctx = ctx;
+        astNode.value = "Procedural_timing_control_statement - initial";
+
+        // connect parent and child
+        currentNode.children.add(astNode);
+        astNode.parent = currentNode;
+
+        // descend
+        currentNode = astNode;
+    }
+
+    @Override
+    public void exitInitial_construct(sv2017Parser.Initial_constructContext ctx) {
+        // ((AlwaysConstructASTNode) currentNode).expression = expressionStack.pop();
+
+        // ascend
+        currentNode = currentNode.parent;
+    }
+
+    // @Override
+    // //public void exitPrimary_literal(sv2017Parser.Primary_literalContext ctx) {
+    // public void exitPrimary(sv2017Parser.PrimaryContext ctx) {
+
+    // String primary = ctx.getChild(0).getText();
+    // System.out.println(primary);
+    // }
+
+    @Override
+    public void enterPrimaryTfCall(sv2017Parser.PrimaryTfCallContext ctx) {
+
+        ConditionalStatementASTNode astNode = new ConditionalStatementASTNode();
+        astNode.ctx = ctx;
+        astNode.value = "primitive_stmt - tf call " + ctx.getChild(0).getText();
+
+        // connect parent and child
+        currentNode.children.add(astNode);
+        astNode.parent = currentNode;
+
+        // descend
+        currentNode = astNode;
+    }
+
+    @Override
+    public void exitPrimaryTfCall(sv2017Parser.PrimaryTfCallContext ctx) {
+
+        // ascend
+        currentNode = currentNode.parent;
+
+        // ExpressionStatementASTNode expressionStatementASTNode =
+        // expressionStack.pop();
+        // System.out.println(expressionStatementASTNode);
+
+        // // connect parent and child
+        // currentNode.children.add(astNode);
+        // astNode.parent = currentNode;
+
+        // // descend
+        // currentNode = astNode;
+    }
+
+    @Override
+    public void enterList_of_arguments(sv2017Parser.List_of_argumentsContext ctx) {
+
+        System.out.println("enterList_of_arguments");
+
+        ParameterListASTNode astNode = new ParameterListASTNode();
+        astNode.ctx = ctx;
+        astNode.value = "parameter_list";
+
+        // connect parent and child
+        currentNode.children.add(astNode);
+        astNode.parent = currentNode;
+
+        // descend
+        currentNode = astNode;
+    }
+
+    @Override
+    public void exitList_of_arguments(sv2017Parser.List_of_argumentsContext ctx) {
+        System.out.println("exitList_of_arguments");
+
+        // ascend
+        currentNode = currentNode.parent;
+    }
+
+    @Override
+    public void enterProperty_list_of_arguments(sv2017Parser.Property_list_of_argumentsContext ctx) {
+        System.out.println("enterProperty_list_of_arguments");
+    }
+
+    @Override
+    public void exitProperty_list_of_arguments(sv2017Parser.Property_list_of_argumentsContext ctx) {
+        System.out.println("exitProperty_list_of_arguments");
+    }
+
+    @Override
+    public void enterTf_port_list(sv2017Parser.Tf_port_listContext ctx) {
+        System.out.println("enterTf_port_list");
+    }
+
+    @Override
+    public void exitTf_port_list(sv2017Parser.Tf_port_listContext ctx) {
+        System.out.println("exitTf_port_list");
+    }
+
+    @Override
+    public void enterTf_port_item(sv2017Parser.Tf_port_itemContext ctx) {
+        System.out.println("enterTf_port_item");
+    }
+
+    @Override
+    public void exitTf_port_item(sv2017Parser.Tf_port_itemContext ctx) {
+        System.out.println("exitTf_port_item");
+    }
+
+    @Override
+    public void enterTf_port_declaration(sv2017Parser.Tf_port_declarationContext ctx) {
+        System.out.println("enterTf_port_declaration");
+    }
+
+    @Override
+    public void exitTf_port_declaration(sv2017Parser.Tf_port_declarationContext ctx) {
+        System.out.println("exitTf_port_declaration");
     }
 }

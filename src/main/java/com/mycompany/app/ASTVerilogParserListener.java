@@ -219,10 +219,12 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void exitEvent_expression(VerilogParser.Event_expressionContext ctx) {
+
         int childCount = ctx.getChildCount();
         String text = ctx.getText();
         ParseTree child0 = ctx.getChild(0);
         ParseTree child1 = ctx.getChild(1);
+
         processExpression(ctx, childCount, text, child0, child1);
     }
 
@@ -252,7 +254,16 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
         ExpressionStatementASTNode expressionStatementASTNode = new ExpressionStatementASTNode();
 
-        if (childCount == 2) {
+        if (childCount == 1) {
+
+            // nop
+            //
+            // single nodes are not precessed. The visitor sent on it's way
+            // traveling to the leaves.
+            // Once it arrives at a leave, a specific handler function will have
+            // to take care of that leave.
+
+        } else if (childCount == 2) {
 
             //
             // child 0

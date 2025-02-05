@@ -11,6 +11,8 @@ options { tokenVocab=sv2017Lexer; }
  * (e.g. to "_input.LA" for Java/Python)
  */
 
+// start-symbol: source_text
+
 /**********************************************************************************************************************/
 /* The start rule */
 source_text: ( timeunits_declaration )? ( description )* EOF;

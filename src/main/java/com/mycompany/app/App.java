@@ -70,7 +70,7 @@ public class App {
 //        String file = "src/test/resources/verilog_samples/if_large_fixed.v";
 //        String file = "src/test/resources/verilog_samples/if_without_else.v";
 //        String file = "src/test/resources/verilog_samples/if_else_chain.v";
-//        String file = "src/test/resources/verilog_samples/if_complex_expression.v";
+       String file = "src/test/resources/verilog_samples/if_complex_expression.v";
 //        String file = "src/test/resources/verilog_samples/if_else_chain_simple.v";
 //        String file = "src/test/resources/verilog_samples/if_else_chain_nested_if.v";
         //String file = "src/test/resources/verilog_samples/double_click.v";
@@ -78,9 +78,11 @@ public class App {
         //String file = "src/test/resources/verilog_samples/simple_module.v";
         //String file = "src/test/resources/verilog_samples/uart_top.v";
 
-        String file = "src/test/resources/verilog_samples/module_with_parameters.v";
+        //String file = "src/test/resources/verilog_samples/module_with_parameters.v";
         //String file = "src/test/resources/verilog_samples/module_instantiation.v";
         //String file = "src/test/resources/verilog_samples/module_instantiation2.v";
+
+        //String file = "src/test/resources/verilog_samples/initial_block.v";
 
         // String file = "src/test/resources/system_verilog_samples/package.sv";
 
@@ -114,7 +116,6 @@ public class App {
             walker.walk(printListener, root);
 
             System.out.println("Raw Output Traversal done.");
-
         }
 
         //boolean output = true;
@@ -181,6 +182,8 @@ public class App {
 
         //String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/riscvsingle.sv";
 
+        //String file = "src/test/resources/system_verilog_samples/if_complex_expression.sv";
+
         String file = "src/test/resources/system_verilog_samples/initial_block.sv";
 
         final CharStream charStream = CharStreams.fromFileName(file);
@@ -194,6 +197,8 @@ public class App {
 
         // final StructuredTextLexer lexer = new StructuredTextLexer(charStream);
 
+
+
         // create a buffer of tokens pulled from the lexer
         final CommonTokenStream tokens = new CommonTokenStream(lexer);
 
@@ -204,6 +209,22 @@ public class App {
         // parse
         //Function_block_declarationContext root = parser.function_block_declaration();
         final Source_textContext root = parser.source_text();
+
+        boolean printParseTree = true;
+        //boolean printParseTree = false;
+        if (printParseTree) {
+
+            System.out.println("Raw Output Traversal ...");
+            System.out.println("");
+
+            SystemVerilogListener printListener = new SystemVerilogListener();
+
+            // Create a generic parse tree walker that can trigger callbacks
+            final ParseTreeWalker walker = new ParseTreeWalker();
+            walker.walk(printListener, root);
+
+            System.out.println("Raw Output Traversal done.");
+        }
 
         //SystemVerilogListener listener = new SystemVerilogListener();
         // DefaultStructuredTextListener listener = new DefaultStructuredTextListener();

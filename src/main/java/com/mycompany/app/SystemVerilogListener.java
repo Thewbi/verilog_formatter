@@ -32,19 +32,10 @@ public class SystemVerilogListener extends sv2017ParserBaseListener {
 
     private void descend() {
         indent++;
-
-        // Node parent = getCurrentNode();
-        // currentNode = createNode();
-        // parent.getChildren().add(currentNode);
-        // currentNode.setParentNode(parent);
     }
 
     private void ascend() {
         indent--;
-
-        // if (currentNode != null) {
-        // currentNode = currentNode.getParentNode();
-        // }
     }
 
     private void printIndent() {
