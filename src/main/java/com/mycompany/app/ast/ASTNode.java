@@ -13,6 +13,13 @@ public class ASTNode {
 
     public Object ctx;
 
+    public ASTNode() {
+    }
+
+    public ASTNode(String value) {
+        this.value = value;
+    }
+
     public void printRecursive(final StringBuilder stringBuilder, final int indent) {
 
         // indent and operator or symbol

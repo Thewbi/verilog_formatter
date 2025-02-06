@@ -13,6 +13,7 @@ import com.mycompany.app.ast.ConditionalStatementASTNode;
 import com.mycompany.app.ast.ExpressionStatementASTNode;
 import com.mycompany.app.ast.IfStatementASTNode;
 import com.mycompany.app.ast.ModuleDeclaractionASTNode;
+import com.mycompany.app.ast.ModuleItemDeclarationASTNode;
 import com.mycompany.app.ast.NetAssignmentASTNode;
 import com.mycompany.app.ast.NonblockingAssignmentASTNode;
 import com.mycompany.app.ast.ParameterListASTNode;
@@ -24,9 +25,13 @@ import systemverilog.sv2017ParserBaseListener;
 
 public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
-    public ASTNode currentNode;
+    public ASTNode currentNode = new ASTNode("root");
 
     public Stack<ExpressionStatementASTNode> expressionStack = new Stack<>();
+
+    public void pushExpression(ExpressionStatementASTNode astNode) {
+        expressionStack.push(astNode);
+    }
 
     @Override
     public void enterModule_declaration(sv2017Parser.Module_declarationContext ctx) {
@@ -36,8 +41,35 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         moduleDeclaractionASTNode.value = "module_decl";
         moduleDeclaractionASTNode.name = ctx.getChild(0).getChild(1).getText();
 
-        // decend
+        // connect parent and child
+        currentNode.children.add(moduleDeclaractionASTNode);
+        moduleDeclaractionASTNode.parent = currentNode;
+
+        // descend
         currentNode = moduleDeclaractionASTNode;
+    }
+
+    @Override
+    public void exitModule_declaration(sv2017Parser.Module_declarationContext ctx) {
+
+        ModuleDeclaractionASTNode moduleDeclaractionASTNode = (ModuleDeclaractionASTNode) currentNode;
+
+        moduleDeclaractionASTNode.name = expressionStack.pop().value;
+
+        // ascend
+        currentNode = currentNode.parent;
+    }
+
+    @Override
+    public void exitData_declaration(sv2017Parser.Data_declarationContext ctx) {
+
+        ModuleItemDeclarationASTNode moduleItemDeclarationASTNode = new ModuleItemDeclarationASTNode();
+        moduleItemDeclarationASTNode.ctx = ctx;
+        moduleItemDeclarationASTNode.expression = expressionStack.pop();
+        moduleItemDeclarationASTNode.value = expressionStack.pop().value;
+
+        ModuleDeclaractionASTNode moduleDeclaractionASTNode = (ModuleDeclaractionASTNode) currentNode;
+        moduleDeclaractionASTNode.children.add(moduleItemDeclarationASTNode);
     }
 
     @Override
@@ -269,12 +301,13 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         if (currentNode instanceof ParameterListASTNode) {
             currentNode.children.add(astNode);
         } else {
-            expressionStack.push(astNode);
+            // expressionStack.push(astNode);
+            pushExpression(astNode);
         }
     }
 
     @Override
-    public void exitNumber(sv2017Parser.NumberContext ctx) {
+    public void exitIdentifier(sv2017Parser.IdentifierContext ctx) {
 
         ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
         astNode.ctx = ctx;
@@ -284,7 +317,24 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         if (currentNode instanceof ParameterListASTNode) {
             currentNode.children.add(astNode);
         } else {
-            expressionStack.push(astNode);
+            // expressionStack.push(astNode);
+            pushExpression(astNode);
+        }
+    }
+
+    @Override
+    public void exitInteger_type(sv2017Parser.Integer_typeContext ctx) {
+
+        ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
+        astNode.ctx = ctx;
+        astNode.value = ctx.getText();
+        astNode.operator = null;
+
+        if (currentNode instanceof ParameterListASTNode) {
+            currentNode.children.add(astNode);
+        } else {
+            // expressionStack.push(astNode);
+            pushExpression(astNode);
         }
     }
 
@@ -299,7 +349,8 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         if (currentNode instanceof ParameterListASTNode) {
             currentNode.children.add(astNode);
         } else {
-            expressionStack.push(astNode);
+            // expressionStack.push(astNode);
+            pushExpression(astNode);
         }
     }
 
@@ -316,7 +367,7 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
             // traveling to the leaves.
             // Once it arrives at a leave, a specific handler function will have
             // to take care of that leave.
-            System.out.println("a");
+            // System.out.println("a");
 
         } else if (childCount == 2) {
 
@@ -469,17 +520,6 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
         // ascend
         currentNode = currentNode.parent;
-
-        // ExpressionStatementASTNode expressionStatementASTNode =
-        // expressionStack.pop();
-        // System.out.println(expressionStatementASTNode);
-
-        // // connect parent and child
-        // currentNode.children.add(astNode);
-        // astNode.parent = currentNode;
-
-        // // descend
-        // currentNode = astNode;
     }
 
     @Override
@@ -508,42 +548,48 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
     }
 
     // @Override
-    // public void enterProperty_list_of_arguments(sv2017Parser.Property_list_of_argumentsContext ctx) {
-    //     System.out.println("enterProperty_list_of_arguments");
+    // public void
+    // enterProperty_list_of_arguments(sv2017Parser.Property_list_of_argumentsContext
+    // ctx) {
+    // System.out.println("enterProperty_list_of_arguments");
     // }
 
     // @Override
-    // public void exitProperty_list_of_arguments(sv2017Parser.Property_list_of_argumentsContext ctx) {
-    //     System.out.println("exitProperty_list_of_arguments");
+    // public void
+    // exitProperty_list_of_arguments(sv2017Parser.Property_list_of_argumentsContext
+    // ctx) {
+    // System.out.println("exitProperty_list_of_arguments");
     // }
 
     // @Override
     // public void enterTf_port_list(sv2017Parser.Tf_port_listContext ctx) {
-    //     System.out.println("enterTf_port_list");
+    // System.out.println("enterTf_port_list");
     // }
 
     // @Override
     // public void exitTf_port_list(sv2017Parser.Tf_port_listContext ctx) {
-    //     System.out.println("exitTf_port_list");
+    // System.out.println("exitTf_port_list");
     // }
 
     // @Override
     // public void enterTf_port_item(sv2017Parser.Tf_port_itemContext ctx) {
-    //     System.out.println("enterTf_port_item");
+    // System.out.println("enterTf_port_item");
     // }
 
     // @Override
     // public void exitTf_port_item(sv2017Parser.Tf_port_itemContext ctx) {
-    //     System.out.println("exitTf_port_item");
+    // System.out.println("exitTf_port_item");
     // }
 
     // @Override
-    // public void enterTf_port_declaration(sv2017Parser.Tf_port_declarationContext ctx) {
-    //     System.out.println("enterTf_port_declaration");
+    // public void enterTf_port_declaration(sv2017Parser.Tf_port_declarationContext
+    // ctx) {
+    // System.out.println("enterTf_port_declaration");
     // }
 
     // @Override
-    // public void exitTf_port_declaration(sv2017Parser.Tf_port_declarationContext ctx) {
-    //     System.out.println("exitTf_port_declaration");
+    // public void exitTf_port_declaration(sv2017Parser.Tf_port_declarationContext
+    // ctx) {
+    // System.out.println("exitTf_port_declaration");
     // }
 }

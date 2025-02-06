@@ -506,12 +506,9 @@ Taken from the System Verilog specification chapter 4.5.
 
 ```
 execute_simulation {
-
     T = 0;
-
     initialize the values of all nets and variables;
     schedule all initialization events into time zero slot;
-
     while (some time slot is nonempty) {
         move to the first nonempty time slot and set T;
         execute_time_slot (T);

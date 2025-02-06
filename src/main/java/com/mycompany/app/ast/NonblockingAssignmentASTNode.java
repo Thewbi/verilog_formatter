@@ -1,5 +1,8 @@
 package com.mycompany.app.ast;
 
+/**
+ * Nonblocking assignment: <=
+ */
 public class NonblockingAssignmentASTNode  extends ASTNode {
 
     public ASTNode expression;
@@ -31,6 +34,15 @@ public class NonblockingAssignmentASTNode  extends ASTNode {
         for (ASTNode child : children) {
             child.printRecursive(stringBuilder, indent + 2);
         }
+    }
+
+    public String toString() {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        int indent = 0;
+        printRecursive(stringBuilder, indent);
+
+        return stringBuilder.toString();
     }
 
 }

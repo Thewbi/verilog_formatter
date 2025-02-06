@@ -14,6 +14,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import com.mycompany.app.ast.ASTNode;
 import com.mycompany.app.ast.ModuleDeclaractionASTNode;
+import com.mycompany.app.ast.NonblockingAssignmentASTNode;
 import com.mycompany.app.ast.PrimaryTfCallASTNode;
 import com.mycompany.app.ast.ProceduralTimingControlStatementASTNode;
 
@@ -87,7 +88,7 @@ public class App {
         // String file = "src/test/resources/verilog_samples/if_large_fixed.v";
         // String file = "src/test/resources/verilog_samples/if_without_else.v";
         // String file = "src/test/resources/verilog_samples/if_else_chain.v";
-        String file = "src/test/resources/verilog_samples/if_complex_expression.v";
+        //String file = "src/test/resources/verilog_samples/if_complex_expression.v"; // test
         // String file = "src/test/resources/verilog_samples/if_else_chain_simple.v";
         // String file = "src/test/resources/verilog_samples/if_else_chain_nested_if.v";
         // String file = "src/test/resources/verilog_samples/double_click.v";
@@ -99,7 +100,7 @@ public class App {
         // String file = "src/test/resources/verilog_samples/module_instantiation.v";
         // String file = "src/test/resources/verilog_samples/module_instantiation2.v";
 
-        // String file = "src/test/resources/verilog_samples/initial_block.v";
+        String file = "src/test/resources/verilog_samples/initial_block.v"; // test
 
         // String file = "src/test/resources/system_verilog_samples/package.sv";
 
@@ -205,10 +206,13 @@ public class App {
         // String file =
         // "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/riscvsingle.sv";
 
-        // String file =
-        // "src/test/resources/system_verilog_samples/if_complex_expression.sv";
+        //String file = "src/test/resources/system_verilog_samples/if_complex_expression.sv"; // test
 
-        String file = "src/test/resources/system_verilog_samples/initial_block.sv";
+        String file = "src/test/resources/system_verilog_samples/blocking_assignment.sv";
+
+        //String file = "src/test/resources/system_verilog_samples/initial_block.sv";
+        //String file = "src/test/resources/system_verilog_samples/initial_block_assignment.sv"; // test
+        //String file = "src/test/resources/system_verilog_samples/procedural_timing_delay.sv"; // test
 
         final CharStream charStream = CharStreams.fromFileName(file);
 
@@ -276,7 +280,8 @@ public class App {
         // Simulation
         //
 
-        ModuleDeclaractionASTNode module = (ModuleDeclaractionASTNode) listener.currentNode;
+        ASTNode rootASTNode = listener.currentNode;
+        ModuleDeclaractionASTNode module = (ModuleDeclaractionASTNode) rootASTNode.children.get(0);
 
         TimeSlot timeSlot = new TimeSlot();
 
@@ -296,7 +301,7 @@ public class App {
                     timeSlot.activeRegion.eventSet.add(child);
                 });
 
-        System.out.println("a");
+        // System.out.println("a");
 
         // while (some time slot is nonempty) {
         // move to the first nonempty time slot and set T;
@@ -317,6 +322,7 @@ public class App {
         boolean done = false;
         while (!done) {
             execute_region(timeSlot.activeRegion);
+            done = true;
         }
     }
 
@@ -339,20 +345,33 @@ public class App {
 
                         // System.out.println(child);
 
-                        PrimaryTfCallASTNode primaryTfCallASTNode = (PrimaryTfCallASTNode) child;
+                        if (child instanceof NonblockingAssignmentASTNode) {
 
-                        switch (primaryTfCallASTNode.primaryType) {
+                            NonblockingAssignmentASTNode assignmentASTNode = (NonblockingAssignmentASTNode) child;
 
-                            case DISPLAY:
-                                primaryTfCallASTNode.execute();
-                                break;
+                            System.out.println(assignmentASTNode);
 
-                            case FINISH:
-                                primaryTfCallASTNode.execute();
-                                break;
+                        } else if (child instanceof PrimaryTfCallASTNode) {
 
-                            default:
-                                throw new RuntimeException("Unknown primitive " + primaryTfCallASTNode.primaryType);
+                            PrimaryTfCallASTNode primaryTfCallASTNode = (PrimaryTfCallASTNode) child;
+
+                            switch (primaryTfCallASTNode.primaryType) {
+
+                                case DISPLAY:
+                                    primaryTfCallASTNode.execute();
+                                    break;
+
+                                case FINISH:
+                                    primaryTfCallASTNode.execute();
+                                    break;
+
+                                default:
+                                    throw new RuntimeException("Unknown primitive " + primaryTfCallASTNode.primaryType);
+                            }
+
+                        } else {
+
+                            throw new RuntimeException("No branch for " + child.getClass());
                         }
 
                     }
