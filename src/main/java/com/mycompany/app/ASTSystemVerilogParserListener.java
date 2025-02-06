@@ -7,6 +7,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.mycompany.app.ast.ASTNode;
+import com.mycompany.app.ast.AlwaysConstructASTNode;
+import com.mycompany.app.ast.AssignmentASTNode;
 import com.mycompany.app.ast.CaseStatementASTNode;
 import com.mycompany.app.ast.CaseStatementItemASTNode;
 import com.mycompany.app.ast.ConditionalStatementASTNode;
@@ -15,7 +17,6 @@ import com.mycompany.app.ast.IfStatementASTNode;
 import com.mycompany.app.ast.ModuleDeclaractionASTNode;
 import com.mycompany.app.ast.ModuleItemDeclarationASTNode;
 import com.mycompany.app.ast.NetAssignmentASTNode;
-import com.mycompany.app.ast.NonblockingAssignmentASTNode;
 import com.mycompany.app.ast.ParameterListASTNode;
 import com.mycompany.app.ast.PrimaryTfCallASTNode;
 import com.mycompany.app.ast.ProceduralTimingControlStatementASTNode;
@@ -234,11 +235,25 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
     @Override
     public void exitNonblocking_assignment(sv2017Parser.Nonblocking_assignmentContext ctx) {
 
-        NonblockingAssignmentASTNode astNode = new NonblockingAssignmentASTNode();
+        AssignmentASTNode astNode = new AssignmentASTNode();
         astNode.ctx = ctx;
         astNode.expression = expressionStack.pop();
         astNode.target = expressionStack.pop();
         astNode.value = "nonblocking_assignment_statement (<=)";
+        astNode.blocking = false;
+
+        currentNode.children.add(astNode);
+    }
+
+    @Override
+    public void exitBlocking_assignment(sv2017Parser.Blocking_assignmentContext ctx) {
+
+        AssignmentASTNode astNode = new AssignmentASTNode();
+        astNode.ctx = ctx;
+        astNode.expression = expressionStack.pop();
+        astNode.target = expressionStack.pop();
+        astNode.value = "blocking_assignment_statement (=)";
+        astNode.blocking = true;
 
         currentNode.children.add(astNode);
     }
@@ -333,7 +348,21 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         if (currentNode instanceof ParameterListASTNode) {
             currentNode.children.add(astNode);
         } else {
-            // expressionStack.push(astNode);
+            pushExpression(astNode);
+        }
+    }
+
+    @Override
+    public void exitReal_number(sv2017Parser.Real_numberContext ctx) {
+
+        ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
+        astNode.ctx = ctx;
+        astNode.value = ctx.getText();
+        astNode.operator = null;
+
+        if (currentNode instanceof ParameterListASTNode) {
+            currentNode.children.add(astNode);
+        } else {
             pushExpression(astNode);
         }
     }
@@ -406,19 +435,40 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
             } else {
                 throw new RuntimeException("Not implemented yet!");
             }
-
         }
     }
 
+    @Override
+    public void enterAlways_construct(sv2017Parser.Always_constructContext ctx) {
+
+        AlwaysConstructASTNode astNode = new AlwaysConstructASTNode();
+        astNode.ctx = ctx;
+        astNode.value = "always";
+
+        // connect parent and child
+        currentNode.children.add(astNode);
+        astNode.parent = currentNode;
+
+        // descend
+        currentNode = astNode;
+    }
+
+    @Override
+    public void exitAlways_construct(sv2017Parser.Always_constructContext ctx) {
+
+        // ascend
+        currentNode = currentNode.parent;
+    }
+
     /**
-     * for @always
+     * for @always (example file: ???)
      */
     @Override
     public void enterProcedural_timing_control_statement(sv2017Parser.Procedural_timing_control_statementContext ctx) {
 
         ProceduralTimingControlStatementASTNode astNode = new ProceduralTimingControlStatementASTNode();
         astNode.ctx = ctx;
-        astNode.value = "Procedural_timing_control_statement - always";
+        astNode.value = "procedural_timing_control_statement";
 
         // connect parent and child
         currentNode.children.add(astNode);
@@ -431,6 +481,8 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
     @Override
     public void exitProcedural_timing_control_statement(sv2017Parser.Procedural_timing_control_statementContext ctx) {
 
+        // if this is an always statement, then the always statement has a expression as
+        // a sensitivity list
         ((ProceduralTimingControlStatementASTNode) currentNode).expression = expressionStack.pop();
 
         // ascend
@@ -479,19 +531,10 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
     @Override
     public void exitInitial_construct(sv2017Parser.Initial_constructContext ctx) {
-        // ((AlwaysConstructASTNode) currentNode).expression = expressionStack.pop();
 
         // ascend
         currentNode = currentNode.parent;
     }
-
-    // @Override
-    // //public void exitPrimary_literal(sv2017Parser.Primary_literalContext ctx) {
-    // public void exitPrimary(sv2017Parser.PrimaryContext ctx) {
-
-    // String primary = ctx.getChild(0).getText();
-    // System.out.println(primary);
-    // }
 
     @Override
     public void enterPrimaryTfCall(sv2017Parser.PrimaryTfCallContext ctx) {
@@ -546,50 +589,4 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         // ascend
         currentNode = currentNode.parent;
     }
-
-    // @Override
-    // public void
-    // enterProperty_list_of_arguments(sv2017Parser.Property_list_of_argumentsContext
-    // ctx) {
-    // System.out.println("enterProperty_list_of_arguments");
-    // }
-
-    // @Override
-    // public void
-    // exitProperty_list_of_arguments(sv2017Parser.Property_list_of_argumentsContext
-    // ctx) {
-    // System.out.println("exitProperty_list_of_arguments");
-    // }
-
-    // @Override
-    // public void enterTf_port_list(sv2017Parser.Tf_port_listContext ctx) {
-    // System.out.println("enterTf_port_list");
-    // }
-
-    // @Override
-    // public void exitTf_port_list(sv2017Parser.Tf_port_listContext ctx) {
-    // System.out.println("exitTf_port_list");
-    // }
-
-    // @Override
-    // public void enterTf_port_item(sv2017Parser.Tf_port_itemContext ctx) {
-    // System.out.println("enterTf_port_item");
-    // }
-
-    // @Override
-    // public void exitTf_port_item(sv2017Parser.Tf_port_itemContext ctx) {
-    // System.out.println("exitTf_port_item");
-    // }
-
-    // @Override
-    // public void enterTf_port_declaration(sv2017Parser.Tf_port_declarationContext
-    // ctx) {
-    // System.out.println("enterTf_port_declaration");
-    // }
-
-    // @Override
-    // public void exitTf_port_declaration(sv2017Parser.Tf_port_declarationContext
-    // ctx) {
-    // System.out.println("exitTf_port_declaration");
-    // }
 }

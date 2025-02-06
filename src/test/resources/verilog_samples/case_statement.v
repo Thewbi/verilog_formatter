@@ -1,5 +1,5 @@
 module design_top;
-    always @ (curr_state or i_input) begin
+    always @(curr_state or i_input) begin
         case (curr_state)
             S0: begin
                 if (i_input == 2'b01)

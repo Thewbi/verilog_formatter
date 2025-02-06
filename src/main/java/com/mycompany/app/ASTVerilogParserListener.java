@@ -14,7 +14,7 @@ import com.mycompany.app.ast.ExpressionStatementASTNode;
 import com.mycompany.app.ast.IfStatementASTNode;
 import com.mycompany.app.ast.ModuleDeclaractionASTNode;
 import com.mycompany.app.ast.NetAssignmentASTNode;
-import com.mycompany.app.ast.NonblockingAssignmentASTNode;
+import com.mycompany.app.ast.AssignmentASTNode;
 import com.mycompany.app.ast.ProceduralTimingControlStatementASTNode;
 
 import verilog.VerilogParser;
@@ -180,12 +180,26 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void exitNonblocking_assignment(VerilogParser.Nonblocking_assignmentContext ctx) {
-        NonblockingAssignmentASTNode astNode = new NonblockingAssignmentASTNode();
-        astNode.ctx = ctx;
 
+        AssignmentASTNode astNode = new AssignmentASTNode();
+        astNode.ctx = ctx;
         astNode.expression = expressionStack.pop();
         astNode.target = expressionStack.pop();
         astNode.value = "nonblocking_assignment_statement (<=)";
+        astNode.blocking = false;
+
+        currentNode.children.add(astNode);
+    }
+
+    @Override
+    public void exitBlocking_assignment(VerilogParser.Blocking_assignmentContext ctx) {
+
+        AssignmentASTNode astNode = new AssignmentASTNode();
+        astNode.ctx = ctx;
+        astNode.expression = expressionStack.pop();
+        astNode.target = expressionStack.pop();
+        astNode.value = "blocking_assignment_statement (=)";
+        astNode.blocking = true;
 
         currentNode.children.add(astNode);
     }
@@ -320,9 +334,10 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
      */
     @Override
     public void enterProcedural_timing_control_statement(VerilogParser.Procedural_timing_control_statementContext ctx) {
+
         ProceduralTimingControlStatementASTNode astNode = new ProceduralTimingControlStatementASTNode();
         astNode.ctx = ctx;
-        astNode.value = "Procedural_timing_control_statement - always";
+        astNode.value = "procedural_timing_control_statement";
         currentNode.children.add(astNode);
         astNode.parent = currentNode;
         currentNode = astNode;
@@ -330,6 +345,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void exitProcedural_timing_control_statement(VerilogParser.Procedural_timing_control_statementContext ctx) {
+
         ((ProceduralTimingControlStatementASTNode) currentNode).expression = expressionStack.pop();
         currentNode = currentNode.parent;
     }

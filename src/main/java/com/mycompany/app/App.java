@@ -14,7 +14,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import com.mycompany.app.ast.ASTNode;
 import com.mycompany.app.ast.ModuleDeclaractionASTNode;
-import com.mycompany.app.ast.NonblockingAssignmentASTNode;
+import com.mycompany.app.ast.AssignmentASTNode;
 import com.mycompany.app.ast.PrimaryTfCallASTNode;
 import com.mycompany.app.ast.ProceduralTimingControlStatementASTNode;
 
@@ -208,11 +208,11 @@ public class App {
 
         //String file = "src/test/resources/system_verilog_samples/if_complex_expression.sv"; // test
 
-        String file = "src/test/resources/system_verilog_samples/blocking_assignment.sv";
+        //String file = "src/test/resources/system_verilog_samples/blocking_assignment.sv";
 
         //String file = "src/test/resources/system_verilog_samples/initial_block.sv";
         //String file = "src/test/resources/system_verilog_samples/initial_block_assignment.sv"; // test
-        //String file = "src/test/resources/system_verilog_samples/procedural_timing_delay.sv"; // test
+        String file = "src/test/resources/system_verilog_samples/procedural_timing_delay.sv"; // test
 
         final CharStream charStream = CharStreams.fromFileName(file);
 
@@ -345,9 +345,15 @@ public class App {
 
                         // System.out.println(child);
 
-                        if (child instanceof NonblockingAssignmentASTNode) {
+                        if (child instanceof ProceduralTimingControlStatementASTNode) {
 
-                            NonblockingAssignmentASTNode assignmentASTNode = (NonblockingAssignmentASTNode) child;
+                            ProceduralTimingControlStatementASTNode timingStatement = (ProceduralTimingControlStatementASTNode) child;
+
+                            System.out.println(timingStatement);
+
+                        } else if (child instanceof AssignmentASTNode) {
+
+                            AssignmentASTNode assignmentASTNode = (AssignmentASTNode) child;
 
                             System.out.println(assignmentASTNode);
 

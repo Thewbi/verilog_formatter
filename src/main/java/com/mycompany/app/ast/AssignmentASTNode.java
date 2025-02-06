@@ -2,12 +2,15 @@ package com.mycompany.app.ast;
 
 /**
  * Nonblocking assignment: <=
+ * Blocking assignment: =
  */
-public class NonblockingAssignmentASTNode  extends ASTNode {
+public class AssignmentASTNode  extends ASTNode {
 
     public ASTNode expression;
 
     public ASTNode target;
+
+    public boolean blocking;
 
     public void printRecursive(StringBuilder stringBuilder, int indent) {
 
@@ -16,6 +19,12 @@ public class NonblockingAssignmentASTNode  extends ASTNode {
             stringBuilder.append("  ");
         }
         stringBuilder.append(value).append("\n");
+
+        // blocking
+        for (int i = 0; i < indent + 1; i++) {
+            stringBuilder.append("  ");
+        }
+        stringBuilder.append("blocking: ").append(blocking).append("\n");
 
         // target
         for (int i = 0; i < indent + 1; i++) {
