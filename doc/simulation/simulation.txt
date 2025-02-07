@@ -16,9 +16,12 @@ respond to changes on their inputs to produce outputs.
 
 Processes are concurrently scheduled elements, such as initial procedures.
 
-Examples of processes include, but are not limited to, primitives; initial,
-always, always_comb, always_latch, and always_ff procedures; continuous assignments;
-asynchronous tasks; and procedural assignment statements.
+Examples of processes include, but are not limited to,
+- primitives;
+- initial, always, always_comb, always_latch, and always_ff procedures;
+- continuous assignments;
+- asynchronous tasks;
+- and procedural assignment statements.
 
 ## Update and Evaluation Events
 
@@ -128,9 +131,9 @@ In a first step, all events are inserted into the active region of that time slo
 The algorithm iterates over all events in the active region and applies rules.
 
 4.4.2.3 says "an explicit #0 delay control requires the process to be
-suspended and an event to be scheduled into the Inactive region of the current time slot"
+suspended and an event to be scheduled into the Inactive Region of the current time slot"
 This means that if an event is #0 delay, this event is removed from the active
-region and an event is added to the inactive region of the current timeslots
+region and an event is added to the inactive region of the current timeslot.
 
 4.4.2.4 says that nonblocking assignments (<=) are removed from active and added to NBA.
 [2] says that for nonblocking assignments, the right hand side is evaluated (but not assigned yet) and then
@@ -144,10 +147,12 @@ statement is encountered, and assignment is postponed until the end of the time-
 [2] says: "Execute the $display and $finish commands."
 
 [2] says: NBA Region: In this region, the Left- Hand-side variables of non-blocking
-assignment statements in the module block get updated. The assignment is actually made.
+assignment statements in the module block get updated.
+In other words, the assignment is actually executed whereas the value to assign has
+been computed earlier.
 
 [2] says: Observed Region: The concurrent assertions are evaluated in this region.
-Also, clocking block inputs with explicit #0 step delay are sampled in the Observed region.
+Also, clocking block inputs with explicit #0 step delay are sampled in the Observed Region.
 Variables used in concurrent assertions are sampled in the preponed region, see:
 https://verificationguide.com/systemverilog/systemverilog-scheduling-semantics/
 
@@ -163,7 +168,7 @@ suspended and an event to be scheduled into the Re-Inactive region of the curren
 
 4.9.1 says that continuous assignments can be modeled by a process that is
 sensitive to all the variables used in the RHS of the continuous assignment.
-That way, continious assignments do not need any special implementation in the
+That way, continuous assignments do not need any special implementation in the
 simulator. Whenever a value in the RHS changes, an update event is added to
 the active region. This active update event is treated like all other events
 in the active region.
@@ -180,8 +185,7 @@ execute_region {
             schedule evaluation event for any process sensitive to the object;
         } else {
             /* E is an evaluation event */
-            evaluate the process associated with the event and possibly;
-            schedule further events for execution;
+            evaluate the process associated with the event and possibly schedule further events for execution;
         }
     }
 }
@@ -406,6 +410,12 @@ net_data_type [ strength ] [ delay ] [ size ] net_name = expression;     // impl
 assign [ strength ] [ #( delay ) ] net_name = expression;                // explicit
 ```
 
+The implicit continuous assignment combines the net declaration (see Net data type)
+and continuous assignment into one statement.
+
+The explicit assignment require two statements: one to declare the net (see Net data type),
+and one to continuously assign a value to it.
+
 ```
 wire Out;
 assign Out = A & B;
@@ -416,7 +426,7 @@ wire #50 Out = A & B;
 The word continuous is used because a value is assigned to a net once and stays
 assigned and active continously. In contrast to procedural assignments which only
 take place when statements are executed inside a process, the continous assignment
-takes place contiously and instantly as soon as an expression changes. Procedural
+takes place continuously and instantly as soon as an expression changes. Procedural
 assignments only take place, when a process is triggered.
 
 https://www.chipverify.com/verilog/verilog-assignments
@@ -444,6 +454,93 @@ module my_block;
 		addr = 8'hee;
 endmodule
 ```
+
+
+
+
+# Dealing with Module instances in simulation
+
+Imagine there is a module defined
+
+```
+module adder(
+    input [31:0] a, b,
+    output [31:0] y);
+
+    assign y = a + b;
+
+endmodule
+```
+
+and a testbench for that module
+
+```
+module testbench();
+
+    logic [31:0] a, b;
+    logic [31:0] y;
+
+    // instantiate device to be tested
+    adder dut(a, b, y);
+
+    initial
+        begin
+            a <= 0; // non-blocking
+            b <= 0; // non-blocking
+
+            #5
+
+            a <= 1; // non-blocking
+            b <= 2; // non-blocking
+        end
+
+endmodule
+```
+
+How is the testbench simulated by the system verilog simulator?
+
+See: https://www.javatpoint.com/verilog-simulation-basics#:~:text=Verilog%20is%20defined%20in%20terms,different%20times%20in%20a%20simulation.
+
+The assignment inside the module (assign y = a + b;) is an (explicit) continuous assignment.
+It executed right when the signals on the right-hand side change, as is the case with
+non-clocked logic gates connected by traces on a PCB.
+
+This (explicit) continuous assignment is modeled as a process that has the right hand
+side signals as it's sensitivity list (but it is not clocked, it has no clock signal in it's sensitivity list).
+
+The simulator will manage an instance per instantiated module, because each module
+could be connected to different input and output signals. Within the module the simulator
+maintains a list of processes, one process per continous assignment.
+
+When the simulator executes a timeslot and a signal changes during that time slot, then
+a update event for that signal is inserted into the active reagion.
+
+When the simulation starts, all signals initially have an UNKNOWN value and for
+all signals that get an initial value assigned, the assignment causes an initialization event
+but not an update event. The initialization event is treated as a change of the signal
+meaning it is guaranteed that the initialization event causes processes to be executed
+that have the initialized signal in their sensitivity list. In the example above, the
+testbenche's variables a, b and y do not get a value initialized when they are declared!
+There will be not initialization event. The signal's value remains UNKNOWN until
+the initil block is executed.
+
+The initial block is a process per specification. Section 4.5 describes how the
+initial blocks are executed. It states "schedule all initialization events into time zero slot;"
+That means for each initial block found, an initialization event is inserted into
+time slot zero (into the Active region). That event stores the initial block to execute.
+When there are assignments in the initial block, those assignments can then cause
+update events which are then scheduled into the active region.
+
+When the udpate event is executed, the value is assigned to the signal and
+all module instances and processes connected to that signal are checked.
+Checking a module instance means that all processes within the module instance
+are schedule by inserting an evaluation event into the active region.
+
+Once this evaluation event is executed,
+the process is then executed. The process outputs a new value which is connected
+to some variable via assignment. When that variable changes it's value, then
+an update event is inserted into the Active Region.
+
 
 
 
@@ -551,3 +648,4 @@ execute_region {
     }
 }
 ```
+

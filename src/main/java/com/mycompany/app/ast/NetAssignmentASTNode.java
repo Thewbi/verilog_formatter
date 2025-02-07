@@ -1,7 +1,14 @@
 package com.mycompany.app.ast;
 
 /**
+ * A assignment located within a process so it is a sequential assignment.
+ * The assignment is done using the = operator which makes it blocking.
+ * This is a blocking assignment.
  *
+ * Do not confuse this assignment with non-blocking sequential assignment.
+ *
+ * Do not confuse this assignment with an assign-keyword assignment which
+ * is a standard assignment and which is used outside of processes.
  */
 public class NetAssignmentASTNode extends ASTNode {
 

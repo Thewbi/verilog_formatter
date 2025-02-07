@@ -274,6 +274,16 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         }
     }
 
+    /**
+     * A assignment located within a process so it is a sequential assignment.
+     * The assignment is done using the = operator which makes it blocking.
+     * This is a blocking assignment.
+     *
+     * Do not confuse this assignment with non-blocking sequential assignment.
+     *
+     * Do not confuse this assignment with an assign-keyword assignment which
+     * is a standard assignment and which is used outside of processes.
+     */
     @Override
     public void exitNet_decl_assignment(sv2017Parser.Net_decl_assignmentContext ctx) {
 

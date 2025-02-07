@@ -6,7 +6,7 @@ module top(
     logic [31:0] PC, Instr, ReadData;
 
     // instantiate processor and memories
-    riscvsingle rvsingle( clk, reset, PC, Instr, MemWrite, DataAdr, WriteData, ReadData);
+    riscvsingle rvsingle(clk, reset, PC, Instr, MemWrite, DataAdr, WriteData, ReadData);
     imem imem(PC, Instr);
     dmem dmem(clk, MemWrite, DataAdr, WriteData, ReadData);
 

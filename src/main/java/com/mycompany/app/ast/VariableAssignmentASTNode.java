@@ -1,7 +1,11 @@
 package com.mycompany.app.ast;
 
 /**
- * assign y = a + b;
+ * This is a Continuous assignment (used output a process and takes place as soon as the signals
+ * on the right-hand side change.)
+ *
+ * assign y = a + b; // explicit
+ * y = a + b; // implicit
  *
  * Example file: src\test\resources\system_verilog_samples\harris_single_cycle_riscv_cpu\adder.sv
  */
