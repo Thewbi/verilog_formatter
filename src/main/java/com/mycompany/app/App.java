@@ -212,7 +212,18 @@ public class App {
 
         //String file = "src/test/resources/system_verilog_samples/initial_block.sv";
         //String file = "src/test/resources/system_verilog_samples/initial_block_assignment.sv"; // test
-        String file = "src/test/resources/system_verilog_samples/procedural_timing_delay.sv"; // test
+        //String file = "src/test/resources/system_verilog_samples/procedural_timing_delay.sv"; // test
+
+        // Next Steps. #10 is not parsed. Checked in antlr lab. delay_or_event_control is missing
+        //String file = "src/test/resources/system_verilog_samples/clock_generation.sv"; // test
+
+        //String file = "src/test/resources/system_verilog_samples/rv32i_fetch.sv";
+
+        //String file = "src/test/resources/system_verilog_samples/module_with_parameters.sv";
+
+        String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/adder.sv";
+        //String file = "src/test/resources/system_verilog_samples/module_with_array_port.sv";
+        //String file = "src/test/resources/system_verilog_samples/assign.sv";
 
         final CharStream charStream = CharStreams.fromFileName(file);
 

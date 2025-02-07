@@ -1,16 +1,15 @@
 package com.mycompany.app.ast;
 
 /**
- * Nonblocking assignment: <=
- * Blocking assignment: =
+ * assign y = a + b;
+ *
+ * Example file: src\test\resources\system_verilog_samples\harris_single_cycle_riscv_cpu\adder.sv
  */
-public class AssignmentASTNode extends ASTNode {
+public class VariableAssignmentASTNode extends ASTNode {
 
     public ASTNode expression;
 
     public ASTNode target;
-
-    public boolean blocking;
 
     public void printRecursive(StringBuilder stringBuilder, int indent) {
 
@@ -19,12 +18,6 @@ public class AssignmentASTNode extends ASTNode {
             stringBuilder.append("  ");
         }
         stringBuilder.append(value).append("\n");
-
-        // blocking
-        for (int i = 0; i < indent + 1; i++) {
-            stringBuilder.append("  ");
-        }
-        stringBuilder.append("blocking: ").append(blocking).append("\n");
 
         // target
         for (int i = 0; i < indent + 1; i++) {
@@ -43,15 +36,6 @@ public class AssignmentASTNode extends ASTNode {
         for (ASTNode child : children) {
             child.printRecursive(stringBuilder, indent + 2);
         }
-    }
-
-    public String toString() {
-
-        StringBuilder stringBuilder = new StringBuilder();
-        int indent = 0;
-        printRecursive(stringBuilder, indent);
-
-        return stringBuilder.toString();
     }
 
 }

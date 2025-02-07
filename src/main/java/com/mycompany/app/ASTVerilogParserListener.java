@@ -159,6 +159,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
      */
     @Override
     public void exitSeq_block(VerilogParser.Seq_blockContext ctx) {
+
         // exit if statement
         if (currentNode instanceof IfStatementASTNode) {
             ((IfStatementASTNode) currentNode).expression = expressionStack.pop();
@@ -168,6 +169,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void exitNet_assignment(VerilogParser.Net_assignmentContext ctx) {
+
         NetAssignmentASTNode astNode = new NetAssignmentASTNode();
         astNode.ctx = ctx;
 

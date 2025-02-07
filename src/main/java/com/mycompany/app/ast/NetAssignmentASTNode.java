@@ -1,5 +1,8 @@
 package com.mycompany.app.ast;
 
+/**
+ *
+ */
 public class NetAssignmentASTNode extends ASTNode {
 
     public ASTNode expression;

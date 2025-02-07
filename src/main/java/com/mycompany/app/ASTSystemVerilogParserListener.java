@@ -18,8 +18,12 @@ import com.mycompany.app.ast.ModuleDeclaractionASTNode;
 import com.mycompany.app.ast.ModuleItemDeclarationASTNode;
 import com.mycompany.app.ast.NetAssignmentASTNode;
 import com.mycompany.app.ast.ParameterListASTNode;
+import com.mycompany.app.ast.PortASTNode;
+import com.mycompany.app.ast.PortDirection;
 import com.mycompany.app.ast.PrimaryTfCallASTNode;
 import com.mycompany.app.ast.ProceduralTimingControlStatementASTNode;
+import com.mycompany.app.ast.RangeExpressionASTNode;
+import com.mycompany.app.ast.VariableAssignmentASTNode;
 
 import systemverilog.sv2017Parser;
 import systemverilog.sv2017ParserBaseListener;
@@ -56,6 +60,56 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         ModuleDeclaractionASTNode moduleDeclaractionASTNode = (ModuleDeclaractionASTNode) currentNode;
 
         moduleDeclaractionASTNode.name = expressionStack.pop().value;
+
+        // ascend
+        currentNode = currentNode.parent;
+    }
+
+    @Override
+    public void enterList_of_port_declarations(sv2017Parser.List_of_port_declarationsContext ctx) {
+    }
+
+    @Override
+    public void exitList_of_port_declarations(sv2017Parser.List_of_port_declarationsContext ctx) {
+    }
+
+    @Override
+    public void enterAnsi_port_declaration(sv2017Parser.Ansi_port_declarationContext ctx) {
+
+        PortASTNode portASTNode = new PortASTNode();
+        portASTNode.ctx = ctx;
+        portASTNode.value = "port";
+
+        // port direction
+        portASTNode.portDirection = PortDirection.fromString(ctx.getChild(0).getText());
+
+        // connect parent and child
+        ((ModuleDeclaractionASTNode) currentNode).ports.add(portASTNode);
+        portASTNode.parent = currentNode;
+
+        // descend
+        currentNode = portASTNode;
+    }
+
+    @Override
+    public void exitAnsi_port_declaration(sv2017Parser.Ansi_port_declarationContext ctx) {
+
+        PortASTNode portASTNode = (PortASTNode) currentNode;
+
+        // name
+        portASTNode.value = expressionStack.pop().value;
+
+        // type / expression
+        //
+        // if several ports are defined using comma separated list, then in the
+        // parse tree, there will be a ansi_port node for every subsequent port
+        // declaration
+        // having no explicit type / expression and no explicit direction. The
+        // type / expression and direction have to be taken from the first port in the
+        // comma separated list!
+        if ((ctx.children.size() > 1) && (ctx.children.get(1) instanceof sv2017Parser.Net_or_var_data_typeContext)) {
+            portASTNode.expression = expressionStack.pop();
+        }
 
         // ascend
         currentNode = currentNode.parent;
@@ -259,6 +313,21 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
     }
 
     @Override
+    public void enterVariable_assignment(sv2017Parser.Variable_assignmentContext ctx) {
+    }
+
+    @Override
+    public void exitVariable_assignment(sv2017Parser.Variable_assignmentContext ctx) {
+
+        VariableAssignmentASTNode variableAssignmentASTNode = new VariableAssignmentASTNode();
+        variableAssignmentASTNode.value = "VariableAssignment";
+        variableAssignmentASTNode.expression = expressionStack.pop();
+        variableAssignmentASTNode.target = expressionStack.pop();
+
+        currentNode.children.add(variableAssignmentASTNode);
+    }
+
+    @Override
     public void exitConstant_expression(sv2017Parser.Constant_expressionContext ctx) {
 
         int childCount = ctx.getChildCount();
@@ -379,6 +448,27 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
             currentNode.children.add(astNode);
         } else {
             // expressionStack.push(astNode);
+            pushExpression(astNode);
+        }
+    }
+
+    @Override
+    public void enterRange_expression(sv2017Parser.Range_expressionContext ctx) {
+    }
+
+    @Override
+    public void exitRange_expression(sv2017Parser.Range_expressionContext ctx) {
+
+        RangeExpressionASTNode astNode = new RangeExpressionASTNode();
+        astNode.ctx = ctx;
+        astNode.value = ctx.getText();
+        astNode.operator = null;
+        astNode.right = expressionStack.pop();
+        astNode.left = expressionStack.pop();
+
+        if (currentNode instanceof ParameterListASTNode) {
+            currentNode.children.add(astNode);
+        } else {
             pushExpression(astNode);
         }
     }
