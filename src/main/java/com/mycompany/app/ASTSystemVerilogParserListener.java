@@ -12,6 +12,7 @@ import com.mycompany.app.ast.AssignmentASTNode;
 import com.mycompany.app.ast.CaseStatementASTNode;
 import com.mycompany.app.ast.CaseStatementItemASTNode;
 import com.mycompany.app.ast.ConditionalStatementASTNode;
+import com.mycompany.app.ast.DataDeclarationASTNode;
 import com.mycompany.app.ast.DataTypeASTNode;
 import com.mycompany.app.ast.ExpressionStatementASTNode;
 import com.mycompany.app.ast.IfStatementASTNode;
@@ -132,15 +133,16 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
     @Override
     public void enterData_declaration(sv2017Parser.Data_declarationContext ctx) {
 
-        ModuleItemDeclarationASTNode moduleItemDeclarationASTNode = new ModuleItemDeclarationASTNode();
-        moduleItemDeclarationASTNode.ctx = ctx;
+        DataDeclarationASTNode dataDeclarationASTNode = new DataDeclarationASTNode();
+        dataDeclarationASTNode.ctx = ctx;
+        dataDeclarationASTNode.value = "data_declaration";
 
         // connect parent and child
-        currentNode.children.add(moduleItemDeclarationASTNode);
-        moduleItemDeclarationASTNode.parent = currentNode;
+        currentNode.children.add(dataDeclarationASTNode);
+        dataDeclarationASTNode.parent = currentNode;
 
         // descend
-        currentNode = moduleItemDeclarationASTNode;
+        currentNode = dataDeclarationASTNode;
     }
 
     /**
@@ -160,19 +162,6 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
      */
     @Override
     public void exitData_declaration(sv2017Parser.Data_declarationContext ctx) {
-
-        // ModuleItemDeclarationASTNode moduleItemDeclarationASTNode = new
-        // ModuleItemDeclarationASTNode();
-        // moduleItemDeclarationASTNode.ctx = ctx;
-        // moduleItemDeclarationASTNode.expression = expressionStack.pop();
-        // moduleItemDeclarationASTNode.value = expressionStack.pop().value;
-
-        // ModuleDeclaractionASTNode moduleDeclaractionASTNode =
-        // (ModuleDeclaractionASTNode) currentNode;
-        // moduleDeclaractionASTNode.children.add(moduleItemDeclarationASTNode);
-
-        //currentNode.value = expressionStack.pop().value;
-        currentNode.value = "module_item_declaration";
 
         // ascend
         currentNode = currentNode.parent;

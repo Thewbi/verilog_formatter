@@ -226,10 +226,12 @@ public class App {
         //String file = "src/test/resources/system_verilog_samples/module_with_parameters.sv";
 
         //String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/adder.sv"; // test
-        String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/testbench_adder.sv"; // test
+        //String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/testbench_adder.sv"; // test
+
+        String file = "src/test/resources/system_verilog_samples/module_instantiation.sv"; // test
 
         //String file = "src/test/resources/system_verilog_samples/module_with_array_port.sv"; // test
-        //String file = "src/test/resources/system_verilog_samples/assign.sv";
+        //String file = "src/test/resources/system_verilog_samples/assign.sv"; // test
 
         //String file = "src/test/resources/system_verilog_samples/module_with_local_variable.sv";
 

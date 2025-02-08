@@ -18,13 +18,15 @@ public class ModuleDeclaractionASTNode extends ASTNode {
         stringBuilder.append("ModuleDecl: ").append(name).append("\n");
 
         // indent and ports
-        for (int i = 0; i < indent; i++) {
-            stringBuilder.append("  ");
-        }
-        stringBuilder.append("Ports: ").append("\n");
-        for (ASTNode port : ports) {
-            port.printRecursive(stringBuilder, indent + 1);
-            stringBuilder.append("\n");
+        if (ports.size() > 0) {
+            for (int i = 0; i < indent; i++) {
+                stringBuilder.append("  ");
+            }
+            stringBuilder.append("Ports: ").append("\n");
+            for (ASTNode port : ports) {
+                port.printRecursive(stringBuilder, indent + 1);
+                stringBuilder.append("\n");
+            }
         }
 
         // all children
