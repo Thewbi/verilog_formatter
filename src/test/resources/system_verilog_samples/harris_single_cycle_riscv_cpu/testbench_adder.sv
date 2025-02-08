@@ -4,7 +4,7 @@ module testbench();
 
     // instantiate device to be tested
     adder dut(a, b, y);
-/*
+
     initial
         begin
             a <= 0; // non-blocking, evaluation directly, assignment in
@@ -15,5 +15,5 @@ module testbench();
             a <= 1; // non-blocking
             b <= 2; // non-blocking
         end
-*/
+
 endmodule

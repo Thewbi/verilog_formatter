@@ -5,6 +5,7 @@ import java.util.Stack;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 
 import com.mycompany.app.ast.ASTNode;
 import com.mycompany.app.ast.AlwaysConstructASTNode;
@@ -820,6 +821,32 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
         // ascend
         currentNode = currentNode.parent;
+    }
+
+    /**
+     * The parse tree is constructed differently for a delay of the form #5
+     * compared to #1.2. For the unsigned integer, there is only a TerminalNodeImpl
+     * in the ParseTree whereas the 1.2 receives a fully fledged real number node!
+     */
+    @Override
+    public void exitDelay_value(sv2017Parser.Delay_valueContext ctx) {
+
+        if (ctx.children.size() == 1) {
+
+            ParseTree childParseTree = ctx.children.get(0);
+
+            // if there is terminal node contained, insert that terminal node
+            if (childParseTree instanceof TerminalNodeImpl) {
+
+                ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
+                astNode.ctx = ctx;
+                astNode.value = ctx.getText();
+                astNode.operator = null;
+
+                pushExpression(astNode);
+            }
+
+        }
     }
 
     @Override
