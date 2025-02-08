@@ -1,5 +1,7 @@
 module testbench();
 
+    logic [31:0] a;
+/*
     logic [31:0] a, b;
     logic [31:0] y;
 
@@ -8,13 +10,13 @@ module testbench();
 
     initial
         begin
-            a <= 0;
-            b <= 0;
+            a <= 0; // non-blocking, evaluation directly, assignment in
+            b <= 0; // non-blocking
 
             #5
 
-            a <= 1;
-            b <= 2;
+            a <= 1; // non-blocking
+            b <= 2; // non-blocking
         end
-
+*/
 endmodule

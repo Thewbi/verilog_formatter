@@ -1,0 +1,114 @@
+# Tools
+
+## Windows
+
+https://yosyshq.net/yosys/download.html via the Tabby/OSS CAD Suite.
+
+https://steveicarus.github.io/iverilog/
+https://github.com/steveicarus/iverilog
+
+
+
+# Data types
+
+## Integer data types
+
+Two-State integer data types
+
+| Integer Data Type | Description |
+| ----------------- | ----------- |
+| shortint | 2-state data type, 16-bit signed integer |
+| int | 2-state data type, 32-bit signed integer |
+| longint | 2-state data type, 64-bit signed integer |
+| byte | 2-state data type, 8-bit signed integer or ASCII characterv
+| bit | 2-state data type, user-defined vector size, unsigned |
+
+Four-State integer data types
+
+| Integer Data Type | Description |
+| ----------------- | ----------- |
+| logic | 4-state data type, user-defined vector size, unsigned. A 1-bit 4-state variable, like the Verilog reg type; can be declared as any vector size (discussed in Chapter 3). |
+| reg | 4-state data type, user-defined vector size, unsigned |
+| integer  | 4-state data type, 32-bit signed integer |
+| time | 4-state data type, 64-bit unsigned integer |
+
+## enum
+an enumerated net or variable with a labeled set of val-
+ues; similar to the C enum type, but with additional syntax and
+semantics for modeling hardware (discussed in Chapter 4).
+
+## typedef
+a user-defined data type, constructed from built-in
+types or other user-defined types, similar to the C typedef (dis-
+cussed in Chapter 4).
+
+## struct
+a collection of variables that can be referred to indi-
+vidually or collectively, similar to the C struct type (discussed in
+Chapter 5).
+
+# Variables
+
+Must be declared within a module, between the module...endmodule keywords.
+
+# Nets
+
+Must be declared within a module, between the module...endmodule keywords.
+
+# Tasks
+
+Must be declared within a module, between the module...endmodule keywords.
+
+# Functions
+
+Must be declared within a module, between the module...endmodule keywords.
+
+# Named Blocks
+
+(formed with begin...end or fork...join)
+
+# Packages
+
+To enable sharing a user-defined type definition across multiple
+modules, SystemVerilog adds packages to the Verilog language.
+The concept of packages is leveraged from the VHDL language.
+SystemVerilog packages are defined between the keywords pack-
+age and endpackage.
+
+# Modules
+
+Syntax:
+
+```
+module (
+    <A>
+);
+
+    <B>
+
+endmodule
+```
+
+The area &lt;A&gt; can contain ports which is where the module receives
+or produces data. Ports are specified using input and output direction for that.
+
+The area &lt;A&gt; can contain
+* variable declarations (at module level)
+e.g.
+```
+integer i;
+instruction_t test_word;
+logic [31:0] alu_out;
+logic clock = 0;
+```
+* module instantiations
+e.g.
+```
+chip chip (.clock(clock));
+ALU dut (.IW(test_word), .result(alu_out), .clock(clock));
+```
+* process definitions (always, always_comb, initial, )
+e.g.
+```
+always #5 clock = ~clock;
+```

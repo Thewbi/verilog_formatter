@@ -1,7 +1,5 @@
 package com.mycompany.app.ast;
 
-import com.mycompany.app.PrimaryType;
-
 /**
  * Currently the ConditionalStatementASTNode is used for if statements.
  * All children of this node need to be connected via else branches!

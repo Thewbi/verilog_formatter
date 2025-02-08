@@ -6,6 +6,8 @@ public class PortASTNode extends ASTNode {
 
     public ExpressionStatementASTNode expression;
 
+    public DataTypeASTNode dataType;
+
     public void printRecursive(final StringBuilder stringBuilder, final int indent) {
 
         // indent and direction, type, name

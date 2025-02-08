@@ -2,8 +2,6 @@ package com.mycompany.app;
 
 import java.io.IOException;
 
-import javax.management.RuntimeErrorException;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
@@ -221,9 +219,12 @@ public class App {
 
         //String file = "src/test/resources/system_verilog_samples/module_with_parameters.sv";
 
-        String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/adder.sv";
-        //String file = "src/test/resources/system_verilog_samples/module_with_array_port.sv";
+        //String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/adder.sv";
+        String file = "src/test/resources/system_verilog_samples/module_with_array_port.sv";
         //String file = "src/test/resources/system_verilog_samples/assign.sv";
+
+        //String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/testbench_adder.sv";
+        //String file = "src/test/resources/system_verilog_samples/module_with_local_variable.sv";
 
         final CharStream charStream = CharStreams.fromFileName(file);
 
@@ -247,8 +248,8 @@ public class App {
         // Function_block_declarationContext root = parser.function_block_declaration();
         final Source_textContext root = parser.source_text();
 
-        boolean printParseTree = true;
-        // boolean printParseTree = false;
+        //boolean printParseTree = true;
+        boolean printParseTree = false;
         if (printParseTree) {
 
             System.out.println("Raw Output Traversal ...");
@@ -263,6 +264,14 @@ public class App {
             System.out.println("Raw Output Traversal done.");
         }
 
+        //
+        // Convert ParseTree to AST
+        //
+
+        System.out.println("");
+        System.out.println("ParseTree -----------------------------");
+        System.out.println("");
+
         // SystemVerilogListener listener = new SystemVerilogListener();
         // DefaultStructuredTextListener listener = new DefaultStructuredTextListener();
         ASTSystemVerilogParserListener listener = new ASTSystemVerilogParserListener();
@@ -273,23 +282,36 @@ public class App {
         // walk the tree created during the parse, trigger callbacks
         walker.walk(listener, root);
 
+        System.out.println("AST Output Traversal done.");
+        System.out.println("");
+
         // // dump output
         // Node rootNode = listener.getRootNode();
         // rootNode.print(0);
 
         // System.out.println();
 
-        System.out.println("AST Output Traversal done.");
+        //
+        // Output AST
+        //
+
+        System.out.println("");
+        System.out.println("AST -----------------------------");
         System.out.println("");
 
         StringBuilder stringBuilder = new StringBuilder();
-        listener.currentNode.printRecursive(stringBuilder, 0);
+        ASTNode astRoot = listener.currentNode;
+        astRoot.printRecursive(stringBuilder, 0);
 
         System.out.println(stringBuilder.toString());
 
         //
         // Simulation
         //
+
+        System.out.println("");
+        System.out.println("Simulation -----------------------------");
+        System.out.println("");
 
         ASTNode rootASTNode = listener.currentNode;
         ModuleDeclaractionASTNode module = (ModuleDeclaractionASTNode) rootASTNode.children.get(0);

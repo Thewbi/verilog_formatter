@@ -376,6 +376,7 @@ There are two types of assignments in veriolg
 
 In a non-blocking procedural assignment (<=), the expression is evaluated when the
 statement is encountered, and assignment is postponed until the end of the time-step.
+The assignment takes place in the NBA region (Non-Blocking Assignment Region).
 
 A blocking assignment (=) is executed directly.
 
@@ -583,6 +584,14 @@ Source: https://www.asic-world.com/verilog/pli1.html#Introduction
 Source: https://www.chipverify.com/tutorials/uvm
 
 # SystemVerilog ??? (VPI)
+
+# SystemVerilog Assertions (SVA)
+
+# OpenVera Assertions (OVA)
+Replaced by SVA
+
+# PSL Assertions (PSL)
+Replaced by SVA
 
 
 

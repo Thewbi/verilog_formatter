@@ -12,6 +12,7 @@ import com.mycompany.app.ast.AssignmentASTNode;
 import com.mycompany.app.ast.CaseStatementASTNode;
 import com.mycompany.app.ast.CaseStatementItemASTNode;
 import com.mycompany.app.ast.ConditionalStatementASTNode;
+import com.mycompany.app.ast.DataTypeASTNode;
 import com.mycompany.app.ast.ExpressionStatementASTNode;
 import com.mycompany.app.ast.IfStatementASTNode;
 import com.mycompany.app.ast.ModuleDeclaractionASTNode;
@@ -65,13 +66,17 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         currentNode = currentNode.parent;
     }
 
-    @Override
-    public void enterList_of_port_declarations(sv2017Parser.List_of_port_declarationsContext ctx) {
-    }
+    // @Override
+    // public void
+    // enterList_of_port_declarations(sv2017Parser.List_of_port_declarationsContext
+    // ctx) {
+    // }
 
-    @Override
-    public void exitList_of_port_declarations(sv2017Parser.List_of_port_declarationsContext ctx) {
-    }
+    // @Override
+    // public void
+    // exitList_of_port_declarations(sv2017Parser.List_of_port_declarationsContext
+    // ctx) {
+    // }
 
     @Override
     public void enterAnsi_port_declaration(sv2017Parser.Ansi_port_declarationContext ctx) {
@@ -116,15 +121,75 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
     }
 
     @Override
-    public void exitData_declaration(sv2017Parser.Data_declarationContext ctx) {
+    public void enterData_declaration(sv2017Parser.Data_declarationContext ctx) {
 
         ModuleItemDeclarationASTNode moduleItemDeclarationASTNode = new ModuleItemDeclarationASTNode();
         moduleItemDeclarationASTNode.ctx = ctx;
-        moduleItemDeclarationASTNode.expression = expressionStack.pop();
-        moduleItemDeclarationASTNode.value = expressionStack.pop().value;
 
-        ModuleDeclaractionASTNode moduleDeclaractionASTNode = (ModuleDeclaractionASTNode) currentNode;
-        moduleDeclaractionASTNode.children.add(moduleItemDeclarationASTNode);
+        // connect parent and child
+        currentNode.children.add(moduleItemDeclarationASTNode);
+        moduleItemDeclarationASTNode.parent = currentNode;
+
+        // descend
+        currentNode = moduleItemDeclarationASTNode;
+    }
+
+    /**
+     * example:
+     *
+     * <pre>
+     * module main;
+     *   logic a;
+     * endmodule
+     * </pre>
+     *
+     * <pre>
+     * module testbench();
+     *   logic [31:0] a;
+     * endmodule
+     * </pre>
+     */
+    @Override
+    public void exitData_declaration(sv2017Parser.Data_declarationContext ctx) {
+
+        // ModuleItemDeclarationASTNode moduleItemDeclarationASTNode = new
+        // ModuleItemDeclarationASTNode();
+        // moduleItemDeclarationASTNode.ctx = ctx;
+        // moduleItemDeclarationASTNode.expression = expressionStack.pop();
+        // moduleItemDeclarationASTNode.value = expressionStack.pop().value;
+
+        // ModuleDeclaractionASTNode moduleDeclaractionASTNode =
+        // (ModuleDeclaractionASTNode) currentNode;
+        // moduleDeclaractionASTNode.children.add(moduleItemDeclarationASTNode);
+
+        currentNode.value = expressionStack.pop().value;
+
+        // ascend
+        currentNode = currentNode.parent;
+    }
+
+    @Override
+    public void exitData_type(sv2017Parser.Data_typeContext ctx) {
+
+        DataTypeASTNode dataTypeASTNode = new DataTypeASTNode();
+
+        if (ctx.children.size() == 1) {
+
+            dataTypeASTNode.value = expressionStack.pop().value;
+
+        } else if (ctx.children.size() == 2) {
+
+            dataTypeASTNode.rangeExpression = expressionStack.pop();
+            dataTypeASTNode.value = expressionStack.pop().value;
+
+        } else {
+
+            throw new RuntimeException("unknown type of children");
+
+        }
+
+        ModuleItemDeclarationASTNode moduleItemDeclarationASTNode = (ModuleItemDeclarationASTNode) currentNode;
+        moduleItemDeclarationASTNode.dataType = dataTypeASTNode;
     }
 
     @Override
@@ -468,6 +533,27 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
     @Override
     public void exitRange_expression(sv2017Parser.Range_expressionContext ctx) {
+
+        RangeExpressionASTNode astNode = new RangeExpressionASTNode();
+        astNode.ctx = ctx;
+        astNode.value = ctx.getText();
+        astNode.operator = null;
+        astNode.right = expressionStack.pop();
+        astNode.left = expressionStack.pop();
+
+        if (currentNode instanceof ParameterListASTNode) {
+            currentNode.children.add(astNode);
+        } else {
+            pushExpression(astNode);
+        }
+    }
+
+    @Override
+    public void enterArray_range_expression(sv2017Parser.Array_range_expressionContext ctx) {
+    }
+
+    @Override
+    public void exitArray_range_expression(sv2017Parser.Array_range_expressionContext ctx) {
 
         RangeExpressionASTNode astNode = new RangeExpressionASTNode();
         astNode.ctx = ctx;
