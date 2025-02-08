@@ -1,8 +1,6 @@
 package com.mycompany.app.ast;
 
-public class ModuleItemDeclarationASTNode extends ASTNode {
-
-    public DataTypeASTNode dataType;
+public class ModuleItemDeclarationASTNode extends TypedASTNode {
 
     // public ASTNode expression;
 

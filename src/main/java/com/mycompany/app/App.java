@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
+import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import com.mycompany.app.ast.ASTNode;
@@ -55,7 +57,7 @@ public class App {
      */
     public static void mainVerilog(String[] args) throws IOException {
 
-        // System.out.println("Lexing ...");
+        System.out.println("Lexing ...");
 
         // String file = "src/test/resources/verilog_samples/elvis_operator.v";
         // String file = "src/test/resources/verilog_samples/elvis_operator_simple.v";
@@ -105,11 +107,17 @@ public class App {
         final CharStream charStream = CharStreams.fromFileName(file);
 
         final VerilogLexer lexer = new VerilogLexer(charStream);
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
         final CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+        System.out.println("Lexing done.");
 
         System.out.println("Parsing ...");
 
         final VerilogParser parser = new VerilogParser(tokens);
+        parser.removeErrorListeners();
+        parser.addErrorListener(ThrowingErrorListener.INSTANCE);
         final verilog.VerilogParser.Source_textContext root = parser.source_text();
         // final lel.VerilogParser.Always_constructContext root =
         // parser.always_construct();
@@ -219,16 +227,18 @@ public class App {
 
         //String file = "src/test/resources/system_verilog_samples/module_with_parameters.sv";
 
-        //String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/adder.sv";
-        String file = "src/test/resources/system_verilog_samples/module_with_array_port.sv";
+        //String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/adder.sv"; // test
+        //String file = "src/test/resources/system_verilog_samples/module_with_array_port.sv"; // test
         //String file = "src/test/resources/system_verilog_samples/assign.sv";
 
         //String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/testbench_adder.sv";
-        //String file = "src/test/resources/system_verilog_samples/module_with_local_variable.sv";
+        String file = "src/test/resources/system_verilog_samples/module_with_local_variable.sv";
 
         final CharStream charStream = CharStreams.fromFileName(file);
 
         final sv2017Lexer lexer = new sv2017Lexer(charStream);
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
 
         // System.out.println("assignment");
 
@@ -240,9 +250,13 @@ public class App {
         // create a buffer of tokens pulled from the lexer
         final CommonTokenStream tokens = new CommonTokenStream(lexer);
 
+        System.out.println("Lexing done.");
+
         System.out.println("Parsing ...");
 
         final sv2017Parser parser = new sv2017Parser(tokens);
+        parser.removeErrorListeners();
+        parser.addErrorListener(ThrowingErrorListener.INSTANCE);
 
         // parse
         // Function_block_declarationContext root = parser.function_block_declaration();
@@ -262,7 +276,10 @@ public class App {
             walker.walk(printListener, root);
 
             System.out.println("Raw Output Traversal done.");
+
         }
+
+        System.out.println("Parsing done.");
 
         //
         // Convert ParseTree to AST
@@ -360,6 +377,7 @@ public class App {
     }
 
     private static void execute_region(Region region) {
+
         if (region.eventSet.isEmpty()) {
             return;
         } else {

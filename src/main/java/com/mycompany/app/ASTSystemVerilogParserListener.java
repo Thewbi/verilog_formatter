@@ -24,12 +24,16 @@ import com.mycompany.app.ast.PortDirection;
 import com.mycompany.app.ast.PrimaryTfCallASTNode;
 import com.mycompany.app.ast.ProceduralTimingControlStatementASTNode;
 import com.mycompany.app.ast.RangeExpressionASTNode;
+import com.mycompany.app.ast.TypedASTNode;
 import com.mycompany.app.ast.VariableAssignmentASTNode;
 
 import systemverilog.sv2017Parser;
 import systemverilog.sv2017ParserBaseListener;
 
 public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
+
+    /** When there is no explicit datatype is specified, the default datatype is used. */
+    public static final String DEFAULT_DATA_TYPE = "logic";
 
     public ASTNode currentNode = new ASTNode("root");
 
@@ -104,17 +108,19 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         // name
         portASTNode.value = expressionStack.pop().value;
 
-        // type / expression
-        //
-        // if several ports are defined using comma separated list, then in the
-        // parse tree, there will be a ansi_port node for every subsequent port
-        // declaration
-        // having no explicit type / expression and no explicit direction. The
-        // type / expression and direction have to be taken from the first port in the
-        // comma separated list!
-        if ((ctx.children.size() > 1) && (ctx.children.get(1) instanceof sv2017Parser.Net_or_var_data_typeContext)) {
-            portASTNode.expression = expressionStack.pop();
-        }
+        // // type / expression
+        // //
+        // // if several ports are defined using comma separated list, then in the
+        // // parse tree, there will be a ansi_port node for every subsequent port
+        // // declaration
+        // // having no explicit type / expression and no explicit direction. The
+        // // type / expression and direction have to be taken from the first port in
+        // the
+        // // comma separated list!
+        // if ((ctx.children.size() > 1) && (ctx.children.get(1) instanceof
+        // sv2017Parser.Net_or_var_data_typeContext)) {
+        // portASTNode.expression = expressionStack.pop();
+        // }
 
         // ascend
         currentNode = currentNode.parent;
@@ -168,6 +174,17 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         currentNode = currentNode.parent;
     }
 
+    /**
+     * This node appears in the parse tree, when the data type (her: logic) is
+     * specified explicitly.
+     *
+     * <pre>
+     * module adder(
+     *   input logic [31:0] a
+     * );
+     * endmodule
+     * </pre>
+     */
     @Override
     public void exitData_type(sv2017Parser.Data_typeContext ctx) {
 
@@ -188,8 +205,32 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
         }
 
-        ModuleItemDeclarationASTNode moduleItemDeclarationASTNode = (ModuleItemDeclarationASTNode) currentNode;
-        moduleItemDeclarationASTNode.dataType = dataTypeASTNode;
+        TypedASTNode typedASTNode = (TypedASTNode) currentNode;
+        typedASTNode.dataType = dataTypeASTNode;
+    }
+
+    @Override
+    public void enterImplicit_data_type(sv2017Parser.Implicit_data_typeContext ctx) {
+    }
+
+    @Override
+    public void exitImplicit_data_type(sv2017Parser.Implicit_data_typeContext ctx) {
+
+        DataTypeASTNode dataTypeASTNode = new DataTypeASTNode();
+
+        if (ctx.children.size() == 1) {
+
+            dataTypeASTNode.rangeExpression = expressionStack.pop();
+            dataTypeASTNode.value = DEFAULT_DATA_TYPE;
+
+        } else {
+
+            throw new RuntimeException("unknown type of children");
+
+        }
+
+        TypedASTNode typedASTNode = (TypedASTNode) currentNode;
+        typedASTNode.dataType = dataTypeASTNode;
     }
 
     @Override
