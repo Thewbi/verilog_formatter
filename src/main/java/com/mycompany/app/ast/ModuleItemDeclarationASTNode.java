@@ -25,8 +25,10 @@ public class ModuleItemDeclarationASTNode extends TypedASTNode {
                 stringBuilder.append("  ");
             }
             stringBuilder.append("datatype:").append("\n");
-            dataType.printRecursive(stringBuilder, indent + 2);
+            dataType.printRecursive(stringBuilder, indent + 1);
         }
+
+        stringBuilder.append("\n");
 
         // children
         for (ASTNode child : children) {

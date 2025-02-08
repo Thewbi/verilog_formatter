@@ -4,8 +4,8 @@ module adder(
     );
 endmodule
 
-// explicit data type
+// // explicit data type
 // module adder(
-//     input logic [31:0] a
+//     input integer [31:0] a
 //     );
 // endmodule

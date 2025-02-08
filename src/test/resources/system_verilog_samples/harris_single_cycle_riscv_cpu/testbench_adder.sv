@@ -1,10 +1,7 @@
 module testbench();
-
-    logic [31:0] a;
-/*
     logic [31:0] a, b;
     logic [31:0] y;
-
+/*
     // instantiate device to be tested
     adder dut(a, b, y);
 

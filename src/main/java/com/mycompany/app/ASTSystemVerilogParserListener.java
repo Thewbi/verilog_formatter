@@ -32,7 +32,10 @@ import systemverilog.sv2017ParserBaseListener;
 
 public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
-    /** When there is no explicit datatype is specified, the default datatype is used. */
+    /**
+     * When there is no explicit datatype is specified, the default datatype is
+     * used.
+     */
     public static final String DEFAULT_DATA_TYPE = "logic";
 
     public ASTNode currentNode = new ASTNode("root");
@@ -168,11 +171,49 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         // (ModuleDeclaractionASTNode) currentNode;
         // moduleDeclaractionASTNode.children.add(moduleItemDeclarationASTNode);
 
-        currentNode.value = expressionStack.pop().value;
+        //currentNode.value = expressionStack.pop().value;
+        currentNode.value = "module_item_declaration";
 
         // ascend
         currentNode = currentNode.parent;
     }
+
+    @Override
+    public void enterList_of_variable_decl_assignments(sv2017Parser.List_of_variable_decl_assignmentsContext ctx) {
+
+        ASTNode variableNamesASTNode = new ASTNode();
+        variableNamesASTNode.ctx = ctx;
+
+        variableNamesASTNode.value = "variable_declaration";
+
+        // connect parent and child
+        currentNode.children.add(variableNamesASTNode);
+        variableNamesASTNode.parent = currentNode;
+
+        // descend
+        currentNode = variableNamesASTNode;
+    }
+
+    @Override
+    public void exitList_of_variable_decl_assignments(sv2017Parser.List_of_variable_decl_assignmentsContext ctx) {
+
+        // ascend
+        currentNode = currentNode.parent;
+
+    }
+
+    @Override public void enterVariable_decl_assignment(sv2017Parser.Variable_decl_assignmentContext ctx) { }
+	@Override public void exitVariable_decl_assignment(sv2017Parser.Variable_decl_assignmentContext ctx) {
+
+        ASTNode variableNameASTNode = new ASTNode();
+        variableNameASTNode.ctx = ctx;
+
+        variableNameASTNode.value = expressionStack.pop().value;
+
+        variableNameASTNode.parent = currentNode;
+
+        currentNode.children.add(variableNameASTNode);
+     }
 
     /**
      * This node appears in the parse tree, when the data type (her: logic) is

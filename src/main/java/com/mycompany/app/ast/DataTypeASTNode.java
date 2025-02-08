@@ -8,28 +8,24 @@ public class DataTypeASTNode extends ASTNode {
     public void printRecursive(StringBuilder stringBuilder, int indent) {
 
         // indent and name
-        for (int i = 0; i < indent; i++) {
+        for (int i = 0; i < indent + 1; i++) {
             stringBuilder.append("  ");
         }
+        stringBuilder.append("type: ");
         stringBuilder.append(value).append("\n");
 
         // indent and expression
         if (rangeExpression != null) {
-            for (int i = 0; i < indent + 1; i++) {
+            for (int i = 0; i < indent + 2; i++) {
                 stringBuilder.append("  ");
             }
             stringBuilder.append("expression:").append("\n");
-
-            // for (int i = 0; i < indent + 1; i++) {
-            //     stringBuilder.append("  ");
-            // }
             rangeExpression.printRecursive(stringBuilder, indent + 2);
-            // stringBuilder.append("\n");
         }
 
         // children
         for (ASTNode child : children) {
-            child.printRecursive(stringBuilder, indent + 1);
+            child.printRecursive(stringBuilder, indent + 2);
         }
     }
 
