@@ -16,11 +16,13 @@ import com.mycompany.app.ast.DataDeclarationASTNode;
 import com.mycompany.app.ast.DataTypeASTNode;
 import com.mycompany.app.ast.ExpressionStatementASTNode;
 import com.mycompany.app.ast.IfStatementASTNode;
+import com.mycompany.app.ast.InstanceASTNode;
+import com.mycompany.app.ast.ListOfPortConnectionsASTNode;
 import com.mycompany.app.ast.ModuleDeclaractionASTNode;
-import com.mycompany.app.ast.ModuleItemDeclarationASTNode;
 import com.mycompany.app.ast.NetAssignmentASTNode;
 import com.mycompany.app.ast.ParameterListASTNode;
 import com.mycompany.app.ast.PortASTNode;
+import com.mycompany.app.ast.PortConnectionASTNode;
 import com.mycompany.app.ast.PortDirection;
 import com.mycompany.app.ast.PrimaryTfCallASTNode;
 import com.mycompany.app.ast.ProceduralTimingControlStatementASTNode;
@@ -188,21 +190,22 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
         // ascend
         currentNode = currentNode.parent;
-
     }
 
-    @Override public void enterVariable_decl_assignment(sv2017Parser.Variable_decl_assignmentContext ctx) { }
-	@Override public void exitVariable_decl_assignment(sv2017Parser.Variable_decl_assignmentContext ctx) {
+    @Override
+    public void enterVariable_decl_assignment(sv2017Parser.Variable_decl_assignmentContext ctx) {
+    }
+
+    @Override
+    public void exitVariable_decl_assignment(sv2017Parser.Variable_decl_assignmentContext ctx) {
 
         ASTNode variableNameASTNode = new ASTNode();
         variableNameASTNode.ctx = ctx;
-
         variableNameASTNode.value = expressionStack.pop().value;
-
         variableNameASTNode.parent = currentNode;
 
         currentNode.children.add(variableNameASTNode);
-     }
+    }
 
     /**
      * This node appears in the parse tree, when the data type (her: logic) is
@@ -261,6 +264,79 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
         TypedASTNode typedASTNode = (TypedASTNode) currentNode;
         typedASTNode.dataType = dataTypeASTNode;
+    }
+
+    @Override
+    public void enterModule_or_interface_or_program_or_udp_instantiation(
+            sv2017Parser.Module_or_interface_or_program_or_udp_instantiationContext ctx) {
+
+        InstanceASTNode instanceASTNode = new InstanceASTNode();
+        instanceASTNode.ctx = ctx;
+
+        instanceASTNode.value = "instance";
+
+        // connect parent and child
+        currentNode.children.add(instanceASTNode);
+        instanceASTNode.parent = currentNode;
+
+        // descend
+        currentNode = instanceASTNode;
+    }
+
+    @Override
+    public void exitModule_or_interface_or_program_or_udp_instantiation(
+            sv2017Parser.Module_or_interface_or_program_or_udp_instantiationContext ctx) {
+
+        ((InstanceASTNode) currentNode).type = expressionStack.pop().value;
+
+        // ascend
+        currentNode = currentNode.parent;
+    }
+
+    @Override
+    public void enterHierarchical_instance(sv2017Parser.Hierarchical_instanceContext ctx) {
+    }
+
+    @Override
+    public void exitHierarchical_instance(sv2017Parser.Hierarchical_instanceContext ctx) {
+        currentNode.value = expressionStack.pop().value;
+    }
+
+    @Override
+    public void enterList_of_port_connections(sv2017Parser.List_of_port_connectionsContext ctx) {
+
+        ListOfPortConnectionsASTNode listOfPortConnectionsASTNode = new ListOfPortConnectionsASTNode();
+        listOfPortConnectionsASTNode.ctx = ctx;
+        listOfPortConnectionsASTNode.value = "list_of_port_connections";
+
+        // connect parent and child
+        currentNode.children.add(listOfPortConnectionsASTNode);
+        listOfPortConnectionsASTNode.parent = currentNode;
+
+        // descend
+        currentNode = listOfPortConnectionsASTNode;
+    }
+
+    @Override
+    public void exitList_of_port_connections(sv2017Parser.List_of_port_connectionsContext ctx) {
+
+        // ascend
+        currentNode = currentNode.parent;
+    }
+
+    @Override
+    public void enterOrdered_port_connection(sv2017Parser.Ordered_port_connectionContext ctx) {
+    }
+
+    @Override
+    public void exitOrdered_port_connection(sv2017Parser.Ordered_port_connectionContext ctx) {
+
+        PortConnectionASTNode variableNameASTNode = new PortConnectionASTNode();
+        variableNameASTNode.ctx = ctx;
+        variableNameASTNode.value = expressionStack.pop().value;
+        variableNameASTNode.parent = currentNode;
+
+        currentNode.children.add(variableNameASTNode);
     }
 
     @Override
