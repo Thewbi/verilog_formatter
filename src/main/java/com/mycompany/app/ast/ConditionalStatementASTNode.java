@@ -1,5 +1,7 @@
 package com.mycompany.app.ast;
 
+import com.mycompany.app.ast.visitor.ASTNodeVisitor;
+
 /**
  * Currently the ConditionalStatementASTNode is used for if statements.
  * All children of this node need to be connected via else branches!
@@ -22,6 +24,14 @@ public class ConditionalStatementASTNode extends ASTNode {
         // children
         for (ASTNode child : children) {
             child.printRecursive(stringBuilder, indent + 1);
+        }
+    }
+
+    public void visit(ASTNodeVisitor astNodeVisitor) {
+        System.out.println("visit " + this.getClass());
+        astNodeVisitor.visit(this);
+        for (ASTNode child : children) {
+            child.visit(astNodeVisitor);
         }
     }
 }

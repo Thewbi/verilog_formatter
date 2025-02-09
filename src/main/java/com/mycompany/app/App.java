@@ -15,6 +15,8 @@ import com.mycompany.app.ast.ModuleDeclaractionASTNode;
 import com.mycompany.app.ast.AssignmentASTNode;
 import com.mycompany.app.ast.PrimaryTfCallASTNode;
 import com.mycompany.app.ast.ProceduralTimingControlStatementASTNode;
+import com.mycompany.app.domain.ModuleDescriptor;
+import com.mycompany.app.domain.ModuleDescriptorFactory;
 
 import simulation.EvaluationEvent;
 import simulation.Event;
@@ -86,7 +88,8 @@ public class App {
         // String file = "src/test/resources/verilog_samples/if_large_fixed.v";
         // String file = "src/test/resources/verilog_samples/if_without_else.v";
         // String file = "src/test/resources/verilog_samples/if_else_chain.v";
-        //String file = "src/test/resources/verilog_samples/if_complex_expression.v"; // test
+        // String file = "src/test/resources/verilog_samples/if_complex_expression.v";
+        // // test
         // String file = "src/test/resources/verilog_samples/if_else_chain_simple.v";
         // String file = "src/test/resources/verilog_samples/if_else_chain_nested_if.v";
         // String file = "src/test/resources/verilog_samples/double_click.v";
@@ -210,43 +213,128 @@ public class App {
         // String file =
         // "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/riscvsingle.sv";
 
-        //String file = "src/test/resources/system_verilog_samples/if_complex_expression.sv"; // test
+        // String file =
+        // "src/test/resources/system_verilog_samples/if_complex_expression.sv"; // test
 
-        //String file = "src/test/resources/system_verilog_samples/blocking_assignment.sv";
+        // String file =
+        // "src/test/resources/system_verilog_samples/blocking_assignment.sv";
 
-        //String file = "src/test/resources/system_verilog_samples/initial_block.sv";
-        //String file = "src/test/resources/system_verilog_samples/initial_block_assignment.sv"; // test
-        //String file = "src/test/resources/system_verilog_samples/procedural_timing_delay.sv"; // test
+        // String file = "src/test/resources/system_verilog_samples/initial_block.sv";
+        // String file =
+        // "src/test/resources/system_verilog_samples/initial_block_assignment.sv"; //
+        // test
+        // String file =
+        // "src/test/resources/system_verilog_samples/procedural_timing_delay.sv"; //
+        // test
 
-        // Next Steps. #10 is not parsed. Checked in antlr lab. delay_or_event_control is missing
-        //String file = "src/test/resources/system_verilog_samples/clock_generation.sv"; // test
+        // Next Steps. #10 is not parsed. Checked in antlr lab. delay_or_event_control
+        // is missing
+        // String file =
+        // "src/test/resources/system_verilog_samples/clock_generation.sv"; // test
 
-        //String file = "src/test/resources/system_verilog_samples/rv32i_fetch.sv";
+        // String file = "src/test/resources/system_verilog_samples/rv32i_fetch.sv";
 
-        //String file = "src/test/resources/system_verilog_samples/module_with_parameters.sv";
+        // String file =
+        // "src/test/resources/system_verilog_samples/module_with_parameters.sv";
 
-        //String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/adder.sv"; // test
-        String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/testbench_adder.sv"; // test
+        String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/adder.sv"; // test
+        // String file =
+        // "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/testbench_adder.sv";
+        // // test
 
-        //String file = "src/test/resources/system_verilog_samples/module_instantiation.sv"; // test
+        // String file =
+        // "src/test/resources/system_verilog_samples/module_instantiation.sv"; // test
 
-        //String file = "src/test/resources/system_verilog_samples/module_with_array_port.sv"; // test
-        //String file = "src/test/resources/system_verilog_samples/assign.sv"; // test
+        // String file =
+        // "src/test/resources/system_verilog_samples/module_with_array_port.sv"; //
+        // test
+        // String file = "src/test/resources/system_verilog_samples/assign.sv"; // test
 
-        //String file = "src/test/resources/system_verilog_samples/module_with_local_variable.sv";
+        // String file =
+        // "src/test/resources/system_verilog_samples/module_with_local_variable.sv";
+
+        ASTNode rootASTNode = parseSystemVerilogFileToAST(file);
+
+        //
+        // Output AST
+        //
+
+        System.out.println("");
+        System.out.println("AST -----------------------------");
+        System.out.println("");
+
+        StringBuilder stringBuilder = new StringBuilder();
+        rootASTNode.printRecursive(stringBuilder, 0);
+
+        System.out.println(stringBuilder.toString());
+
+        //
+        // Convert the AST of a module into a module descriptor.
+        //
+        // A module descriptor consists of:
+        // -- the module name
+        // -- all input and output ports to the module
+        // -- all local variables of the module (TODO)
+        // -- a list of initial processes (TODO)
+        // -- a list of non-initial processes
+        // ---- assign is converted to a process (TODO)
+        // ---- if a module is instantiated within a module, a process for that
+        // instantiated module is created
+        //
+
+        ModuleDescriptorFactory moduleDescriptorFactory = new ModuleDescriptorFactory();
+        ModuleDescriptor moduleDescriptor = moduleDescriptorFactory.produce(rootASTNode);
+
+        System.out.println(moduleDescriptor);
+
+        //
+        // Simulation
+        //
+
+        System.out.println("");
+        System.out.println("Simulation -----------------------------");
+        System.out.println("");
+
+        ModuleDeclaractionASTNode module = (ModuleDeclaractionASTNode) rootASTNode.children.get(0);
+
+        // TODO when a module is instantiated, create an instance from the
+        // module definition and create a process that wraps that instance
+
+        TimeSlot timeSlot = new TimeSlot();
+
+        // check the module for initial blocks and create a EvaluationEvent for
+        // each inital block found. Insert the events into the active region of the
+        // timeslot
+        module.children.stream()
+                .filter(child -> child instanceof ProceduralTimingControlStatementASTNode)
+                .filter(child -> ((ProceduralTimingControlStatementASTNode) child).initial)
+                .map(child -> {
+                    EvaluationEvent event = new EvaluationEvent();
+                    event.process = (ProceduralTimingControlStatementASTNode) child;
+                    return event;
+                })
+                .forEach(child -> {
+                    // System.out.println(child);
+                    timeSlot.activeRegion.eventSet.add(child);
+                });
+
+        // System.out.println("a");
+
+        // while (some time slot is nonempty) {
+        // move to the first nonempty time slot and set T;
+        // execute_time_slot (T);
+        // }
+
+        executeTimeSlot(timeSlot);
+    }
+
+    private static ASTNode parseSystemVerilogFileToAST(String file) throws IOException {
 
         final CharStream charStream = CharStreams.fromFileName(file);
 
         final sv2017Lexer lexer = new sv2017Lexer(charStream);
         lexer.removeErrorListeners();
         lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
-
-        // System.out.println("assignment");
-
-        // final CharStream charStream = CharStreams
-        // .fromFileName("src/test/resources/iec61131_structuredtext/assignment.st");
-
-        // final StructuredTextLexer lexer = new StructuredTextLexer(charStream);
 
         // create a buffer of tokens pulled from the lexer
         final CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -260,10 +348,9 @@ public class App {
         parser.addErrorListener(ThrowingErrorListener.INSTANCE);
 
         // parse
-        // Function_block_declarationContext root = parser.function_block_declaration();
         final Source_textContext root = parser.source_text();
 
-        //boolean printParseTree = true;
+        // boolean printParseTree = true;
         boolean printParseTree = false;
         if (printParseTree) {
 
@@ -300,67 +387,10 @@ public class App {
         // walk the tree created during the parse, trigger callbacks
         walker.walk(listener, root);
 
-        System.out.println("AST Output Traversal done.");
+        System.out.println("ParseTree traversal done.");
         System.out.println("");
 
-        // // dump output
-        // Node rootNode = listener.getRootNode();
-        // rootNode.print(0);
-
-        // System.out.println();
-
-        //
-        // Output AST
-        //
-
-        System.out.println("");
-        System.out.println("AST -----------------------------");
-        System.out.println("");
-
-        StringBuilder stringBuilder = new StringBuilder();
-        ASTNode astRoot = listener.currentNode;
-        astRoot.printRecursive(stringBuilder, 0);
-
-        System.out.println(stringBuilder.toString());
-
-        //
-        // Simulation
-        //
-
-        System.out.println("");
-        System.out.println("Simulation -----------------------------");
-        System.out.println("");
-
-        ASTNode rootASTNode = listener.currentNode;
-        ModuleDeclaractionASTNode module = (ModuleDeclaractionASTNode) rootASTNode.children.get(0);
-
-        TimeSlot timeSlot = new TimeSlot();
-
-        // check the module for initial blocks and create a EvaluationEvent for
-        // each inital block found. Insert the events into the active region of the
-        // timeslot
-        module.children.stream()
-                .filter(child -> child instanceof ProceduralTimingControlStatementASTNode)
-                .filter(child -> ((ProceduralTimingControlStatementASTNode) child).initial)
-                .map(child -> {
-                    EvaluationEvent event = new EvaluationEvent();
-                    event.process = (ProceduralTimingControlStatementASTNode) child;
-                    return event;
-                })
-                .forEach(child -> {
-                    System.out.println(child);
-                    timeSlot.activeRegion.eventSet.add(child);
-                });
-
-        // System.out.println("a");
-
-        // while (some time slot is nonempty) {
-        // move to the first nonempty time slot and set T;
-        // execute_time_slot (T);
-        // }
-
-        executeTimeSlot(timeSlot);
-
+        return listener.currentNode;
     }
 
     private static void executeTimeSlot(TimeSlot timeSlot) {
@@ -408,6 +438,8 @@ public class App {
                             AssignmentASTNode assignmentASTNode = (AssignmentASTNode) child;
 
                             System.out.println(assignmentASTNode);
+
+                            // TODO insert an update event into the current active region
 
                         } else if (child instanceof PrimaryTfCallASTNode) {
 

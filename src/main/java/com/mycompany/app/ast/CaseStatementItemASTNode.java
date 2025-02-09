@@ -1,5 +1,7 @@
 package com.mycompany.app.ast;
 
+import com.mycompany.app.ast.visitor.ASTNodeVisitor;
+
 public class CaseStatementItemASTNode extends ASTNode {
 
     public ExpressionStatementASTNode expression;
@@ -24,6 +26,14 @@ public class CaseStatementItemASTNode extends ASTNode {
         // children
         for (ASTNode child : children) {
             child.printRecursive(stringBuilder, indent + 1);
+        }
+    }
+
+    public void visit(ASTNodeVisitor astNodeVisitor) {
+        System.out.println("visit " + this.getClass());
+        astNodeVisitor.visit(this);
+        for (ASTNode child : children) {
+            child.visit(astNodeVisitor);
         }
     }
 

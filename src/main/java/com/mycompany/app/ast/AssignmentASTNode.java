@@ -1,5 +1,7 @@
 package com.mycompany.app.ast;
 
+import com.mycompany.app.ast.visitor.ASTNodeVisitor;
+
 /**
  * Nonblocking assignment: <=
  * Blocking assignment: =
@@ -52,6 +54,14 @@ public class AssignmentASTNode extends ASTNode {
         printRecursive(stringBuilder, indent);
 
         return stringBuilder.toString();
+    }
+
+    public void visit(ASTNodeVisitor astNodeVisitor) {
+        System.out.println("visit " + this.getClass());
+        astNodeVisitor.visit(this);
+        for (ASTNode child : children) {
+            child.visit(astNodeVisitor);
+        }
     }
 
 }

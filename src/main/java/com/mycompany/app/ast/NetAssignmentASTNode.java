@@ -1,5 +1,7 @@
 package com.mycompany.app.ast;
 
+import com.mycompany.app.ast.visitor.ASTNodeVisitor;
+
 /**
  * A assignment located within a process so it is a sequential assignment.
  * The assignment is done using the = operator which makes it blocking.
@@ -40,6 +42,14 @@ public class NetAssignmentASTNode extends ASTNode {
         // children
         for (ASTNode child : children) {
             child.printRecursive(stringBuilder, indent + 2);
+        }
+    }
+
+    public void visit(ASTNodeVisitor astNodeVisitor) {
+        System.out.println("visit " + this.getClass());
+        astNodeVisitor.visit(this);
+        for (ASTNode child : children) {
+            child.visit(astNodeVisitor);
         }
     }
 }

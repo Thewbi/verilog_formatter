@@ -1,5 +1,7 @@
 package com.mycompany.app.ast;
 
+import com.mycompany.app.ast.visitor.ASTNodeVisitor;
+
 public class ExpressionStatementASTNode extends ASTNode {
 
     public String operator;
@@ -21,7 +23,7 @@ public class ExpressionStatementASTNode extends ASTNode {
             for (int i = 0; i < indent; i++) {
                 stringBuilder.append("  ");
             }
-            stringBuilder.append(value).append("\n");
+            stringBuilder.append(value).append(" "); //.append("\n");
 
         } else {
 
@@ -49,8 +51,14 @@ public class ExpressionStatementASTNode extends ASTNode {
             if (rhs != null) {
                 rhs.printRecursive(stringBuilder, indent + 1);
             }
-
         }
     }
 
+    public void visit(ASTNodeVisitor astNodeVisitor) {
+        System.out.println("visit " + this.getClass());
+        astNodeVisitor.visit(this);
+        for (ASTNode child : children) {
+            child.visit(astNodeVisitor);
+        }
+    }
 }

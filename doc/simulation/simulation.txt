@@ -521,7 +521,7 @@ all signals that get an initial value assigned, the assignment causes an initial
 but not an update event. The initialization event is treated as a change of the signal
 meaning it is guaranteed that the initialization event causes processes to be executed
 that have the initialized signal in their sensitivity list. In the example above, the
-testbenche's variables a, b and y do not get a value initialized when they are declared!
+testbench's variables a, b and y do not get a value initialized when they are declared!
 There will be not initialization event. The signal's value remains UNKNOWN until
 the initil block is executed.
 

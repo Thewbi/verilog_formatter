@@ -1,5 +1,7 @@
 package com.mycompany.app.ast;
 
+import com.mycompany.app.ast.visitor.ASTNodeVisitor;
+
 /**
  * Represents a case statement. Contains the case and default branches as
  * children.
@@ -26,6 +28,14 @@ public class CaseStatementASTNode extends ASTNode {
         // children
         for (ASTNode child : children) {
             child.printRecursive(stringBuilder, indent + 1);
+        }
+    }
+
+    public void visit(ASTNodeVisitor astNodeVisitor) {
+        System.out.println("visit " + this.getClass());
+        astNodeVisitor.visit(this);
+        for (ASTNode child : children) {
+            child.visit(astNodeVisitor);
         }
     }
 

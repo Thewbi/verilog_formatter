@@ -1,5 +1,7 @@
 package com.mycompany.app.ast;
 
+import com.mycompany.app.ast.visitor.ASTNodeVisitor;
+
 /**
  * This is a Continuous assignment (used output a process and takes place as soon as the signals
  * on the right-hand side change.)
@@ -11,7 +13,7 @@ package com.mycompany.app.ast;
  */
 public class VariableAssignmentASTNode extends ASTNode {
 
-    public ASTNode expression;
+    public ExpressionStatementASTNode expression;
 
     public ASTNode target;
 
@@ -42,4 +44,11 @@ public class VariableAssignmentASTNode extends ASTNode {
         }
     }
 
+    public void visit(ASTNodeVisitor astNodeVisitor) {
+        System.out.println("visit " + this.getClass());
+        astNodeVisitor.visit(this);
+        for (ASTNode child : children) {
+            child.visit(astNodeVisitor);
+        }
+    }
 }
