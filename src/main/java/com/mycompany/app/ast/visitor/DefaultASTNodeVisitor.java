@@ -4,6 +4,8 @@ import com.mycompany.app.ast.AlwaysConstructASTNode;
 import com.mycompany.app.ast.AssignmentASTNode;
 import com.mycompany.app.ast.DataTypeASTNode;
 import com.mycompany.app.ast.ModuleDeclaractionASTNode;
+import com.mycompany.app.ast.ParameterPortASTNode;
+import com.mycompany.app.ast.ParameterPortListASTNode;
 import com.mycompany.app.ast.PortASTNode;
 import com.mycompany.app.ast.PortDirection;
 import com.mycompany.app.ast.RangeExpressionASTNode;
@@ -16,15 +18,15 @@ public class DefaultASTNodeVisitor extends BaseASTNodeVisitor {
 
     public ModuleDescriptor moduleDescriptor;
 
-    @Override
-    public void visit(final AlwaysConstructASTNode node) {
-        System.out.println(node.getClass());
-    }
+    // @Override
+    // public void visit(final AlwaysConstructASTNode node) {
+    // System.out.println(node.getClass());
+    // }
 
-    @Override
-    public void visit(final AssignmentASTNode node) {
-        System.out.println(node.getClass());
-    }
+    // @Override
+    // public void visit(final AssignmentASTNode node) {
+    // System.out.println(node.getClass());
+    // }
 
     @Override
     public void visit(final ModuleDeclaractionASTNode node) {
@@ -47,7 +49,8 @@ public class DefaultASTNodeVisitor extends BaseASTNodeVisitor {
                 portASTNode.dataType = dataType;
             }
 
-            System.out.println(portASTNode.portDirection + " " + portASTNode.value + " " + portASTNode.dataType.value + " " + portASTNode.dataType.rangeExpression.toString());
+            System.out.println(portASTNode.portDirection + " " + portASTNode.value + " " + portASTNode.dataType.value
+                    + " " + portASTNode.dataType.rangeExpression.toString());
 
             Port port = new Port();
             moduleDescriptor.ports.add(port);
@@ -78,6 +81,14 @@ public class DefaultASTNodeVisitor extends BaseASTNodeVisitor {
         Process process = new Process();
         process.statements.add(node);
         moduleDescriptor.processes.add(process);
+    }
+
+    public void visit(ParameterPortListASTNode parameterPortListASTNode) {
+        System.out.println(parameterPortListASTNode.getClass());
+    }
+
+    public void visit(ParameterPortASTNode parameterPortASTNode) {
+        System.out.println(parameterPortASTNode.getClass());
     }
 
 }

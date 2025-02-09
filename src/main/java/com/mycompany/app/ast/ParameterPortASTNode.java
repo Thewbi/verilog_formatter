@@ -2,17 +2,13 @@ package com.mycompany.app.ast;
 
 import com.mycompany.app.ast.visitor.ASTNodeVisitor;
 
-/**
- * Represents a case statement. Contains the case and default branches as
- * children.
- */
-public class CaseStatementASTNode extends ASTNode {
+public class ParameterPortASTNode extends ASTNode {
 
     public ExpressionStatementASTNode expression;
 
-    public void printRecursive(StringBuilder stringBuilder, int indent) {
+    public ExpressionStatementASTNode target;
 
-        stringBuilder.append("\n");
+    public void printRecursive(StringBuilder stringBuilder, int indent) {
 
         // indent and name
         for (int i = 0; i < indent; i++) {
@@ -20,17 +16,18 @@ public class CaseStatementASTNode extends ASTNode {
         }
         stringBuilder.append(value).append("\n");
 
-        // indent and optional expression
+        // indent and expression
         for (int i = 0; i < indent + 1; i++) {
             stringBuilder.append("  ");
         }
-        stringBuilder.append("expression:").append("\n");
-        expression.printRecursive(stringBuilder, indent + 2);
-
+        stringBuilder.append("target: ");
+        target.printRecursive(stringBuilder, 0);
+        stringBuilder.append("expression: ");
+        expression.printRecursive(stringBuilder, 0);
+        stringBuilder.append("\n");
 
         // children
         for (ASTNode child : children) {
-            stringBuilder.append("\n");
             child.printRecursive(stringBuilder, indent + 1);
         }
     }

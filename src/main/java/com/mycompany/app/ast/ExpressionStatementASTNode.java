@@ -23,7 +23,9 @@ public class ExpressionStatementASTNode extends ASTNode {
             for (int i = 0; i < indent; i++) {
                 stringBuilder.append("  ");
             }
-            stringBuilder.append(value).append(" "); //.append("\n");
+            stringBuilder.append(value).append(" ");
+
+            stringBuilder.append("\n");
 
         } else {
 

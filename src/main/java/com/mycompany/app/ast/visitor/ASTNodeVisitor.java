@@ -16,6 +16,8 @@ import com.mycompany.app.ast.ModuleDeclaractionASTNode;
 import com.mycompany.app.ast.ModuleItemDeclarationASTNode;
 import com.mycompany.app.ast.NetAssignmentASTNode;
 import com.mycompany.app.ast.ParameterListASTNode;
+import com.mycompany.app.ast.ParameterPortASTNode;
+import com.mycompany.app.ast.ParameterPortListASTNode;
 import com.mycompany.app.ast.PortASTNode;
 import com.mycompany.app.ast.PortConnectionASTNode;
 import com.mycompany.app.ast.PrimaryTfCallASTNode;
@@ -58,6 +60,10 @@ public interface ASTNodeVisitor {
 
     public void visit(ParameterListASTNode parameterListASTNode);
 
+    public void visit(ParameterPortListASTNode parameterPortListASTNode);
+
+    public void visit(ParameterPortASTNode parameterPortASTNode);
+
     public void visit(PortASTNode portASTNode);
 
     public void visit(PortConnectionASTNode portConnectionASTNode);
@@ -67,6 +73,5 @@ public interface ASTNodeVisitor {
     public void visit(ProceduralTimingControlStatementASTNode proceduralTimingControlStatementASTNode);
 
     public void visit(VariableAssignmentASTNode variableAssignmentASTNode);
-
 
 }

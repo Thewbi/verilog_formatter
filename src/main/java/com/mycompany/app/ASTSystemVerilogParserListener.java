@@ -22,6 +22,8 @@ import com.mycompany.app.ast.ListOfPortConnectionsASTNode;
 import com.mycompany.app.ast.ModuleDeclaractionASTNode;
 import com.mycompany.app.ast.NetAssignmentASTNode;
 import com.mycompany.app.ast.ParameterListASTNode;
+import com.mycompany.app.ast.ParameterPortASTNode;
+import com.mycompany.app.ast.ParameterPortListASTNode;
 import com.mycompany.app.ast.PortASTNode;
 import com.mycompany.app.ast.PortConnectionASTNode;
 import com.mycompany.app.ast.PortDirection;
@@ -506,6 +508,8 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         astNode.target = expressionStack.pop();
         astNode.value = "net_assignment_statement (=)";
 
+        astNode.parent = currentNode;
+
         currentNode.children.add(astNode);
     }
 
@@ -519,6 +523,8 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         astNode.value = "nonblocking_assignment_statement (<=)";
         astNode.blocking = false;
 
+        astNode.parent = currentNode;
+
         currentNode.children.add(astNode);
     }
 
@@ -531,6 +537,8 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         astNode.target = expressionStack.pop();
         astNode.value = "blocking_assignment_statement (=)";
         astNode.blocking = true;
+
+        astNode.parent = currentNode;
 
         currentNode.children.add(astNode);
     }
@@ -608,7 +616,6 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         if (currentNode instanceof ParameterListASTNode) {
             currentNode.children.add(astNode);
         } else {
-            // expressionStack.push(astNode);
             pushExpression(astNode);
         }
     }
@@ -925,6 +932,11 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         currentNode = currentNode.parent;
     }
 
+    /**
+     * Example file: src\test\resources\system_verilog_samples\display.sv
+     *
+     * list of arguments is used for all arguments to primitives such as $display
+     */
     @Override
     public void enterList_of_arguments(sv2017Parser.List_of_argumentsContext ctx) {
 
@@ -949,4 +961,52 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         // ascend
         currentNode = currentNode.parent;
     }
+
+    /**
+     * For parameters in modules defined via #() to distinguish them from the ports
+     * defined via ().
+     */
+    @Override
+    public void enterParameter_port_list(sv2017Parser.Parameter_port_listContext ctx) {
+
+        ParameterPortListASTNode astNode = new ParameterPortListASTNode();
+        astNode.ctx = ctx;
+        astNode.value = "parameter_port_list";
+
+        // connect parent and child
+        currentNode.children.add(astNode);
+        astNode.parent = currentNode;
+
+        // descend
+        currentNode = astNode;
+    }
+
+    @Override
+    public void exitParameter_port_list(sv2017Parser.Parameter_port_listContext ctx) {
+        // ascend
+        currentNode = currentNode.parent;
+    }
+
+    @Override
+    public void enterParam_assignment(sv2017Parser.Param_assignmentContext ctx) {
+    }
+
+    /**
+     * For a parameter in the list of parameters of a module.
+     * Module parameters are called port-parameters in the grammar.
+     */
+    @Override
+    public void exitParam_assignment(sv2017Parser.Param_assignmentContext ctx) {
+
+        ParameterPortASTNode astNode = new ParameterPortASTNode();
+        astNode.ctx = ctx;
+        astNode.expression = expressionStack.pop();
+        astNode.target = expressionStack.pop();
+        astNode.value = "port_parameter_assignment";
+
+        astNode.parent = currentNode;
+
+        currentNode.children.add(astNode);
+    }
+
 }

@@ -202,7 +202,8 @@ public class App {
         // String file = "src/test/resources/system_verilog_samples/uart.sv";
         // String file =
         // "src/test/resources/system_verilog_samples/package_definition.sv";
-        // String file = "src/test/resources/system_verilog_samples/switch.sv";
+        //String file = "src/test/resources/system_verilog_samples/switch.sv"; // test
+        String file = "src/test/resources/system_verilog_samples/switch_simplified.sv"; // test
         // String file =
         // "src/test/resources/system_verilog_samples/precompiler_conditional_compilation.sv";
 
@@ -235,9 +236,15 @@ public class App {
         // String file = "src/test/resources/system_verilog_samples/rv32i_fetch.sv";
 
         // String file =
-        // "src/test/resources/system_verilog_samples/module_with_parameters.sv";
+        // "src/test/resources/system_verilog_samples/module_with_parameters.sv"; //
+        // test
 
-        String file = "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/adder.sv"; // test
+        // String file =
+        // "src/test/resources/system_verilog_samples/display.sv";
+
+        // String file =
+        // "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/adder.sv";
+        // // test
         // String file =
         // "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/testbench_adder.sv";
         // // test
@@ -248,6 +255,7 @@ public class App {
         // String file =
         // "src/test/resources/system_verilog_samples/module_with_array_port.sv"; //
         // test
+
         // String file = "src/test/resources/system_verilog_samples/assign.sv"; // test
 
         // String file =
@@ -269,11 +277,14 @@ public class App {
         System.out.println(stringBuilder.toString());
 
         //
-        // Convert the AST of a module into a module descriptor.
+        // Convert the AST of a module into a module descriptor
+        //
+
         //
         // A module descriptor consists of:
         // -- the module name
         // -- all input and output ports to the module
+        // -- all parameters (TODO)
         // -- all local variables of the module (TODO)
         // -- a list of initial processes (TODO)
         // -- a list of non-initial processes
