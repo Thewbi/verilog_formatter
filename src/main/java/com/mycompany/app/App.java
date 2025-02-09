@@ -203,13 +203,15 @@ public class App {
         // String file =
         // "src/test/resources/system_verilog_samples/package_definition.sv";
         //String file = "src/test/resources/system_verilog_samples/switch.sv"; // test
-        String file = "src/test/resources/system_verilog_samples/switch_simplified.sv"; // test
+        //String file = "src/test/resources/system_verilog_samples/switch_simplified.sv"; // test
         // String file =
         // "src/test/resources/system_verilog_samples/precompiler_conditional_compilation.sv";
 
         // String file = "src/test/resources/verilog_samples/wire_delay.v";
         // String file = "src/test/resources/verilog_samples/user_defined_primitive.v";
         // String file = "src/test/resources/verilog_samples/uart_top.v";
+
+        String file = "src/test/resources/system_verilog_samples/uart_2.sv";
 
         // String file =
         // "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/riscvsingle.sv";
