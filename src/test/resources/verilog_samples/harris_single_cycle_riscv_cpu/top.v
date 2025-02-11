@@ -11,13 +11,17 @@ module top(
 
     wire [31:0] PC, Instr, ReadData;
 
-    // instantiate processor and memories
+    // instantiate processor
     riscvsingle rvsingle(clk, reset, PC, Instr, MemWrite, DataAdr, WriteData, ReadData);
+
+    // instruction and data memory
     imem imem(PC, Instr);
     dmem dmem(clk, MemWrite, DataAdr, WriteData, ReadData);
 
     // initial begin
     //     $readmemh("progmem.txt", progmem);
     // end
+
+
 
 endmodule

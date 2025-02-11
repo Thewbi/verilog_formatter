@@ -1,3 +1,4 @@
+// decode the opcode
 module maindec(
     input wire [6:0] op,
     output wire [1:0] ResultSrc,

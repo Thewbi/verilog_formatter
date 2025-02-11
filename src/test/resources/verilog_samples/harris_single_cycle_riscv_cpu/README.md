@@ -47,3 +47,15 @@ C:\iverilog\bin\iverilog.exe -s testbench -o riscv.vvp testbench.v top.v riscvsi
 
 C:\iverilog\bin\vvp.exe riscv.vvp
 ```
+
+In order to run the simulation with Icarus Verilog, run the testbench.s file as top-level module.
+You have to execute the following statements to run the simulation:
+
+```
+cd C:\Users\wolfg\dev\Java\verilog_formatter\src\test\resources\verilog_samples\harris_single_cycle_riscv_cpu
+del riscv.vpp
+
+C:\iverilog\bin\iverilog.exe -s testbench -o riscv.vvp testbench.v top.v riscvsingle.v imem.v dmem.v controller.v datapath.v maindec.v flopr.v aludec.v alu.v adder.v mux2.v mux3.v regfile.v extend.v
+
+C:\iverilog\bin\vvp.exe riscv.vvp
+```
