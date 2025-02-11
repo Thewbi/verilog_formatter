@@ -27,3 +27,4 @@ replay_pid*
 target/
 src/main/java/systemverilog
 src/main/java/verilog
+build/preprocessed.sv
