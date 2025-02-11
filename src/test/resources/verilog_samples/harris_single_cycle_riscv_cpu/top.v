@@ -1,18 +1,18 @@
 module top(
-    input logic clk, reset,
-    output logic [31:0] WriteData, DataAdr,
-    output logic MemWrite
+    input wire clk, reset,
+    output wire [31:0] WriteData, DataAdr,
+    output wire MemWrite
     );
 
-    logic [31:0] PC, Instr, ReadData;
+    wire [31:0] PC, Instr, ReadData;
 
     // instantiate processor and memories
     riscvsingle rvsingle(clk, reset, PC, Instr, MemWrite, DataAdr, WriteData, ReadData);
     imem imem(PC, Instr);
     dmem dmem(clk, MemWrite, DataAdr, WriteData, ReadData);
 
-    initial begin
-        $readmemh("progmem.txt", progmem);
-    end
+    // initial begin
+    //     $readmemh("progmem.txt", progmem);
+    // end
 
 endmodule

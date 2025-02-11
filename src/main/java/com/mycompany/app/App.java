@@ -1,8 +1,10 @@
 package com.mycompany.app;
 
 import java.io.IOException;
-
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 
 import org.antlr.v4.runtime.CharStream;
@@ -17,6 +19,7 @@ import com.mycompany.app.ast.PrimaryTfCallASTNode;
 import com.mycompany.app.ast.ProceduralTimingControlStatementASTNode;
 import com.mycompany.app.domain.ModuleDescriptor;
 import com.mycompany.app.domain.ModuleDescriptorFactory;
+import com.mycompany.app.preprocessor.MaskingPreprocessor;
 
 import simulation.EvaluationEvent;
 import simulation.Event;
@@ -46,6 +49,8 @@ import systemverilog.sv2017Parser.Source_textContext;
  *
  */
 public class App {
+
+    private static final String INTERMEDIATE_FILE = "build/preprocessed.sv";
 
     public static void main(String[] args) throws IOException {
         // mainVerilog(args);
@@ -211,7 +216,11 @@ public class App {
         // String file = "src/test/resources/verilog_samples/user_defined_primitive.v";
         // String file = "src/test/resources/verilog_samples/uart_top.v";
 
-        String file = "src/test/resources/system_verilog_samples/uart_2.sv";
+        //String file = "src/test/resources/system_verilog_samples/uart_2.sv";
+
+        //String file = "src/test/resources/verilog_samples/wishbone_master.v";
+
+        String file = "src/test/resources/verilog_samples/region_usage.v";
 
         // String file =
         // "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/riscvsingle.sv";
@@ -263,82 +272,105 @@ public class App {
         // String file =
         // "src/test/resources/system_verilog_samples/module_with_local_variable.sv";
 
-        ASTNode rootASTNode = parseSystemVerilogFileToAST(file);
+        // create build folder
+        Files.createDirectories(Paths.get("build"));
+
+        MaskingPreprocessor maskingPreprocessor = new MaskingPreprocessor();
+        maskingPreprocessor.process(new File(file), new File(INTERMEDIATE_FILE));
+
+        //
+        // Construct AST
+        //
+
+        ASTNode rootASTNode = parseSystemVerilogFileToAST(INTERMEDIATE_FILE);
 
         //
         // Output AST
         //
 
-        System.out.println("");
-        System.out.println("AST -----------------------------");
-        System.out.println("");
+        boolean outputAST = true;
+        if (outputAST) {
 
-        StringBuilder stringBuilder = new StringBuilder();
-        rootASTNode.printRecursive(stringBuilder, 0);
+            System.out.println("");
+            System.out.println("AST -----------------------------");
+            System.out.println("");
 
-        System.out.println(stringBuilder.toString());
+            StringBuilder stringBuilder = new StringBuilder();
+            rootASTNode.printRecursive(stringBuilder, 0);
 
-        //
-        // Convert the AST of a module into a module descriptor
-        //
+            System.out.println(stringBuilder.toString());
 
-        //
-        // A module descriptor consists of:
-        // -- the module name
-        // -- all input and output ports to the module
-        // -- all parameters (TODO)
-        // -- all local variables of the module (TODO)
-        // -- a list of initial processes (TODO)
-        // -- a list of non-initial processes
-        // ---- assign is converted to a process (TODO)
-        // ---- if a module is instantiated within a module, a process for that
-        // instantiated module is created
-        //
+        }
 
-        ModuleDescriptorFactory moduleDescriptorFactory = new ModuleDescriptorFactory();
-        ModuleDescriptor moduleDescriptor = moduleDescriptorFactory.produce(rootASTNode);
+        boolean constructAST = false;
+        if (constructAST) {
 
-        System.out.println(moduleDescriptor);
+            //
+            // Convert the AST of a module into a module descriptor
+            //
 
-        //
-        // Simulation
-        //
+            //
+            // A module descriptor consists of:
+            // -- the module name
+            // -- all input and output ports to the module
+            // -- all parameters (TODO)
+            // -- all local variables of the module (TODO)
+            // -- a list of initial processes (TODO)
+            // -- a list of non-initial processes
+            // ---- assign is converted to a process (TODO)
+            // ---- if a module is instantiated within a module, a process for that
+            // instantiated module is created
+            //
 
-        System.out.println("");
-        System.out.println("Simulation -----------------------------");
-        System.out.println("");
+            ModuleDescriptorFactory moduleDescriptorFactory = new ModuleDescriptorFactory();
+            ModuleDescriptor moduleDescriptor = moduleDescriptorFactory.produce(rootASTNode);
 
-        ModuleDeclaractionASTNode module = (ModuleDeclaractionASTNode) rootASTNode.children.get(0);
+            System.out.println(moduleDescriptor);
 
-        // TODO when a module is instantiated, create an instance from the
-        // module definition and create a process that wraps that instance
+            //
+            // Simulation
+            //
 
-        TimeSlot timeSlot = new TimeSlot();
+            boolean simulation = false;
+            if (simulation) {
 
-        // check the module for initial blocks and create a EvaluationEvent for
-        // each inital block found. Insert the events into the active region of the
-        // timeslot
-        module.children.stream()
-                .filter(child -> child instanceof ProceduralTimingControlStatementASTNode)
-                .filter(child -> ((ProceduralTimingControlStatementASTNode) child).initial)
-                .map(child -> {
-                    EvaluationEvent event = new EvaluationEvent();
-                    event.process = (ProceduralTimingControlStatementASTNode) child;
-                    return event;
-                })
-                .forEach(child -> {
-                    // System.out.println(child);
-                    timeSlot.activeRegion.eventSet.add(child);
-                });
+                System.out.println("");
+                System.out.println("Simulation -----------------------------");
+                System.out.println("");
 
-        // System.out.println("a");
+                ModuleDeclaractionASTNode module = (ModuleDeclaractionASTNode) rootASTNode.children.get(0);
 
-        // while (some time slot is nonempty) {
-        // move to the first nonempty time slot and set T;
-        // execute_time_slot (T);
-        // }
+                // TODO when a module is instantiated, create an instance from the
+                // module definition and create a process that wraps that instance
 
-        executeTimeSlot(timeSlot);
+                TimeSlot timeSlot = new TimeSlot();
+
+                // check the module for initial blocks and create a EvaluationEvent for
+                // each inital block found. Insert the events into the active region of the
+                // timeslot
+                module.children.stream()
+                        .filter(child -> child instanceof ProceduralTimingControlStatementASTNode)
+                        .filter(child -> ((ProceduralTimingControlStatementASTNode) child).initial)
+                        .map(child -> {
+                            EvaluationEvent event = new EvaluationEvent();
+                            event.process = (ProceduralTimingControlStatementASTNode) child;
+                            return event;
+                        })
+                        .forEach(child -> {
+                            // System.out.println(child);
+                            timeSlot.activeRegion.eventSet.add(child);
+                        });
+
+                // System.out.println("a");
+
+                // while (some time slot is nonempty) {
+                // move to the first nonempty time slot and set T;
+                // execute_time_slot (T);
+                // }
+
+                executeTimeSlot(timeSlot);
+            }
+        }
     }
 
     private static ASTNode parseSystemVerilogFileToAST(String file) throws IOException {
@@ -377,7 +409,6 @@ public class App {
             walker.walk(printListener, root);
 
             System.out.println("Raw Output Traversal done.");
-
         }
 
         System.out.println("Parsing done.");

@@ -113,7 +113,6 @@ e.g.
 always #5 clock = ~clock;
 ```
 
-
 # Parameters in modules (Verilog and SystemVerilog)
 
 Parameters are available in
@@ -180,3 +179,17 @@ module uart #(
 
 endmodule
 ```
+
+# Difference parameter and localparam
+
+https://stackoverflow.com/questions/30288783/difference-between-parameter-and-localparam#:~:text=Verilog%20HDL%20local%20parameters%20are,module%20instance%20parameter%20value%20assignments.
+https://ocw.mit.edu/courses/6-884-complex-digital-systems-spring-2005/resources/parameter_models/
+
+Modules can contain parameters and local parameters in the #() section which
+precedes the () section for input and output ports.
+
+The parameter keyword allows the user of a module to override the default value
+when instanting the module.
+
+The localparam keyword prevents the user to override the localparam.
+localparam can be used to prevent modifiction from outside the module.

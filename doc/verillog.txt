@@ -1,0 +1,53 @@
+# Module declarations
+
+https://stackoverflow.com/questions/39116119/prefered-syntax-for-verilog-module-declaration
+
+## Legacy
+
+```
+module toplevel(clock,reset);
+    input clock;
+    input reset;
+
+    /* snip */
+endmodule
+```
+
+## Verilog 2005
+
+```
+module fadder(
+    input a,         // data in a
+    input b,         // data in b
+    input cin,       // carry in
+    output sum_out,  // sum output
+    output c_out     // carry output
+);
+
+/* snip */
+endmodule
+```
+
+# Verilog reg, wire and SystemVerilog logic
+
+https://www.verilogpro.com/verilog-reg-verilog-wire-systemverilog-logic/
+
+Verilog data types are divided into two main groups:
+- nets - store not value just interconnect modules (wire, tri, wand, supply0)
+- variables - store values (reg, integer, time, real, realtime)
+
+# Verilog equivalent to always, always_comb, always_ff, always_latch
+
+https://www.verilogpro.com/systemverilog-always_comb-always_ff/
+
+## always_comb
+always_comb -> always @*
+
+## always_ff
+always_ff -> always @(posedge clk)
+always_ff @(posedge clk, posedge reset) -> always @(posedge clk, posedge reset)
+
+https://stackoverflow.com/questions/23101717/difference-among-always-ff-always-comb-always-latch-and-always
+Represents a flip-flop (ff).
+The process is triggered (executed) on every positive edge of the clock.
+This replaces always @(posedge clk).
