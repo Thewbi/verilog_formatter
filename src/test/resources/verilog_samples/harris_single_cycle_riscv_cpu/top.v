@@ -1,8 +1,13 @@
 module top(
     input wire clk, reset,
     output wire [31:0] WriteData, DataAdr,
-    output wire MemWrite
-    );
+    output wire MemWrite);
+
+    initial
+    begin
+      $display("Hello, World");
+      $monitor("At time %t, PC = %h (%0d)", $time, PC, PC);
+    end
 
     wire [31:0] PC, Instr, ReadData;
 

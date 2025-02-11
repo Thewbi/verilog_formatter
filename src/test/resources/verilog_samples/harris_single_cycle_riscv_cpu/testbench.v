@@ -1,9 +1,9 @@
 module testbench();
 
-    logic clk;
-    logic reset;
-    logic [31:0] WriteData, DataAdr;
-    logic MemWrite;
+    reg clk;
+    reg reset;
+    wire [31:0] WriteData, DataAdr;
+    wire MemWrite;
 
     // instantiate device to be tested
     top dut(clk, reset, WriteData, DataAdr, MemWrite);
@@ -11,7 +11,8 @@ module testbench();
     // initialize test
     initial
         begin
-            reset <= 1; #22; reset <= 0;
+            reset <= 1;
+            #22; reset <= 0;
         end
 
     // generate clock to sequence tests

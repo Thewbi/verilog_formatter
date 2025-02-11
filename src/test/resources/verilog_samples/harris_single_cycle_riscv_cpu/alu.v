@@ -10,7 +10,6 @@ module alu(
     input   wire    [31:0]      b,
     input   wire    [2:0]       ALUControl,
     input   wire    [31:0]      ALUResult,
-    output   wire                Zero
-    );
+    output   wire               Zero);
 
 endmodule

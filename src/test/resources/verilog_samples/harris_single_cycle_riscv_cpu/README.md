@@ -43,5 +43,7 @@ C:\iverilog\bin\iverilog.exe -s riscvsingle -o riscv.vvp riscvsingle.v controlle
 
 C:\iverilog\bin\iverilog.exe -s top -o riscv.vvp top.v riscvsingle.v imem.v dmem.v controller.v datapath.v maindec.v flopr.v aludec.v alu.v adder.v mux2.v mux3.v regfile.v extend.v
 
+C:\iverilog\bin\iverilog.exe -s testbench -o riscv.vvp testbench.v top.v riscvsingle.v imem.v dmem.v controller.v datapath.v maindec.v flopr.v aludec.v alu.v adder.v mux2.v mux3.v regfile.v extend.v
+
 C:\iverilog\bin\vvp.exe riscv.vvp
 ```
