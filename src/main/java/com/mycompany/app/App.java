@@ -53,8 +53,8 @@ public class App {
     private static final String INTERMEDIATE_FILE = "build/preprocessed.sv";
 
     public static void main(String[] args) throws IOException {
-        mainVerilog(args);
-        //mainSystemVerilog(args);
+        //mainVerilog(args);
+        mainSystemVerilog(args);
     }
 
     /**
@@ -69,7 +69,6 @@ public class App {
 
         // String file = "src/test/resources/verilog_samples/temporal_construct.v";
         // String file = "src/test/resources/verilog_samples/fetch_stage.v";
-        // String file = "src/test/resources/verilog_samples/if_else_if_else.v";
 
         // String file = "src/test/resources/verilog_samples/scratchpad.v";
         // String file =
@@ -80,12 +79,7 @@ public class App {
 
         // String file =
         // "src/test/resources/verilog_samples/assignment_from_array_with_index.v";
-        // String file =
-        // "src/test/resources/verilog_samples/if_continuous_assignment.v";
-        // String file =
-        // "src/test/resources/verilog_samples/if_continuous_assignment_extended.v";
-        // String file =
-        // "src/test/resources/verilog_samples/if_else_without_begin_end.v";
+
         // String file = "src/test/resources/verilog_samples/command.v";
         //String file = "src/test/resources/verilog_samples/module.v"; // very complex
 
@@ -97,13 +91,20 @@ public class App {
         // String file = "src/test/resources/verilog_samples/if_complex_expression.v";
         // String file = "src/test/resources/verilog_samples/if_else_chain_simple.v";
         // String file = "src/test/resources/verilog_samples/if_else_chain_nested_if.v";
+        // String file = "src/test/resources/verilog_samples/if_else_if_else.v";
+        // String file =
+        // "src/test/resources/verilog_samples/if_continuous_assignment.v";
+        // String file =
+        // "src/test/resources/verilog_samples/if_continuous_assignment_extended.v";
+        // String file =
+        // "src/test/resources/verilog_samples/if_else_without_begin_end.v";
 
         // String file = "src/test/resources/verilog_samples/double_click.v";
         // String file = "src/test/resources/verilog_samples/loopback_device.v";
         // String file = "src/test/resources/verilog_samples/simple_module.v";
         // String file = "src/test/resources/verilog_samples/uart_top.v";
 
-        // String file = "src/test/resources/verilog_samples/module_with_parameters.v";
+        String file = "src/test/resources/verilog_samples/module_with_parameters.v";
         // String file = "src/test/resources/verilog_samples/module_instantiation.v";
         // String file = "src/test/resources/verilog_samples/module_instantiation2.v";
 
@@ -111,7 +112,7 @@ public class App {
 
         // String file = "src/test/resources/system_verilog_samples/package.sv";
 
-        String file = "src/test/resources/verilog_samples/region_usage.v"; // test
+        //String file = "src/test/resources/verilog_samples/range_usage.v"; // test
 
         System.out.println("File: \"" + file + "\"");
 
@@ -225,7 +226,7 @@ public class App {
 
         //String file = "src/test/resources/verilog_samples/wishbone_master.v";
 
-        String file = "src/test/resources/verilog_samples/region_usage.v";
+        String file = "src/test/resources/verilog_samples/range_usage.v";
 
         // String file =
         // "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/riscvsingle.sv";
@@ -402,8 +403,8 @@ public class App {
         // parse
         final Source_textContext root = parser.source_text();
 
-        // boolean printParseTree = true;
-        boolean printParseTree = false;
+        boolean printParseTree = true;
+        //boolean printParseTree = false;
         if (printParseTree) {
 
             System.out.println("Raw Output Traversal ...");

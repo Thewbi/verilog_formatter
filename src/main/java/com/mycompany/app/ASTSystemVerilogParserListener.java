@@ -30,11 +30,13 @@ import com.mycompany.app.ast.PortDirection;
 import com.mycompany.app.ast.PrimaryTfCallASTNode;
 import com.mycompany.app.ast.ProceduralTimingControlStatementASTNode;
 import com.mycompany.app.ast.RangeExpressionASTNode;
+import com.mycompany.app.ast.RegisterExpressionASTNode;
 import com.mycompany.app.ast.TypedASTNode;
 import com.mycompany.app.ast.VariableAssignmentASTNode;
 
 import systemverilog.sv2017Parser;
 import systemverilog.sv2017ParserBaseListener;
+import verilog.VerilogParser;
 
 public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
@@ -631,7 +633,6 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         if (currentNode instanceof ParameterListASTNode) {
             currentNode.children.add(astNode);
         } else {
-            // expressionStack.push(astNode);
             pushExpression(astNode);
         }
     }
@@ -710,17 +711,18 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
     @Override
     public void exitArray_range_expression(sv2017Parser.Array_range_expressionContext ctx) {
 
-        RangeExpressionASTNode astNode = new RangeExpressionASTNode();
-        astNode.ctx = ctx;
-        astNode.value = ctx.getText();
-        astNode.operator = null;
-        astNode.right = expressionStack.pop();
-        astNode.left = expressionStack.pop();
+        RangeExpressionASTNode rangeExpressionASTNode = new RangeExpressionASTNode();
+        rangeExpressionASTNode.ctx = ctx;
+        rangeExpressionASTNode.value = ctx.getText();
+        rangeExpressionASTNode.operator = null;
+        rangeExpressionASTNode.right = expressionStack.pop();
+        rangeExpressionASTNode.left = expressionStack.pop();
+        rangeExpressionASTNode.size = 2;
 
         if (currentNode instanceof ParameterListASTNode) {
-            currentNode.children.add(astNode);
+            currentNode.children.add(rangeExpressionASTNode);
         } else {
-            pushExpression(astNode);
+            pushExpression(rangeExpressionASTNode);
         }
     }
 
@@ -956,6 +958,7 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
     @Override
     public void exitList_of_arguments(sv2017Parser.List_of_argumentsContext ctx) {
+
         System.out.println("exitList_of_arguments");
 
         // ascend
@@ -1007,6 +1010,101 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
         astNode.parent = currentNode;
 
         currentNode.children.add(astNode);
+    }
+
+    @Override
+    public void enterBit_select(sv2017Parser.Bit_selectContext ctx) {
+    }
+
+    @Override
+    public void exitBit_select(sv2017Parser.Bit_selectContext ctx) {
+
+        RangeExpressionASTNode rangeExpressionASTNode = new RangeExpressionASTNode();
+
+        if (ctx.children.size() == 3) {
+
+            rangeExpressionASTNode.size = 1;
+            rangeExpressionASTNode.right = expressionStack.pop();
+
+        } else if (ctx.children.size() == 5) {
+
+            rangeExpressionASTNode.size = 2;
+            rangeExpressionASTNode.right = expressionStack.pop();
+            rangeExpressionASTNode.left = expressionStack.pop();
+
+        }
+
+        expressionStack.push(rangeExpressionASTNode);
+    }
+
+    @Override
+    public void enterPrimaryBitSelect(sv2017Parser.PrimaryBitSelectContext ctx) {
+    }
+
+    @Override
+    public void exitPrimaryBitSelect(sv2017Parser.PrimaryBitSelectContext ctx) {
+
+        // RangeExpressionASTNode rangeExpressionASTNode = new RangeExpressionASTNode();
+
+        // if (ctx.children.size() == 2) {
+
+        //     rangeExpressionASTNode.size = 1;
+        //     rangeExpressionASTNode.right = expressionStack.pop();
+
+        // } else if (ctx.children.size() == 3) {
+
+        //     rangeExpressionASTNode.size = 2;
+        //     rangeExpressionASTNode.right = expressionStack.pop();
+        //     rangeExpressionASTNode.left = expressionStack.pop();
+
+        // }
+
+        // expressionStack.push(rangeExpressionASTNode);
+
+        ExpressionStatementASTNode temp = expressionStack.pop();
+        if (temp instanceof RangeExpressionASTNode) {
+
+            // range expression
+            RangeExpressionASTNode rangeExpressionASTNode = (RangeExpressionASTNode) temp;
+
+            // register name
+            temp = expressionStack.pop();
+
+            RegisterExpressionASTNode registerExpressionASTNode = new RegisterExpressionASTNode();
+
+            registerExpressionASTNode.var = temp;
+            registerExpressionASTNode.range = rangeExpressionASTNode;
+
+            expressionStack.push(registerExpressionASTNode);
+        }
+    }
+
+    @Override
+    public void enterPrimaryIndex(sv2017Parser.PrimaryIndexContext ctx) {
+    }
+
+    @Override
+    public void exitPrimaryIndex(sv2017Parser.PrimaryIndexContext ctx) {
+
+        if (ctx.getChildCount() == 4) {
+
+            ExpressionStatementASTNode temp = expressionStack.pop();
+            if (temp instanceof RangeExpressionASTNode) {
+
+                // range expression
+                RangeExpressionASTNode rangeExpressionASTNode = (RangeExpressionASTNode) temp;
+
+                // register name
+                temp = expressionStack.pop();
+
+                RegisterExpressionASTNode registerExpressionASTNode = new RegisterExpressionASTNode();
+
+                registerExpressionASTNode.var = temp;
+                registerExpressionASTNode.range = rangeExpressionASTNode;
+
+                expressionStack.push(registerExpressionASTNode);
+            }
+        }
     }
 
 }

@@ -291,12 +291,16 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         RangeExpressionASTNode rangeExpressionASTNode = new RangeExpressionASTNode();
 
         if (ctx.children.size() == 1) {
+
             rangeExpressionASTNode.size = 1;
             rangeExpressionASTNode.right = expressionStack.pop();
+
         } else if (ctx.children.size() == 3) {
+
             rangeExpressionASTNode.size = 2;
             rangeExpressionASTNode.right = expressionStack.pop();
             rangeExpressionASTNode.left = expressionStack.pop();
+
         }
 
         expressionStack.push(rangeExpressionASTNode);
