@@ -224,9 +224,9 @@ public class App {
 
         //String file = "src/test/resources/system_verilog_samples/uart_2.sv";
 
-        //String file = "src/test/resources/verilog_samples/wishbone_master.v";
+        // String file = "src/test/resources/verilog_samples/wishbone_master.v";
 
-        String file = "src/test/resources/verilog_samples/range_usage.v";
+        //String file = "src/test/resources/verilog_samples/range_usage.v";
 
         // String file =
         // "src/test/resources/system_verilog_samples/harris_single_cycle_riscv_cpu/riscvsingle.sv";
@@ -268,10 +268,12 @@ public class App {
 
         // String file =
         // "src/test/resources/system_verilog_samples/module_instantiation.sv"; // test
-
         // String file =
         // "src/test/resources/system_verilog_samples/module_with_array_port.sv"; //
         // test
+
+        // todo: expression is missing
+        String file = "src/test/resources/verilog_samples/module_with_array_parameters.v";
 
         // String file = "src/test/resources/system_verilog_samples/assign.sv"; // test
 
