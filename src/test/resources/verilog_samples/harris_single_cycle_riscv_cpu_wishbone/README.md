@@ -1,13 +1,36 @@
 # Introduction
 
-This folder contains a verilog version of the single cycle RISCV CPU
+This folder contains a modified version of the single cycle RISCV CPU
 as outlined in the book Digital Design and Computer Architecture: RISC-V Edition
 Sarah L. Harris and David Harris
 
 https://pages.hmc.edu/harris/ddca/ddcarv.html
 
-It has been converted from SystemVerilog to Verilog so that it can be simulated
-on Windows using Icarus Verilog (which only supports Verilog).
+The modifications are
+- support the lw instruction to read from memory
+- if the address is the address of a memory mapped peripheral, then the wishbone master
+will talk to the peripheral because the memory mapper will multiplex the lines between
+the wishbone master and the respective perihperal.
+- if the address points to memory outside a memory mapped region, the lines are
+multiplexed to the memory wishbone slave which stands for normal RAM.
+
+This approach is used in Angelo Jacobo's RISCV core: https://github.com/AngeloJacobo/RISC-V
+
+- if the wishbone slave stalls the master, then the master will stall the host.
+The host in this case is the RISCV CPU. The RISV C CPU Is stalled by disabling the
+datapath, in other words the datapath will ignore the clock ticks and only
+the wishbone master will be run.
+
+1. format the file src\test\resources\verilog_samples\wishbone_master.v
+2. write a testbench for wishbone_master.v
+3. Copy the memory wishbone slave from Angelo Jacobo. Convert it to verilog
+4. Write a testbench for that memory wishbone slave
+5. Copy the memory wrapper
+6. Extend the RISV CPU with the wishbone master
+7. Run the example progmem.txt using code that is loaded from the memory slave
+8. Implement the lw instruction
+9. Add a UART wishbone slave
+10. Write an example that loads a single character from the wishbone slave.
 
 # Compiling
 cd into this folder

@@ -1,4 +1,4 @@
-module uart_top	(
+module wishbone_master (
     input		    i_reset,
     input		    i_cmd_stb,
     input	[33:0]	i_cmd_word,
@@ -6,7 +6,6 @@ module uart_top	(
     output		    o_rsp_stb,
     output		    o_rsp_word
 );
-
 
     assign	i_cmd_rd   = (i_cmd_stb)&&(i_cmd_word[33:32] == 2'b00);
     assign	i_cmd_wr   = (i_cmd_stb)&&(i_cmd_word[33:32] == 2'b01);
@@ -20,6 +19,7 @@ module uart_top	(
     initial	o_wb_stb = 1'b0;
     initial	newaddr  = 1'b0;
     initial	o_rsp_stb= 1'b0;
+
     always @(posedge i_clk)
     if ((i_reset)||(i_wb_err))
     begin

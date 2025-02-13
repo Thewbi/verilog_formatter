@@ -8,13 +8,20 @@ public class RangeExpressionASTNode extends ExpressionStatementASTNode {
 
     public ExpressionStatementASTNode right;
 
+    public int size;
+
     public void printRecursive(final StringBuilder stringBuilder, final int indent) {
 
         // indent and direction, type, name
         for (int i = 0; i < indent; i++) {
             stringBuilder.append("  ");
         }
-        stringBuilder.append("[").append(left.value).append(", " ).append(right.value).append("] ");
+
+        if (size == 1) {
+            stringBuilder.append("[").append(right.value).append("] ");
+        } else if (size == 2) {
+            stringBuilder.append("[").append(left.value).append(", " ).append(right.value).append("] ");
+        }
     }
 
     public void visit(ASTNodeVisitor astNodeVisitor) {
@@ -28,10 +35,13 @@ public class RangeExpressionASTNode extends ExpressionStatementASTNode {
     public String toString() {
 
         StringBuilder stringBuilder = new StringBuilder();
-        // stringBuilder.append(left.toString()).append(" ").append(right.toString());
 
-        left.printRecursive(stringBuilder, 0);
-        right.printRecursive(stringBuilder, 0);
+        if (size == 1) {
+            right.printRecursive(stringBuilder, 0);
+        } else if (size == 2) {
+            left.printRecursive(stringBuilder, 0);
+            right.printRecursive(stringBuilder, 0);
+        }
 
         return stringBuilder.toString();
     }

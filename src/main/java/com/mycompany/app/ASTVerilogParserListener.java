@@ -16,6 +16,8 @@ import com.mycompany.app.ast.ModuleDeclaractionASTNode;
 import com.mycompany.app.ast.NetAssignmentASTNode;
 import com.mycompany.app.ast.AssignmentASTNode;
 import com.mycompany.app.ast.ProceduralTimingControlStatementASTNode;
+import com.mycompany.app.ast.RangeExpressionASTNode;
+import com.mycompany.app.ast.RegisterExpressionASTNode;
 
 import verilog.VerilogParser;
 import verilog.VerilogParserBaseListener;
@@ -60,6 +62,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void enterCase_item(VerilogParser.Case_itemContext ctx) {
+
         CaseStatementItemASTNode astNode = new CaseStatementItemASTNode();
         astNode.value = "case_item";
 
@@ -86,6 +89,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void enterIf_generate_construct(VerilogParser.If_generate_constructContext ctx) {
+
         if (currentNode instanceof ConditionalStatementASTNode) {
             // nop
         } else {
@@ -104,6 +108,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void exitIf_generate_construct(VerilogParser.If_generate_constructContext ctx) {
+
         // exit if statement
         if (currentNode instanceof IfStatementASTNode) {
             ((IfStatementASTNode) currentNode).expression = expressionStack.pop();
@@ -116,6 +121,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void enterConditional_statement(VerilogParser.Conditional_statementContext ctx) {
+
         if (currentNode instanceof ConditionalStatementASTNode) {
             // nop
         } else {
@@ -143,6 +149,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     private void ascendFromConditionalStatementASTNode(ParserRuleContext ctx) {
+
         // exit if statement
         if (currentNode instanceof IfStatementASTNode) {
             ((IfStatementASTNode) currentNode).expression = expressionStack.pop();
@@ -172,7 +179,6 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
         NetAssignmentASTNode astNode = new NetAssignmentASTNode();
         astNode.ctx = ctx;
-
         astNode.expression = expressionStack.pop();
         astNode.target = expressionStack.pop();
         astNode.value = "net_assignment_statement (=)";
@@ -208,40 +214,38 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void exitConstant_expression(VerilogParser.Constant_expressionContext ctx) {
+
         int childCount = ctx.getChildCount();
         String text = ctx.getText();
         ParseTree child0 = ctx.getChild(0);
         ParseTree child1 = ctx.getChild(1);
+
         processExpression(ctx, childCount, text, child0, child1);
     }
 
-    @Override
-    public void enterExpression(VerilogParser.ExpressionContext ctx) {
+    // @Override
+    // public void enterExpression(VerilogParser.ExpressionContext ctx) {
 
-        if (ctx.getChildCount() > 2) {
+    // if (ctx.getChildCount() > 2) {
 
-            // try to turn an elvis operator (?:) into an if-statment
-            ParseTree operatorChildParseTree = ctx.getChild(1);
-            if (operatorChildParseTree.getText().equalsIgnoreCase("?")) {
-
-                System.out.println("Elvis has entered the building!");
-
-                // descendIntoConditionalStatementASTNode(ctx);
-            }
-
-        }
-
-    }
+    // // try to turn an elvis operator (?:) into an if-statment
+    // ParseTree operatorChildParseTree = ctx.getChild(1);
+    // if (operatorChildParseTree.getText().equalsIgnoreCase("?")) {
+    // System.out.println("Elvis has entered the building!");
+    // // descendIntoConditionalStatementASTNode(ctx);
+    // }
+    // }
+    // }
 
     @Override
     public void exitExpression(VerilogParser.ExpressionContext ctx) {
+
         int childCount = ctx.getChildCount();
         String text = ctx.getText();
         ParseTree child0 = ctx.getChild(0);
         ParseTree child1 = ctx.getChild(1);
-        processExpression(ctx, childCount, text, child0, child1);
 
-        // ascendFromConditionalStatementASTNode(ctx);
+        processExpression(ctx, childCount, text, child0, child1);
     }
 
     @Override
@@ -275,6 +279,55 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         astNode.operator = null;
 
         expressionStack.push(astNode);
+    }
+
+    @Override
+    public void enterRange_expression(VerilogParser.Range_expressionContext ctx) {
+    }
+
+    @Override
+    public void exitRange_expression(VerilogParser.Range_expressionContext ctx) {
+
+        RangeExpressionASTNode rangeExpressionASTNode = new RangeExpressionASTNode();
+
+        if (ctx.children.size() == 1) {
+            rangeExpressionASTNode.size = 1;
+            rangeExpressionASTNode.right = expressionStack.pop();
+        } else if (ctx.children.size() == 3) {
+            rangeExpressionASTNode.size = 2;
+            rangeExpressionASTNode.right = expressionStack.pop();
+            rangeExpressionASTNode.left = expressionStack.pop();
+        }
+
+        expressionStack.push(rangeExpressionASTNode);
+    }
+
+    @Override
+    public void enterPrimary(VerilogParser.PrimaryContext ctx) {
+    }
+
+    @Override
+    public void exitPrimary(VerilogParser.PrimaryContext ctx) {
+
+        if (ctx.getChildCount() == 2) {
+
+            ExpressionStatementASTNode temp = expressionStack.pop();
+            if (temp instanceof RangeExpressionASTNode) {
+
+                // range expression
+                RangeExpressionASTNode rangeExpressionASTNode = (RangeExpressionASTNode) temp;
+
+                // register name
+                temp = expressionStack.pop();
+
+                RegisterExpressionASTNode registerExpressionASTNode = new RegisterExpressionASTNode();
+
+                registerExpressionASTNode.var = temp;
+                registerExpressionASTNode.range = rangeExpressionASTNode;
+
+                expressionStack.push(registerExpressionASTNode);
+            }
+        }
     }
 
     private void processExpression(ParseTree ctx, int childCount, String text, ParseTree child0, ParseTree child1) {

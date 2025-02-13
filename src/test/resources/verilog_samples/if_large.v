@@ -47,7 +47,7 @@ begin
 
 	// Refresh
 	if ((REF_REQ == 1 | REFRESH == 1) & command_done == 0 & do_refresh == 0 & rp_done == 0
-	& do_reada == 0 & do_writea == 0)
+& do_reada == 0 & do_writea == 0)
 	do_refresh <= 1;
 	else
 	do_refresh <= 0;

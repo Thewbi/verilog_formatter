@@ -53,8 +53,8 @@ public class App {
     private static final String INTERMEDIATE_FILE = "build/preprocessed.sv";
 
     public static void main(String[] args) throws IOException {
-        // mainVerilog(args);
-        mainSystemVerilog(args);
+        mainVerilog(args);
+        //mainSystemVerilog(args);
     }
 
     /**
@@ -64,7 +64,7 @@ public class App {
 
         System.out.println("Lexing ...");
 
-        // String file = "src/test/resources/verilog_samples/elvis_operator.v";
+        // String file = "src/test/resources/verilog_samples/elvis_operator.v"; // test
         // String file = "src/test/resources/verilog_samples/elvis_operator_simple.v";
 
         // String file = "src/test/resources/verilog_samples/temporal_construct.v";
@@ -87,16 +87,17 @@ public class App {
         // String file =
         // "src/test/resources/verilog_samples/if_else_without_begin_end.v";
         // String file = "src/test/resources/verilog_samples/command.v";
-        // String file = "src/test/resources/verilog_samples/module.v";
-        // String file = "src/test/resources/verilog_samples/if_procedural.v";
-        // String file = "src/test/resources/verilog_samples/if_large.v";
+        //String file = "src/test/resources/verilog_samples/module.v"; // very complex
+
+        //String file = "src/test/resources/verilog_samples/if_procedural.v";
+        //String file = "src/test/resources/verilog_samples/if_large.v"; // todo: contains line break that cannot be parsed
         // String file = "src/test/resources/verilog_samples/if_large_fixed.v";
         // String file = "src/test/resources/verilog_samples/if_without_else.v";
         // String file = "src/test/resources/verilog_samples/if_else_chain.v";
         // String file = "src/test/resources/verilog_samples/if_complex_expression.v";
-        // // test
         // String file = "src/test/resources/verilog_samples/if_else_chain_simple.v";
         // String file = "src/test/resources/verilog_samples/if_else_chain_nested_if.v";
+
         // String file = "src/test/resources/verilog_samples/double_click.v";
         // String file = "src/test/resources/verilog_samples/loopback_device.v";
         // String file = "src/test/resources/verilog_samples/simple_module.v";
@@ -106,9 +107,13 @@ public class App {
         // String file = "src/test/resources/verilog_samples/module_instantiation.v";
         // String file = "src/test/resources/verilog_samples/module_instantiation2.v";
 
-        String file = "src/test/resources/verilog_samples/initial_block.v"; // test
+        //String file = "src/test/resources/verilog_samples/initial_block.v"; // test
 
         // String file = "src/test/resources/system_verilog_samples/package.sv";
+
+        String file = "src/test/resources/verilog_samples/region_usage.v"; // test
+
+        System.out.println("File: \"" + file + "\"");
 
         final CharStream charStream = CharStreams.fromFileName(file);
 
@@ -271,6 +276,8 @@ public class App {
 
         // String file =
         // "src/test/resources/system_verilog_samples/module_with_local_variable.sv";
+
+        System.out.println("File: \"" + file + "\"");
 
         // create build folder
         Files.createDirectories(Paths.get("build"));
