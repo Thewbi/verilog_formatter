@@ -36,7 +36,6 @@ import com.mycompany.app.ast.VariableAssignmentASTNode;
 
 import systemverilog.sv2017Parser;
 import systemverilog.sv2017ParserBaseListener;
-import verilog.VerilogParser;
 
 public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
@@ -1018,23 +1017,7 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
     @Override
     public void exitBit_select(sv2017Parser.Bit_selectContext ctx) {
-
-        RangeExpressionASTNode rangeExpressionASTNode = new RangeExpressionASTNode();
-
-        if (ctx.children.size() == 3) {
-
-            rangeExpressionASTNode.size = 1;
-            rangeExpressionASTNode.right = expressionStack.pop();
-
-        } else if (ctx.children.size() == 5) {
-
-            rangeExpressionASTNode.size = 2;
-            rangeExpressionASTNode.right = expressionStack.pop();
-            rangeExpressionASTNode.left = expressionStack.pop();
-
-        }
-
-        expressionStack.push(rangeExpressionASTNode);
+        consumeRangeExpressionASTNode(ctx);
     }
 
     @Override
@@ -1043,23 +1026,6 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
 
     @Override
     public void exitPrimaryBitSelect(sv2017Parser.PrimaryBitSelectContext ctx) {
-
-        // RangeExpressionASTNode rangeExpressionASTNode = new RangeExpressionASTNode();
-
-        // if (ctx.children.size() == 2) {
-
-        //     rangeExpressionASTNode.size = 1;
-        //     rangeExpressionASTNode.right = expressionStack.pop();
-
-        // } else if (ctx.children.size() == 3) {
-
-        //     rangeExpressionASTNode.size = 2;
-        //     rangeExpressionASTNode.right = expressionStack.pop();
-        //     rangeExpressionASTNode.left = expressionStack.pop();
-
-        // }
-
-        // expressionStack.push(rangeExpressionASTNode);
 
         ExpressionStatementASTNode temp = expressionStack.pop();
         if (temp instanceof RangeExpressionASTNode) {
@@ -1105,6 +1071,39 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
                 expressionStack.push(registerExpressionASTNode);
             }
         }
+    }
+
+    /**
+     * Example: module_with_array_parameters.v
+     */
+    @Override
+    public void enterPacked_dimension(sv2017Parser.Packed_dimensionContext ctx) {
+
+    }
+
+    @Override
+    public void exitPacked_dimension(sv2017Parser.Packed_dimensionContext ctx) {
+        consumeRangeExpressionASTNode(ctx);
+    }
+
+    private void consumeRangeExpressionASTNode(ParserRuleContext ctx) {
+
+        RangeExpressionASTNode rangeExpressionASTNode = new RangeExpressionASTNode();
+
+        if (ctx.children.size() == 3) {
+
+            rangeExpressionASTNode.size = 1;
+            rangeExpressionASTNode.right = expressionStack.pop();
+
+        } else if (ctx.children.size() == 5) {
+
+            rangeExpressionASTNode.size = 2;
+            rangeExpressionASTNode.right = expressionStack.pop();
+            rangeExpressionASTNode.left = expressionStack.pop();
+
+        }
+
+        expressionStack.push(rangeExpressionASTNode);
     }
 
 }

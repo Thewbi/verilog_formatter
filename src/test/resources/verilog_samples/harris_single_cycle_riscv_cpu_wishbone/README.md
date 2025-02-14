@@ -33,6 +33,7 @@ the wishbone master will be run.
 10. Write an example that loads a single character from the wishbone slave.
 
 # Compiling
+
 cd into this folder
 
 ```
@@ -91,5 +92,14 @@ del riscv.vpp
 
 C:\iverilog\bin\iverilog.exe -s testbench -o riscv.vvp testbench.v top.v riscvsingle.v imem.v dmem.v controller.v datapath.v maindec.v flopr.v aludec.v alu.v adder.v mux2.v mux3.v regfile.v extend.v
 
+C:\iverilog\bin\vvp.exe riscv.vvp
+```
+
+# Memory
+
+```
+del riscv.vpp
+C:\iverilog\bin\iverilog.exe -s main_memory -o riscv.vvp main_memory.v
+C:\iverilog\bin\iverilog.exe -s testbench -o riscv.vvp main_memory_testbench.v main_memory.v
 C:\iverilog\bin\vvp.exe riscv.vvp
 ```
