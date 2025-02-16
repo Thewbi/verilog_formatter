@@ -28,3 +28,4 @@ target/
 src/main/java/systemverilog
 src/main/java/verilog
 build/preprocessed.sv
+src/test/resources/verilog_samples/multi_cycle_riscv_cpu/riscv.vvp

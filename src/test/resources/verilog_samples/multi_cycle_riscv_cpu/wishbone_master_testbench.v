@@ -89,13 +89,23 @@ module wishbone_master_testbench();
         #10 i_reset = 1'b0;
 
         //
+        // To write data, first set the address via a write command.
+        // The master internally transitions into the WAITING STATE.
+        // Then set the data to write.
+        // The master transitions into the WAITING STATE and waits for the
+        // slave to answer
+        //
+
+        //
         // Prepare a write request - specify address
         //
 
         $display("write - set address");
 
         i_cmd_stb = 1; // without a strobe, the master will not decode the command
-        i_cmd_word = { 2'b10, 1'b0, 1'b1, 30'b101010101010101010101010101010 }; // set new base address without increment feature
+        // formulate a write command
+        // set new base address without increment feature
+        i_cmd_word = { 2'b10, 1'b0, 1'b1, 30'b101010101010101010101010101010 };
 
         #10;
 
@@ -106,7 +116,7 @@ module wishbone_master_testbench();
         $display("write - set data");
 
         i_cmd_stb = 1; // without a strobe, the master will not decode the command
-        i_cmd_word = { 2'b01, 32'hAABBCCDD }; // set new base address without increment feature
+        i_cmd_word = { 2'b01, 32'hAABBCCDD }; // set data to write
 
         #10
 
@@ -116,15 +126,28 @@ module wishbone_master_testbench();
 
         $display("write - slave acknowledges");
 
-        i_wb_stall = 1'b0;  // no stalls from the slave
-        i_wb_ack = 1'b1;    // slave acknowledges
+        i_wb_stall = 1'b0; // no stalls from the slave
+        i_wb_ack = 1'b1; // slave acknowledges
 
         // slave presents data - for writes, this is the default value
 
-        //i_cmd_word = 0;
-        i_cmd_stb = 0;
+        //
+        // host disables all transactions, master goes into the NO-STATE state!
+        //
 
-        #100;
+        i_cmd_stb = 0; // without a strobe, the master will not decode the command
+        i_cmd_word = 0;
+
+        // idle for a couple if ticks before performing a read
+        #30;
+
+        //
+        // To read data, first set the address via a read command.
+        // The master internally transitions into the WAITING STATE.
+        // Then set the data to write.
+        // The master transitions into the WAITING STATE and waits for the
+        // slave to answer
+        //
 
         $display("read - set address");
 
@@ -139,8 +162,8 @@ module wishbone_master_testbench();
 
         $display("read - slave acknowledges");
 
-        i_wb_stall = 1'b0;  // no stalls from the slave
-        i_wb_ack = 1'b1;    // slave acknowledges
+        i_wb_stall = 1'b0; // no stalls from the slave
+        i_wb_ack = 1'b1; // slave acknowledges
 
         // slave returns data that has been read
         i_wb_data = 32'h11223344;
@@ -148,61 +171,17 @@ module wishbone_master_testbench();
         #10
 
         //
-        // host disables all transactions
+        // host disables all transactions, master goes into the NO-STATE state!
         //
 
         i_cmd_stb = 0; // without a strobe, the master will not decode the command
         i_cmd_word = 0;
-        //i_cmd_stb = 1;
 
         #50;
 
         $finish;
 
-        // // set address to write data into the memory at
-        // i_wb_addr = 32'h00;
-        // // set data to write into the memory
-        // i_wb_data = 32'hAABBCCDD;
-        // // fill indexes into wb_data to show where data to be written is located
-        // i_wb_sel[0] = 1'b1;
-        // i_wb_sel[1] = 1'b1;
-        // i_wb_sel[2] = 1'b1;
-        // i_wb_sel[3] = 1'b1;
-
-        // // start wishbone cycle and strobe
-        // i_wb_cyc = 1'b1;
-        // i_wb_stb = 1'b1;
-
-        // // write enable the wishbone slave - perform a write
-        // i_wb_we = 1'b1;
-
-        // #50;
-
-        // // set address to read data out of the memory at
-        // i_wb_addr = 32'h00;
-        // // set data to write into the memory
-        // i_wb_data = 32'h00;
-
-        // // read enable the wishbone slave - perform a read
-        // i_wb_we = 1'b0;
-
-        // // start wishbone cycle and strobe
-        // i_wb_cyc = 1'b1;
-        // i_wb_stb = 1'b1;
-
     end
-
-    // always @(posedge o_wb_ack)
-    // begin
-    //     $display("ack received");
-
-    //     // // stop wishbone cycle and strobe
-    //     // i_wb_cyc = 1'b0;
-    //     // i_wb_stb = 1'b0;
-
-    //     // // write disable the wishbone slave
-    //     // i_wb_we = 1'b0;
-    // end
 
     // generate clock to sequence tests
     always
@@ -213,25 +192,5 @@ module wishbone_master_testbench();
         i_clk <= 0;
         #5;
     end
-
-    // // check results
-    // always @(negedge i_clk)
-    // begin
-    //     if ($time >= 200)
-    //     begin
-    //         $display("Simulation succeeded");
-    //         $stop;
-    //         $finish;
-    //     end
-    // end
-
-    // initial
-    //     begin
-    //         a <= 0; // non-blocking, evaluation of rhs happens directly, assignment takes place in NBA region
-    //         b <= 0; // non-blocking
-    //         #5
-    //         a <= 1; // non-blocking
-    //         b <= 2; // non-blocking
-    //     end
 
 endmodule
