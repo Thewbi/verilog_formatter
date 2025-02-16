@@ -8,4 +8,5 @@ module imem(
         $readmemh("progmem.txt", RAM);
 
     assign rd = RAM[a[31:2]]; // word aligned
+
 endmodule

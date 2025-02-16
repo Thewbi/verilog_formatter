@@ -14,14 +14,10 @@ module top(
     // instantiate processor
     riscvsingle rvsingle(clk, reset, PC, Instr, MemWrite, DataAdr, WriteData, ReadData);
 
-    // instruction and data memory
+    // instruction memory - initial memory for simulation is loaded in imem.v
     imem imem(PC, Instr);
+
+    // data memory
     dmem dmem(clk, MemWrite, DataAdr, WriteData, ReadData);
-
-    // initial begin
-    //     $readmemh("progmem.txt", progmem);
-    // end
-
-
 
 endmodule

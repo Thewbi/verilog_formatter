@@ -1,4 +1,4 @@
-module testbench();
+module main_memory_testbench();
 
     // logic [31:0] a, b;
     // logic [31:0] y;
