@@ -5,22 +5,25 @@ module wishbone_master_testbench();
 
     localparam MEMORY_DEPTH = 1024;
 
-    reg i_clk;
-    reg i_reset;
-    reg i_cmd_stb;
-    reg [33:0] i_cmd_word;
-    wire o_cmd_busy;
-    wire o_rsp_stb;
+    reg         i_clk;
+
+    // interface between the host and the master
+    reg         i_reset;
+    reg         i_cmd_stb;
+    reg  [33:0] i_cmd_word;
+    wire        o_cmd_busy;
+    wire        o_rsp_stb;
     wire [33:0] o_rsp_word;
 
-    reg i_wb_err;
-    reg i_wb_stall;
-    reg i_wb_ack;
-    reg [31:0] i_wb_data;
-    wire o_wb_cyc;
-    wire o_wb_stb;
+    // interface between the master and the slave
+    reg         i_wb_err;
+    reg         i_wb_stall;
+    reg         i_wb_ack;
+    reg  [31:0] i_wb_data;
+    wire        o_wb_cyc;
+    wire        o_wb_stb;
     wire [29:0] o_wb_addr;
-    wire o_wb_we;
+    wire        o_wb_we;
     wire [31:0] o_wb_data;
 
     // // Instruction Memory
@@ -53,19 +56,19 @@ module wishbone_master_testbench();
         // wishbone
         i_wb_err,
         i_wb_stall,
-        i_wb_ack,
-        i_wb_data,
-        o_wb_cyc,
-        o_wb_stb,
-        o_wb_addr,
-        o_wb_we,
-        o_wb_data
+        i_wb_ack,       // slave acknowledges the execution of the wishbone transaction
+        i_wb_data,      // slave to master: this data has been read
+        o_wb_cyc,       // activates the slave. The slave will only listen, when there is a cycle
+        o_wb_stb,       // high during the strobe
+        o_wb_addr,      // master to slave: this address is to read/write
+        o_wb_we,        // master to slave: when 1 perform write, when 0 perform read
+        o_wb_data       // master to slave: this is the data to write at the address
     );
 
     initial
     begin
-        $monitor("At time %t, i_clk = %0d, o_wb_cyc = %d, o_wb_stb = %d, o_cmd_busy = %d, o_rsp_stb = %d, o_rsp_word = %0h, o_wb_addr = %0h",
-            $time, i_clk, o_wb_cyc, o_wb_stb, o_cmd_busy, o_rsp_stb, o_rsp_word, o_wb_addr);
+        $monitor("At time %t, i_clk = %0d, o_wb_cyc = %d, o_wb_stb = %d, o_wb_we = %d, o_cmd_busy = %d, o_rsp_stb = %d, o_rsp_word = %h, o_wb_addr = %0h, o_wb_data = %0h",
+            $time, i_clk, o_wb_cyc, o_wb_stb, o_wb_we, o_cmd_busy, o_rsp_stb, o_rsp_word, o_wb_addr, o_wb_data);
     end
 
     // initialize test
@@ -83,20 +86,76 @@ module wishbone_master_testbench();
         $display("reset");
 
         i_reset = 1'b1;
-        #30 i_reset = 1'b0;
-
-        #100;
+        #10 i_reset = 1'b0;
 
         //
-        // Prepare a write request
+        // Prepare a write request - specify address
         //
 
-        $display("write");
+        $display("write - set address");
 
         i_cmd_stb = 1; // without a strobe, the master will not decode the command
         i_cmd_word = { 2'b10, 1'b0, 1'b1, 30'b101010101010101010101010101010 }; // set new base address without increment feature
 
-        #200;
+        #10;
+
+        //
+        // Prepare a write request - specify data
+        //
+
+        $display("write - set data");
+
+        i_cmd_stb = 1; // without a strobe, the master will not decode the command
+        i_cmd_word = { 2'b01, 32'hAABBCCDD }; // set new base address without increment feature
+
+        #10
+
+        //
+        // slave acknowledges
+        //
+
+        $display("write - slave acknowledges");
+
+        i_wb_stall = 1'b0;  // no stalls from the slave
+        i_wb_ack = 1'b1;    // slave acknowledges
+
+        // slave presents data - for writes, this is the default value
+
+        //i_cmd_word = 0;
+        i_cmd_stb = 0;
+
+        #100;
+
+        $display("read - set address");
+
+        i_cmd_stb = 1; // without a strobe, the master will not decode the command
+        i_cmd_word = { 2'b00, 30'b00101010101010101010101010101010 }; // set new base address without increment feature
+
+        #10
+
+        //
+        // slave acknowledges
+        //
+
+        $display("read - slave acknowledges");
+
+        i_wb_stall = 1'b0;  // no stalls from the slave
+        i_wb_ack = 1'b1;    // slave acknowledges
+
+        // slave returns data that has been read
+        i_wb_data = 32'h11223344;
+
+        #10
+
+        //
+        // host disables all transactions
+        //
+
+        i_cmd_stb = 0; // without a strobe, the master will not decode the command
+        i_cmd_word = 0;
+        //i_cmd_stb = 1;
+
+        #50;
 
         $finish;
 
@@ -130,6 +189,7 @@ module wishbone_master_testbench();
         // // start wishbone cycle and strobe
         // i_wb_cyc = 1'b1;
         // i_wb_stb = 1'b1;
+
     end
 
     // always @(posedge o_wb_ack)

@@ -5,14 +5,14 @@
 //
 // # (i_cmd_word) 34 bit Command Format
 //
-// | 33 | 32 | Type           | 31 - 0 |
-// | -- | -- | -------------- | ------ |
-// |  0 |  0 | Read request   | ignore the rest of the 32-bits, ACK on output |
-// |  0 |  1 | Write request  | the 32-bit data contains the word to be written |
-// |  1 |  0 | Set an address | If bit 31 is set, we’ll add this value to the current bus address.
-//                              If bit 30 is set, the address will be incremented upon each bus access.
-//                              bits 29 to 0 contain the actual address |
-// |  1 |  1 | Bus Reset      | 4’h0, 28’hxx, |
+// | 33 | 32 | Type                                 | 31 - 0 |
+// | -- | -- | ------------------------------------ | ------ |
+// |  0 |  0 | Read request                         | ignore the rest of the 32-bits, ACK on output |
+// |  0 |  1 | Write request - Set data             | the 32-bit data contains the word to be written |
+// |  1 |  0 | Read/Write request - Set an address  | If bit 31 is set, we’ll add this value to the current bus address.
+//                                                    If bit 30 is set, the address will be incremented upon each bus access.
+//                                                    bits 29 to 0 contain the actual address |
+// |  1 |  1 | Bus Reset                            | 4’h0, 28’hxx,  |
 //
 // # (o_rsp_word) 34 bit Command Format
 //
@@ -33,6 +33,8 @@
 
 module wishbone_master (
     input               i_clk,          // clock signal
+
+    // interface between the host and the master
     input               i_reset,        // wishbone master performs a reset
     input               i_cmd_stb,      // the host tells the master that it has provided address and data and that the strobe can begin
     input   [33:0]      i_cmd_word,     // (34 bits) data to write wrapped in a command
@@ -40,9 +42,10 @@ module wishbone_master (
     output  reg         o_rsp_stb,      // when this value is 1, then the master is ready to start a strobe
     output  reg [33:0]  o_rsp_word,     // (34 bits) data that has been read (or dummy data on a read)
 
+    // interface between the master and the slave
     input               i_wb_err,       // an error occured, the wishbone master has to reset
-    input               i_wb_stall,     //
-    input               i_wb_ack,       //
+    input               i_wb_stall,     // slave stalls
+    input               i_wb_ack,       // slave acknowledges the execution of the wishbone transaction
     input   [31:0]      i_wb_data,      //
     output  reg         o_wb_cyc,       //
     output  reg         o_wb_stb,       //
@@ -176,6 +179,7 @@ module wishbone_master (
             end
 
             // to slave: this is a write request or not
+            $display("i_cmd_wr = %b", i_cmd_wr);
             o_wb_we <= i_cmd_wr;
 
             // on a read or write request, activate the bus and go to the bus
@@ -193,7 +197,6 @@ module wishbone_master (
                 o_wb_data <= i_cmd_word[31:0]; // to slave: data to write
             end
         end
-
         // the host keeps the strobe active until it sees a i_wb_ack from the slave
         // When the slave asserts i_wb_ack, the host will deassert o_wb_stb.
         //
@@ -239,8 +242,12 @@ module wishbone_master (
                 // quietly transition back to idle.
                 if (i_wb_ack)
                 begin
-                    o_wb_cyc <= 1'b0; // to slave: cycle is over
-                    o_rsp_stb <= 1'b1; // to host: ???
+
+                    $display("SLAVE ACK DURING WAITING STATE");
+
+                    o_wb_cyc    <= 1'b0; // to slave: cycle is over
+                    o_cmd_busy  <= 1'b0; // to host: not busy any more
+                    o_rsp_stb   <= 1'b1; // to host: ???
 
                     if (o_wb_we)
                     begin
@@ -252,14 +259,19 @@ module wishbone_master (
                         // to host: read has been performed, here is the read data
                         o_rsp_word <= { `RSP_SUB_DATA, i_wb_data };
                     end
+
+                    // back to idle state
                 end
             end
-        end else if (o_wb_cyc) // state to wait for the slave responding with the data read
+        end
+        else if (o_wb_cyc) // state to wait for the slave responding with the data read
         begin
 
             //
-            // In the waiting state
+            // In the cycle end state
             //
+
+            $display("[WISHBONE MASTER] CYCLE END STATE");
 
             // reset newaddr to NOT acknowledge to the host when the idle
             // state is entered again
@@ -268,10 +280,14 @@ module wishbone_master (
             // slave answers with an ack
             if (i_wb_ack)
             begin
+
+                $display("SLAVE ACK DURING CYCLE END STATE");
+
                 o_wb_cyc    <= 1'b0; // to slave: cycle is over
                 o_cmd_busy  <= 1'b0; // to host: not busy any more
-
                 o_rsp_stb   <= 1'b1; // to host: ???
+
+                //o_wb_stb <= 0;
 
                 if (o_wb_we)
                 begin
@@ -285,6 +301,10 @@ module wishbone_master (
                     o_rsp_word <= { `RSP_SUB_DATA, i_wb_data };
                 end
             end
+        end
+        else
+        begin
+            $display("[MASTER] NO STATE!");
         end
     end
 
