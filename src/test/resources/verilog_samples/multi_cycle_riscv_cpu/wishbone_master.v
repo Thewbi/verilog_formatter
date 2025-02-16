@@ -33,9 +33,9 @@
 
 module wishbone_master (
     input               i_clk,          // clock signal
+    input               i_reset,        // wishbone master performs a reset
 
     // interface between the host and the master
-    input               i_reset,        // wishbone master performs a reset
     input               i_cmd_stb,      // the host tells the master that it has provided address and data and that the strobe can begin
     input   [33:0]      i_cmd_word,     // (34 bits) data to write wrapped in a command
     output  reg	        o_cmd_busy,     // the client stalls the master, the master forwards the stall signal to the host here
@@ -46,12 +46,12 @@ module wishbone_master (
     input               i_wb_err,       // an error occured, the wishbone master has to reset
     input               i_wb_stall,     // slave stalls
     input               i_wb_ack,       // slave acknowledges the execution of the wishbone transaction
-    input   [31:0]      i_wb_data,      //
+    input   wire [31:0] i_wb_data,      // slave returns read data here
     output  reg         o_wb_cyc,       //
-    output  reg         o_wb_stb,       //
-    output  reg [31:0]  o_wb_addr,      //
+    output  reg         o_wb_stb,       // without strobe, the slave is disabled
+    output  reg [ 9:0]  o_wb_addr,      //
     output  reg         o_wb_we,        //
-    output  reg [31:0]  o_wb_data       //
+    output  reg [31:0]  o_wb_data       // data for the slave to process is output here
 );
 
     reg newaddr;
@@ -179,7 +179,7 @@ module wishbone_master (
             end
 
             // to slave: this is a write request or not
-            $display("i_cmd_wr = %b", i_cmd_wr);
+            $display("i_cmd_wr = %b, i_cmd_rd = %b, i_cmd_bus = %d", i_cmd_wr, i_cmd_rd, i_cmd_bus);
             o_wb_we <= i_cmd_wr;
 
             // on a read or write request, activate the bus and go to the bus
@@ -187,6 +187,7 @@ module wishbone_master (
             // waiting for the slave to acknowledge, stall or err-out)
             if (i_cmd_bus)
             begin
+                $display("[MASTER] start a transcation");
                 o_wb_cyc    <= 1'b1; // to slave: start a cycle
                 o_wb_stb    <= 1'b1; // to slave: start a strobe
                 o_cmd_busy  <= 1'b1; // to host: master is busy
@@ -231,14 +232,14 @@ module wishbone_master (
             if (!i_wb_stall) // the slave does not stall. Error terminating signals are not considered here!
             begin
 
-                // The request has been accepted by the slave, do not request again.
+                // the request has been accepted by the slave, do not request again.
                 o_wb_stb  <= 1'b0;  // to slave: master does not drive the strobe line any more
                                     // this makes the state machine go to the next state on the next clock cycle
 
                 // increment the address for the auto increment feature
                 o_wb_addr <= o_wb_addr + inc;
 
-                // If we get an ack from the slave on the same cycle as the request,
+                // if we get an ack from the slave on the same cycle as the request,
                 // quietly transition back to idle.
                 if (i_wb_ack)
                 begin

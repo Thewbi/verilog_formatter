@@ -3,24 +3,29 @@
 // Instruction and data memory (combined memory)
 // With wishbone interface
 module main_memory #(parameter MEMORY_DEPTH=1024) (
+
     input wire i_clk,
-    // Instruction Memory
-    input wire[$clog2(MEMORY_DEPTH)-1:0] i_inst_addr,
-    output reg[31:0] o_inst_out,
-    input wire i_stb_inst, // request for instruction
-    output reg o_ack_inst, // ack (high if new instruction is now on the bus)
-    // Data Memory
-    input wire i_wb_cyc,
-    input wire i_wb_stb,
-    input wire i_wb_we,
-    input wire[$clog2(MEMORY_DEPTH)-1:0] i_wb_addr,
-    input wire[31:0] i_wb_data,
-    input wire[3:0] i_wb_sel, // wb_sel is basically an index into wb_data and shows,
-                              // where data inside wb_data is located to act on during write cycles
-    output reg o_wb_ack,
-    output wire o_wb_stall,
-    output reg[31:0] o_wb_data
+
+    // // custom interface for accessing instructions directly. I think this is some kind of debug interface
+    // input   wire [$clog2(MEMORY_DEPTH)-1:0] i_inst_addr,
+    // output  reg  [31:0]                     o_inst_out,
+    // input   wire                            i_stb_inst, // request for instruction
+    // output  reg                             o_ack_inst, // ack (high if new instruction is now on the bus)
+
+    // wishbone interface
+    input   wire                            i_wb_cyc,
+    input   wire                            i_wb_stb,
+    input   wire                            i_wb_we,    // 1 = write, 0 = read
+    input   wire [$clog2(MEMORY_DEPTH)-1:0] i_wb_addr,
+    input   wire [31:0]                     i_wb_data,
+    // wb_sel is basically an index into wb_data and shows,
+    // where data inside wb_data is located to act on during write cycles
+    input   wire [3:0]                      i_wb_sel, // this could be hardcoded to an array that has all elements set to 1 so all elements are indexed
+    output  reg                             o_wb_ack,
+    output  wire                            o_wb_stall,
+    output  reg [31:0]                      o_wb_data
 );
+
     reg[31:0] memory_regfile[MEMORY_DEPTH/4 - 1:0];
 
     // never stall
@@ -29,42 +34,88 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
     // initialize memory to zero
     initial
     begin
-        o_ack_inst <= 0;
+
+        // debug interface
+        // o_ack_inst <= 0;
+        // o_inst_out <= 0;
+
+        // wishbone interface
         o_wb_ack <= 0;
-        o_inst_out <= 0;
+    end
+
+
+    always @(posedge i_clk)
+    begin
+        $display("[mem] signals: i_wb_we: %d, i_wb_stb: %d, i_wb_cyc: %d", i_wb_we, i_wb_stb, i_wb_cyc);
     end
 
     // reading must be registered to be inferred as block ram
     always @(posedge i_clk)
-    begin
+        begin
 
-        $display("[mem] reading");
+            if (!i_wb_we && i_wb_stb && i_wb_cyc)
+                begin
+                    $display("[mem] reading. i_wb_addr = %0h", i_wb_addr);
 
-        o_ack_inst <= i_stb_inst; // go high next cycle after receiving request (data o_inst_out is also sent at next cycle)
-        o_wb_ack <= i_wb_stb && i_wb_cyc;
-        o_inst_out <= memory_regfile[{i_inst_addr>>2}]; // read instruction
-        o_wb_data <= memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]]; // read data
-    end
+                    // debug interface
+                    // o_ack_inst  <= i_stb_inst; // go high next cycle after receiving request (data o_inst_out is also sent at next cycle)
+                    // o_inst_out  <= memory_regfile[{i_inst_addr >> 2}]; // read instruction
+
+                    // wishbone interface
+                    o_wb_ack    <= i_wb_stb && i_wb_cyc;
+                    o_wb_data   <= memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]]; // read data
+
+                    $display("[mem] reading. o_wb_data = %0h", o_wb_data);
+                end
+            else
+                begin
+                    $display("[mem] not reading");
+                end
+
+        end
 
     // write data
     always @(posedge i_clk)
     begin
 
-        if (i_wb_we && i_wb_stb && i_wb_cyc) begin
+        if (i_wb_we && i_wb_stb && i_wb_cyc)
+            begin
 
-            $display("[mem] writing");
+                $display("[mem] writing. i_wb_addr = %0h", i_wb_addr);
+                $display("[mem] writing. A = %0h, B = %0h, C = %0h, D = %0h", i_wb_data[ 7: 0], i_wb_data[15: 8], i_wb_data[23:16], i_wb_data[31:24]);
 
-            // wb_sel is an index into the wb_data array and is used during write cycles
-            // The slave will only access data from wb_data when it is indexed by wb_sel
-            if(i_wb_sel[0])
-                memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]][7:0] <= i_wb_data[7:0];
-            if(i_wb_sel[1])
-                memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]][15:8] <= i_wb_data[15:8];
-            if(i_wb_sel[2])
-                memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]][23:16] <= i_wb_data[23:16];
-            if(i_wb_sel[3])
-                memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]][31:24] <= i_wb_data[31:24];
-        end
+                // wb_sel is an index into the wb_data array and is used during write cycles
+                // The slave will only access data from wb_data when it is indexed by wb_sel
+                if (i_wb_sel[0])
+                begin
+                    $display("[mem] writing A");
+                    memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]][ 7: 0] <= i_wb_data[ 7: 0];
+                end
+                if (i_wb_sel[1])
+                begin
+                    $display("[mem] writing B");
+                    memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]][15: 8] <= i_wb_data[15: 8];
+                end
+                if (i_wb_sel[2])
+                begin
+                    $display("[mem] writing C");
+                    memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]][23:16] <= i_wb_data[23:16];
+                end
+                if (i_wb_sel[3])
+                begin
+                    $display("[mem] writing D");
+                    memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]][31:24] <= i_wb_data[31:24];
+                end
+
+                $display("MEMORY CONTENT: %0h", memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]][31:0]);
+
+                o_wb_ack <= 1'b1;
+            end
+        else
+            begin
+                $display("[mem] not writing");
+            end
+
     end
 
 endmodule

@@ -1,8 +1,5 @@
 module wishbone_master_testbench();
 
-    // logic [31:0] a, b;
-    // logic [31:0] y;
-
     localparam MEMORY_DEPTH = 1024;
 
     reg         i_clk;
@@ -22,7 +19,7 @@ module wishbone_master_testbench();
     reg  [31:0] i_wb_data;
     wire        o_wb_cyc;
     wire        o_wb_stb;
-    wire [29:0] o_wb_addr;
+    wire [ 9:0] o_wb_addr;
     wire        o_wb_we;
     wire [31:0] o_wb_data;
 
@@ -152,7 +149,8 @@ module wishbone_master_testbench();
         $display("read - set address");
 
         i_cmd_stb = 1; // without a strobe, the master will not decode the command
-        i_cmd_word = { 2'b00, 30'b00101010101010101010101010101010 }; // set new base address without increment feature
+        //i_cmd_word = { 2'b00, 30'b00101010101010101010101010101010 }; // set new base address without increment feature
+        i_cmd_word = { 2'b00, 10'b1010101010 }; // set new base address without increment feature
 
         #10
 

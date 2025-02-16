@@ -16,6 +16,15 @@ C:\iverilog\bin\iverilog.exe -s wishbone_master_testbench -o riscv.vvp wishbone_
 C:\iverilog\bin\vvp.exe riscv.vvp
 ```
 
+# Top module
+
+```
+del riscv.vpp
+C:\iverilog\bin\iverilog.exe -s top -o riscv.vvp top.v wishbone_master.v main_memory.v
+C:\iverilog\bin\iverilog.exe -s top_testbench -o riscv.vvp top_testbench.v top.v wishbone_master.v main_memory.v
+C:\iverilog\bin\vvp.exe riscv.vvp
+```
+
 # Preprocessor
 
 Icarus Verilog has a preprocessor build in.
