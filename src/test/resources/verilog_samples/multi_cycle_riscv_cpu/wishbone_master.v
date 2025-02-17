@@ -72,6 +72,8 @@ module wishbone_master (
     always @(posedge i_clk)
     begin
 
+        $display("");
+
         if ((i_reset) || (i_wb_err))
         begin
 
@@ -95,17 +97,17 @@ module wishbone_master (
             // Return over the command interface that we just had an error,
             // or a bus reset
             if (i_reset)
-            begin
-                // to host: output code for Reset as data (For read requests,
-                // the host receives the read data here). For write requests,
-                // this is abused to return status code about the outcome of the write
-                o_rsp_word <= `RSP_RESET;
-            end
+                begin
+                    // to host: output code for Reset as data (For read requests,
+                    // the host receives the read data here). For write requests,
+                    // this is abused to return status code about the outcome of the write
+                    o_rsp_word <= `RSP_RESET;
+                end
             else
-            begin
-                // to host: output error code
-                o_rsp_word <= `RSP_BUS_ERROR;
-            end
+                begin
+                    // to host: output error code
+                    o_rsp_word <= `RSP_BUS_ERROR;
+                end
 
         end
         // from host: i_cmd_stb - the command word is valid
@@ -137,7 +139,6 @@ module wishbone_master (
                     // just use the base address to read data from
                     o_wb_addr <= i_cmd_word[29:0];
 
-                    //$display("[WISHBONE MASTER] IDLE STATE - no_auto increment - o_wb_addr = %0h", i_cmd_word[29:0]);
                     $display("[WISHBONE MASTER] IDLE STATE - no_auto increment - o_wb_addr = %b", i_cmd_word[29:0]);
                 end
                 else
@@ -195,6 +196,7 @@ module wishbone_master (
 
             if (i_cmd_wr)
             begin
+                $display("[MASTER] presenting data to slave: %h", i_cmd_word[31:0]);
                 o_wb_data <= i_cmd_word[31:0]; // to slave: data to write
             end
         end
@@ -233,8 +235,8 @@ module wishbone_master (
             begin
 
                 // the request has been accepted by the slave, do not request again.
-                o_wb_stb  <= 1'b0;  // to slave: master does not drive the strobe line any more
-                                    // this makes the state machine go to the next state on the next clock cycle
+                o_wb_stb  <= 1'b0; // to slave: master does not drive the strobe line any more
+                                   // this makes the state machine go to the next state on the next clock cycle
 
                 // increment the address for the auto increment feature
                 o_wb_addr <= o_wb_addr + inc;
@@ -244,7 +246,7 @@ module wishbone_master (
                 if (i_wb_ack)
                 begin
 
-                    $display("SLAVE ACK DURING WAITING STATE");
+                    $display("SLAVE ACK DURING WAITING STATE. o_wb_we = %d", o_wb_we);
 
                     o_wb_cyc    <= 1'b0; // to slave: cycle is over
                     o_cmd_busy  <= 1'b0; // to host: not busy any more
@@ -302,6 +304,10 @@ module wishbone_master (
                     o_rsp_word <= { `RSP_SUB_DATA, i_wb_data };
                 end
             end
+
+            o_wb_we = 0;
+            o_wb_cyc = 0;
+            o_wb_stb = 0;
         end
         else
         begin

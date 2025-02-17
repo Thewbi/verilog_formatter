@@ -42,6 +42,7 @@ module top_testbench();
             //
 
             $display("");
+            $display("-----------------------------------------------------------------");
             $display("[top_testbench] start");
 
             clk <= 0;
@@ -54,6 +55,7 @@ module top_testbench();
             #30
 
             $display("");
+            $display("-----------------------------------------------------------------");
             $display("[top_testbench] reset");
 
             reset = 1'b0;
@@ -65,11 +67,14 @@ module top_testbench();
             #30
 
             $display("");
+            $display("-----------------------------------------------------------------");
             $display("[top_testbench] write");
 
             //
             // address
             //
+
+            $display("[top_testbench] ADDRESS ADDRESS ADDRESS");
 
             cmd_stb = 1;
             // formulate a write command
@@ -78,49 +83,78 @@ module top_testbench();
             //cmd_word = { 2'b10, 1'b0, 1'b1, 30'b101010101010101010101010101010 };
               cmd_word = { 2'b10, 1'b0, 1'b1, 30'b000000000000000000000000000000 };
 
-            #30
+            #10
 
             //
             // data
             //
 
+            $display("[top_testbench] DATA DATA DATA");
+
             cmd_stb = 1; // without a strobe, the master will not decode the command
             cmd_word = { 2'b01, 32'hAABBCCDD }; // set data to write
+
+
+
+            #10 cmd_stb = 0;
+
+
+
+
+
+
 
             //
             // Perform a read
             //
 
-            #100
+            #30 cmd_stb = 1;
 
             $display("");
+            $display("-----------------------------------------------------------------");
             $display("[top_testbench] reading 1");
 
-            cmd_stb = 1; // without a strobe, the master will not decode the command
+
+
+            // without a strobe, the master will not decode the command
+
+
             //cmd_word = { 2'b00, 10'b1010101010 }; // set new base address without increment feature
             //cmd_word = { 2'b00, 32'b00101010101010101010101010101000 };
               cmd_word = { 2'b00, 32'b00000000000000000000000000000000 };
 
-            //
-            // Perform a second read
-            //
 
-            #100
 
-            $display("");
-            $display("[top_testbench] reading 2");
+            #10 cmd_stb = 0;
 
-            cmd_stb = 1; // without a strobe, the master will not decode the command
-            //cmd_word = { 2'b00, 10'b0000000000 }; // set new base address without increment feature
-              cmd_word = { 2'b00, 32'b00000000000000000000000000000000 };
+            #5
 
-            //
-            // End of test
-            //
+
+
+
+
+            // //
+            // // Perform a second read
+            // //
+
+            // #100
+
+            // $display("");
+            // $display("-----------------------------------------------------------------");
+            // $display("[top_testbench] reading 2");
+
+            // cmd_stb = 1; // without a strobe, the master will not decode the command
+            // //cmd_word = { 2'b00, 10'b0000000000 }; // set new base address without increment feature
+            //   cmd_word = { 2'b00, 32'b00000000000000000000000000000000 };
+
+            // //
+            // // End of test
+            // //
 
             #50;
 
             $display("");
+            $display("-----------------------------------------------------------------");
             $display("[top_testbench] finish");
 
             $finish;
@@ -136,4 +170,5 @@ module top_testbench();
         clk <= 0;
         #5;
     end
+
 endmodule
