@@ -110,11 +110,11 @@ module top(
         wb_stb,         // strobe
         wb_we,          // 1 = write, 0 = read
         wb_addr,        // address to read to / write from
-        wb_data_output,        // data to write
+        wb_data_output, // data to write
         wb_sel,         // index into data to write
         wb_ack,         // slave acknowledge
         wb_stall,       // slave stall
-        wb_data  // slave returns read data
+        wb_data         // slave returns read data
     );
 
 endmodule

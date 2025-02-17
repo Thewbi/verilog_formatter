@@ -108,48 +108,79 @@ module top_testbench();
             // Perform a read
             //
 
-            #30 cmd_stb = 1;
+            #30 cmd_stb = 1; // without a strobe, the master will not decode the command
 
             $display("");
             $display("-----------------------------------------------------------------");
             $display("[top_testbench] reading 1");
 
+            //
+            // address
+            //
 
+            $display("[top_testbench] ADDRESS ADDRESS ADDRESS");
 
-            // without a strobe, the master will not decode the command
+            cmd_stb = 1;
+            // formulate a read command
+            // set new base address without increment feature
+            cmd_word = { 2'b10, 1'b0, 1'b1, 30'b000000000000000000000000001100 };
 
+            #10
 
-            //cmd_word = { 2'b00, 10'b1010101010 }; // set new base address without increment feature
-            //cmd_word = { 2'b00, 32'b00101010101010101010101010101000 };
-              cmd_word = { 2'b00, 32'b00000000000000000000000000000000 };
+            $display("");
+            $display("[top_testbench] READ READ READ");
 
-
+            cmd_stb = 1;
+            cmd_word = { 2'b00, 32'b00000000000000000000000000000000 };
 
             #10 cmd_stb = 0;
 
-            #5
+
+
+
+
+            //
+            // Perform a read
+            //
+
+            #30 cmd_stb = 1; // without a strobe, the master will not decode the command
+
+            $display("");
+            $display("-----------------------------------------------------------------");
+            $display("[top_testbench] reading 2");
+
+            //
+            // address
+            //
+
+            $display("[top_testbench] ADDRESS ADDRESS ADDRESS");
+
+            cmd_stb = 1;
+            // formulate a read command
+            // set new base address without increment feature
+            cmd_word = { 2'b10, 1'b0, 1'b1, 30'b000000000000000000000000000000 };
+
+            #10
+
+            $display("");
+            $display("[top_testbench] READ READ READ");
+
+            cmd_stb = 1;
+            cmd_word = { 2'b00, 32'b00000000000000000000000000000000 };
+
+            #10 cmd_stb = 0;
 
 
 
 
 
-            // //
-            // // Perform a second read
-            // //
 
-            // #100
 
-            // $display("");
-            // $display("-----------------------------------------------------------------");
-            // $display("[top_testbench] reading 2");
 
-            // cmd_stb = 1; // without a strobe, the master will not decode the command
-            // //cmd_word = { 2'b00, 10'b0000000000 }; // set new base address without increment feature
-            //   cmd_word = { 2'b00, 32'b00000000000000000000000000000000 };
 
-            // //
-            // // End of test
-            // //
+            //
+            // End of test
+            //
 
             #50;
 

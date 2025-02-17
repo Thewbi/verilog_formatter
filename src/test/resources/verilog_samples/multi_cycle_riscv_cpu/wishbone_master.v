@@ -137,7 +137,7 @@ module wishbone_master (
 
                     // no auto-increment mode enabled
                     // just use the base address to read data from
-                    o_wb_addr <= i_cmd_word[29:0];
+                    o_wb_addr = i_cmd_word[29:0];
 
                     $display("[WISHBONE MASTER] IDLE STATE - no_auto increment - o_wb_addr = %b", i_cmd_word[29:0]);
                 end
@@ -152,7 +152,7 @@ module wishbone_master (
                     // i_cmd_word[29:0] is used as a base using o_wb_addr as
                     // an incremented offset. o_wb_addr is incremented in the
                     // wait state
-                    o_wb_addr <= i_cmd_word[29:0] + o_wb_addr;
+                    o_wb_addr = i_cmd_word[29:0] + o_wb_addr;
                 end
 
                 // inc is used to increment o_wb_addr.
@@ -235,11 +235,11 @@ module wishbone_master (
             begin
 
                 // the request has been accepted by the slave, do not request again.
-                o_wb_stb  <= 1'b0; // to slave: master does not drive the strobe line any more
-                                   // this makes the state machine go to the next state on the next clock cycle
+                o_wb_stb = 1'b0;   // to slave: master does not drive the strobe line any more
+                                    // this makes the state machine go to the next state on the next clock cycle
 
                 // increment the address for the auto increment feature
-                o_wb_addr <= o_wb_addr + inc;
+                o_wb_addr = o_wb_addr + inc;
 
                 // if we get an ack from the slave on the same cycle as the request,
                 // quietly transition back to idle.
@@ -290,8 +290,6 @@ module wishbone_master (
                 o_cmd_busy  <= 1'b0; // to host: not busy any more
                 o_rsp_stb   <= 1'b1; // to host: ???
 
-                //o_wb_stb <= 0;
-
                 if (o_wb_we)
                 begin
                     // to host: write has been performed,
@@ -308,6 +306,7 @@ module wishbone_master (
             o_wb_we = 0;
             o_wb_cyc = 0;
             o_wb_stb = 0;
+
         end
         else
         begin
