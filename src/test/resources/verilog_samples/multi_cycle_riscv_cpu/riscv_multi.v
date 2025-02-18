@@ -10,7 +10,7 @@ module riscv_multi(
     input   wire [33:0] rsp_word,
 
     output  wire [31:0] WriteData,
-    input   wire [31:0]
+    input   wire [31:0] ReadData
 
 );
 
@@ -64,7 +64,7 @@ module riscv_multi(
         $display("-----------------------------------------------------------------");
         $display("[CPU] reading 1 done.");
 
-        $display("[CPU] rsp_word = %0h, Instr = %08h", rsp_word, rsp_word[31:0]);
+        $display("[CPU] rsp_word = %0h, rsp_word = %08h, Instr = %08h", rsp_word, rsp_word[31:0], Instr);
 
         cmd_stb = 0;
         cmd_word = 0;
@@ -73,9 +73,9 @@ module riscv_multi(
     // TODO: use the register and immediate offset to compute the target address
     // and encode that target address into the command for the wishbone master.
     controller ctr (
-        Instr[6:0],
-        Instr[14:12],
-        Instr[30],
+        Instr[6:0],     // [in]
+        Instr[14:12],   // [in]
+        Instr[30],      // [in]
         Zero,
         ResultSrc,
         MemWrite, // this signal says wether to read or write. Build this into the command for the wishbone master. whishbone_master.i_cmd_word[33:32] == 2'b00 for read and 2'b01 for write

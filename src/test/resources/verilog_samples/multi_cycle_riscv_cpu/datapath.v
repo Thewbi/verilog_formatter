@@ -44,7 +44,11 @@ module datapath(
         WriteData           // [out] the output where the value from register a2 appears
     );
 
-    flopr #(32) instrreg(clk, reset, InstrNext, Instr);
+    // causes coersion and brakes the value inside Instr
+    //flopr #(32) instrreg(clk, reset, InstrNext, Instr);
+    flopr #(32) instrreg(clk, reset, Instr, InstrNext);
+
+
     // extend ext(Instr[31:7], ImmSrc, ImmExt);
 
     // // ALU logic

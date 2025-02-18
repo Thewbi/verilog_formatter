@@ -43,6 +43,15 @@ C:\iverilog\bin\iverilog.exe -s regfile_testbench -o riscv.vvp regfile_testbench
 C:\iverilog\bin\vvp.exe riscv.vvp
 ```
 
+# Controller, Control Logic, Control Unit module
+
+```
+del riscv.vpp
+C:\iverilog\bin\iverilog.exe -s controller -o riscv.vvp controller.v
+C:\iverilog\bin\iverilog.exe -s controller_testbench -o riscv.vvp controller_testbench.v controller.v
+C:\iverilog\bin\vvp.exe riscv.vvp
+```
+
 # Datapath module
 
 ```
