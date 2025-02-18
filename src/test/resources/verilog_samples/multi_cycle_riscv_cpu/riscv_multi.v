@@ -10,7 +10,8 @@ module riscv_multi(
     input   wire [33:0] rsp_word,
 
     output  wire [31:0] WriteData,
-    input   wire [31:0] ReadData
+    input   wire [31:0]
+
 );
 
     // the wishbone response contains data in the lower word
@@ -25,49 +26,49 @@ module riscv_multi(
     wire [1:0]  ImmSrc;
     wire [2:0]  ALUControl;
 
-
     initial
-        begin
+    begin
 
-            //
-            // Read
-            //
+        //
+        // Read
+        //
 
-            #60
+        #60
 
-            $display("");
-            $display("-----------------------------------------------------------------");
-            $display("[CPU] reading 1 ...");
+        $display("");
+        $display("-----------------------------------------------------------------");
+        $display("[CPU] reading 1 ...");
 
-            //
-            // address
-            //
+        //
+        // address
+        //
 
-            $display("[CPU] ADDRESS ADDRESS ADDRESS");
+        $display("[CPU] ADDRESS ADDRESS ADDRESS");
 
-            cmd_stb = 1;
-            // formulate a read command
-            // set new base address without increment feature
-            cmd_word = { 2'b10, 1'b0, 1'b1, 30'b000000000000000000000000000000 };
+        cmd_stb = 1;
+        // formulate a read command
+        // set new base address without increment feature
+        cmd_word = { 2'b10, 1'b0, 1'b1, 30'b000000000000000000000000000000 };
 
-            #10
+        #10
 
-            $display("");
-            $display("[CPU] READ READ READ");
+        $display("");
+        $display("[CPU] READ READ READ");
 
-            cmd_stb = 1;
-            cmd_word = { 2'b00, 32'b00000000000000000000000000000000 };
+        cmd_stb = 1;
+        cmd_word = { 2'b00, 32'b00000000000000000000000000000000 };
 
-            #20
+        #20
 
-            $display("");
-            $display("[CPU] reading 1 done.");
+        $display("");
+        $display("-----------------------------------------------------------------");
+        $display("[CPU] reading 1 done.");
 
-            cmd_stb = 0;
-            cmd_word = 0;
-        end
+        $display("[CPU] rsp_word = %0h, Instr = %08h", rsp_word, rsp_word[31:0]);
 
-
+        cmd_stb = 0;
+        cmd_word = 0;
+    end
 
     // TODO: use the register and immediate offset to compute the target address
     // and encode that target address into the command for the wishbone master.

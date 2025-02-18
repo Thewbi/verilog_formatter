@@ -21,13 +21,13 @@
 // |  0 |  0 | Acknowledge a write                      | The 32-bit value contains number of writes to acknowledge |
 // |  0 |  1 | Read response                            | the 32 data bits are the word that was read |
 // |  1 |  0 | Acknowledge an address that has been set | with two zero bits and 30 address bits |
-// |  1 |  1 |                                          | |
+// |  1 |  1 |                                          | ??? |
 // |  1 |  1 | Bus Reset acknowledgement                | 3’h0, 29’hxx, |
 // |  1 |  1 | Bus Error                                | 3’h1, 29’hxx, |
 
 `define RSP_WRITE_ACKNOWLEDGEMENT   34'b0000000000000000000000000000000001
 `define RSP_SUB_ADDR                 2'b10
-`define RSP_SUB_DATA                 2'b11
+`define RSP_SUB_DATA                 2'b01
 `define RSP_RESET                   34'b11xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 `define RSP_BUS_ERROR               34'b11111xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
