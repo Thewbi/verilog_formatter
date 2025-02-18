@@ -57,9 +57,9 @@ module wishbone_master (
     reg newaddr;
     reg inc;
 
+    // We'll use i_cmd_bus to capture whether we have a read or write request
     assign	i_cmd_rd        = (i_cmd_stb) && (i_cmd_word[33:32] == 2'b00);
     assign	i_cmd_wr        = (i_cmd_stb) && (i_cmd_word[33:32] == 2'b01);
-    // We'll use i_cmd_bus to capture whether we have a read or write request
     assign	i_cmd_bus       = (i_cmd_stb) && (i_cmd_word[33]    == 1'b0);
     assign	i_cmd_addr      = (i_cmd_stb) && (i_cmd_word[33:32] == 2'b10);
     assign	i_cmd_special   = (i_cmd_stb) && (i_cmd_word[33:32] == 2'b11);
@@ -73,6 +73,8 @@ module wishbone_master (
     begin
 
         $display("");
+        $display("[WISHBONE MASTER] i_cmd_word: %b", i_cmd_word);
+
 
         if ((i_reset) || (i_wb_err))
         begin
@@ -180,7 +182,8 @@ module wishbone_master (
             end
 
             // to slave: this is a write request or not
-            $display("i_cmd_wr = %b, i_cmd_rd = %b, i_cmd_bus = %d", i_cmd_wr, i_cmd_rd, i_cmd_bus);
+            $display("[WISHBONE MASTER] i_cmd_stb = %b, i_cmd_wr = %b, i_cmd_rd = %b, i_cmd_bus = %d",
+                i_cmd_stb, i_cmd_wr, i_cmd_rd, i_cmd_bus);
             o_wb_we <= i_cmd_wr;
 
             // on a read or write request, activate the bus and go to the bus

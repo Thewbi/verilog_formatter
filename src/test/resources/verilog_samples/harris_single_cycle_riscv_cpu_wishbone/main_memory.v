@@ -1,4 +1,5 @@
-module main_memory #(parameter MEMORY_DEPTH=1024) ( // Instruction and Data memory (combined memory)
+// Instruction and Data memory (combined memory)
+module main_memory #(parameter MEMORY_DEPTH=1024) (
     input wire i_clk,
     // Instruction Memory
     input wire[$clog2(MEMORY_DEPTH)-1:0] i_inst_addr,

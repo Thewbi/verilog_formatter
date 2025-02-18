@@ -9,7 +9,8 @@ module datapath(
     output wire [31:0] PC,
     input wire [31:0] Instr,
     output wire [31:0] ALUResult, WriteData,
-    input wire [31:0] ReadData);
+    input wire [31:0] ReadData
+);
 
     wire [31:0] PCNext, PCPlus4, PCTarget;
     wire [31:0] ImmExt;

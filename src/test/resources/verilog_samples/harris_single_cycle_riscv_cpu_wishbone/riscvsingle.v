@@ -1,15 +1,20 @@
 module riscvsingle(
-    input wire clk,
-    input wire reset,
-    output wire [31:0] PC,
-    input wire [31:0] Instr,
-    output wire MemWrite, // write to memory control signal
-    output wire [31:0] ALUResult,
-    output wire [31:0] WriteData,
-    input wire [31:0] ReadData);
+    input   wire        clk,
+    input   wire        reset,
+    output  wire [31:0] PC,
+    input   wire [31:0] Instr,
+    output  wire        MemWrite, // write to memory control signal
+    output  wire [31:0] ALUResult,
+    output  wire [31:0] WriteData,
+    input   wire [31:0] ReadData
+);
 
-    wire ALUSrc, RegWrite, Jump, Zero;
-    wire [1:0] ResultSrc, ImmSrc;
+    wire ALUSrc;
+    wire RegWrite;
+    wire Jump;
+    wire Zero;
+    wire [1:0] ResultSrc;
+    wire [1:0] ImmSrc;
     wire [2:0] ALUControl;
 
     controller cont(

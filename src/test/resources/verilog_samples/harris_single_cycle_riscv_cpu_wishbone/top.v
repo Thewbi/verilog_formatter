@@ -5,8 +5,9 @@ module top(
 
     initial
     begin
-      $display("Hello, World");
-      $monitor("At time %t, PC = %h (%0d)", $time, PC, PC);
+        PC = 32'h00;
+        $display("Hello, World");
+        $monitor("At time %t, PC = %h (%0d)", $time, PC, PC);
     end
 
     wire [31:0] PC, Instr, ReadData;

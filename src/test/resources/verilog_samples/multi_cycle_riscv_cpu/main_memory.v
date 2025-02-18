@@ -26,7 +26,12 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
     output  reg [31:0]                      o_wb_data
 );
 
-    reg[31:0] memory_regfile[MEMORY_DEPTH/4 - 1:0];
+    reg[31:0] memory_regfile[MEMORY_DEPTH/4 - 1:0]; // 1024/4 = 256
+
+    initial begin
+        $display("Reading file into memory for simulation!");
+        $readmemh("progmem.txt", memory_regfile);
+    end
 
     // never stall
     assign o_wb_stall = 0;
@@ -64,7 +69,7 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
                 o_wb_ack    = i_wb_stb && i_wb_cyc;
                 o_wb_data   = memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]]; // read data
 
-                $display("[mem] reading. o_wb_data = %0h", o_wb_data);
+                $display("[mem] reading. o_wb_data = %08h", o_wb_data);
             end
         else
             begin
