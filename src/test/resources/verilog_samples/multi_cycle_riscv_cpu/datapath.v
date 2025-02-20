@@ -3,7 +3,8 @@ module datapath(
     input   wire        reset,
     // input wire [1:0] ResultSrc,
     // input wire PCSrc,
-    // input wire ALUSrc,
+    input wire [1:0] ALUSrcA,
+    input wire [1:0] ALUSrcB,
     // input wire RegWrite,
     // input wire [1:0] ImmSrc,
     // input wire [2:0] ALUControl,
@@ -19,8 +20,10 @@ module datapath(
     wire [31:0] InstrNext;
     // wire [31:0] PCPlus4;
     // wire [31:0] PCTarget;
-    // wire [31:0] ImmExt;
-    // wire [31:0] SrcB;
+
+    // ALU signals
+    wire [31:0] ImmExt;
+    wire [31:0] SrcB;
     wire [31:0] Result;
     wire [31:0] SrcA;
 
@@ -31,6 +34,10 @@ module datapath(
     // adder pcadd4(PC, 32'd4, PCPlus4);
     // adder pcaddbranch(PC, ImmExt, PCTarget);
     // mux2 #(32) pcmux(PCPlus4, PCTarget, PCSrc, PCNext);
+
+    mux2 #(32) addrmux(PCPlus4, PCTarget, PCSrc, PCNext);
+
+    flopr #(32) Instr(clk, reset, PCNext, PC);
 
     // register file logic
     regfile rf (
@@ -48,12 +55,15 @@ module datapath(
     //flopr #(32) instrreg(clk, reset, InstrNext, Instr);
     flopr #(32) instrreg(clk, reset, Instr, InstrNext);
 
+    // sign extend module
+    extend ext(Instr[31:7], ImmSrc, ImmExt);
 
-    // extend ext(Instr[31:7], ImmSrc, ImmExt);
+    // ALU logic
+    mux3 #(32) srcbmux(PC, OldPC, rd1, ALUSrcA, SrcA);
+    mux3 #(32) srcbmux(rd2, ImmExt, 32'h00000004, ALUSrcB, SrcB);
+    alu alu(SrcA, SrcB, ALUControl, ALUResult, Zero);
 
-    // // ALU logic
-    // mux2 #(32) srcbmux(WriteData, ImmExt, ALUSrc, SrcB);
-    // alu alu(SrcA, SrcB, ALUControl, ALUResult, Zero);
-    // mux3 #(32) resultmux(ALUResult, ReadData, PCPlus4, ResultSrc, Result);
+    // this mux decides, which value is driving the result BUS
+    mux3 #(32) resultmux(ALUResult, ReadData, PCPlus4, ResultSrc, Result);
 
 endmodule

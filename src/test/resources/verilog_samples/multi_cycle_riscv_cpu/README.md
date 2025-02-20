@@ -61,6 +61,24 @@ C:\iverilog\bin\iverilog.exe -s datapath_testbench -o riscv.vvp datapath_testben
 C:\iverilog\bin\vvp.exe riscv.vvp
 ```
 
+# extend module
+
+```
+del riscv.vpp
+C:\iverilog\bin\iverilog.exe -s extend -o riscv.vvp extend.v
+C:\iverilog\bin\iverilog.exe -s extend_testbench -o riscv.vvp extend_testbench.v extend.v
+C:\iverilog\bin\vvp.exe riscv.vvp
+```
+
+# ALU
+
+```
+del riscv.vpp
+C:\iverilog\bin\iverilog.exe -s alu -o riscv.vvp alu.v
+C:\iverilog\bin\iverilog.exe -s alu_testbench -o riscv.vvp alu_testbench.v alu.v
+C:\iverilog\bin\vvp.exe riscv.vvp
+```
+
 # RISCV Multicycle CPU
 
 ```
