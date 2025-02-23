@@ -24,14 +24,10 @@ module top_testbench();
         // rsp_word
     );
 
-
-
     initial
          begin
             #200 $finish();
          end
-
-
 
     initial
         begin
@@ -65,7 +61,6 @@ module top_testbench();
             //
 
             //#30
-
 
             // cmd_stb = 1; // without a strobe, the master will not decode the command
 

@@ -2,13 +2,6 @@ module riscv_multi(
 
     output  wire [31:0] PC,
 
-    // memory access
-    output  reg         cmd_stb,
-    output  reg [33:0]  cmd_word,
-    input   wire        cmd_busy,
-    input   wire        rsp_stb,
-    input   wire [33:0] rsp_word,
-
     output  wire [31:0] WriteData,
     input   wire [31:0] ReadData
 
@@ -26,87 +19,140 @@ module riscv_multi(
     wire [1:0]  ImmSrc;
     wire [2:0]  ALUControl;
 
-    initial
-    begin
+    // initial
+    // begin
 
-        //
-        // Read
-        //
+    //     //
+    //     // Read
+    //     //
 
-        #60
+    //     #60
 
-        $display("");
-        $display("-----------------------------------------------------------------");
-        $display("[CPU] reading 1 ...");
+    //     $display("");
+    //     $display("-----------------------------------------------------------------");
+    //     $display("[CPU] reading 1 ...");
 
-        //
-        // address
-        //
+    //     //
+    //     // address
+    //     //
 
-        $display("[CPU] ADDRESS ADDRESS ADDRESS");
+    //     $display("[CPU] ADDRESS ADDRESS ADDRESS");
 
-        cmd_stb = 1;
-        // formulate a read command
-        // set new base address without increment feature
-        cmd_word = { 2'b10, 1'b0, 1'b1, 30'b000000000000000000000000000000 };
+    //     cmd_stb = 1;
+    //     // formulate a read command
+    //     // set new base address without increment feature
+    //     cmd_word = { 2'b10, 1'b0, 1'b1, 30'b000000000000000000000000000000 };
 
-        #10
+    //     #10
 
-        $display("");
-        $display("[CPU] READ READ READ");
+    //     $display("");
+    //     $display("[CPU] READ READ READ");
 
-        cmd_stb = 1;
-        cmd_word = { 2'b00, 32'b00000000000000000000000000000000 };
+    //     cmd_stb = 1;
+    //     cmd_word = { 2'b00, 32'b00000000000000000000000000000000 };
 
-        #20
+    //     #20
 
-        $display("");
-        $display("-----------------------------------------------------------------");
-        $display("[CPU] reading 1 done.");
+    //     $display("");
+    //     $display("-----------------------------------------------------------------");
+    //     $display("[CPU] reading 1 done.");
 
-        $display("[CPU] rsp_word = %0h, rsp_word = %08h, Instr = %08h", rsp_word, rsp_word[31:0], Instr);
+    //     $display("[CPU] rsp_word = %0h, rsp_word = %08h, Instr = %08h", rsp_word, rsp_word[31:0], Instr);
 
-        cmd_stb = 0;
-        cmd_word = 0;
-    end
+    //     cmd_stb = 0;
+    //     cmd_word = 0;
+    // end
+
+    // wishbone memory access
+    // interface between the host and the master
+    wire        cmd_stb;
+    wire [33:0] cmd_word;
+    wire        cmd_busy;
+    wire        rsp_stb;
+    wire [33:0] rsp_word;
+
+    wire [6:0]  op; // TODO: this is not connected
+    wire [2:0]  funct3;
+    wire [1:0]  ALUSrcB;
+    wire [1:0]  ALUSrcA;
 
     // TODO: use the register and immediate offset to compute the target address
     // and encode that target address into the command for the wishbone master.
+
+    // TODO: the controller has to wait in the read memory stage and process
+    // the wishbone signals until the wishbone master says, that it has
+    // succesfully performed a read / write
+    //
     controller ctr (
-        Instr[6:0],     // [in]
-        Instr[14:12],   // [in]
-        Instr[30],      // [in]
+        // Instr[6:0],     // [in]
+        // Instr[14:12],   // [in]
+        // Instr[30],      // [in]
+        // Zero,
+        // ResultSrc,
+        // MemWrite, // this signal says wether to read or write. Build this into the command for the wishbone master. whishbone_master.i_cmd_word[33:32] == 2'b00 for read and 2'b01 for write
+        // PCSrc,
+        // ALUSrc,
+        // RegWrite,
+        // Jump,
+        // ImmSrc,
+        // ALUControl
+
+        // // wishbone memory access
+        // // interface between the host and the master
+        // cmd_stb,
+        // cmd_word,
+        // cmd_busy,
+        // rsp_stb,
+        // rsp_word,
+
+        clk,
+        reset,
+        op,
+        funct3,
+        funct7b5,
         Zero,
+        PCWrite,
+        AdrSrc,
+        MemWrite,
+        IRWrite,
         ResultSrc,
-        MemWrite, // this signal says wether to read or write. Build this into the command for the wishbone master. whishbone_master.i_cmd_word[33:32] == 2'b00 for read and 2'b01 for write
-        PCSrc,
-        ALUSrc,
-        RegWrite,
-        Jump,
+        ALUControl,
+        ALUSrcB,
+        ALUSrcA,
         ImmSrc,
-        ALUControl
+        RegWrite,
+
+        // wishbone memory access
+        // interface between the host and the master
+        cmd_stb,
+        cmd_word,
+        cmd_busy,
+        rsp_stb,
+        rsp_word
     );
 
     datapath dp (
-
         // clock and reset
         clk,
         reset,
 
-        // ResultSrc,
-        // PCSrc,
-        // ALUSrc,
-        // RegWrite,
-        // ImmSrc,
-        // ALUControl,
-        // Zero,
-        PC,             // [out]
-        Instr,          // [in] instruction, th datapath wants to see the next instruction here
-        // ALUResult,
+        // output
+        op,
+        funct3,
+        funct7b5,
+        Zero,
 
-        // memory access
-        WriteData,  // how to replace this by the wishbone master??? Connect whishbone_master.i_cmd_word here. This is where the master reads the data to write from
-        ReadData    // how to replace this by the wishbone master??? Connect whishbone_master.o_rsp_word here. This is where the master returns data.
+        // input
+        PCWrite,
+        AdrSrc,
+        MemWrite,
+        IRWrite,
+        ResultSrc,
+        ALUControl,
+        ALUSrcB,
+        ALUSrcA,
+        ImmSrc,
+        RegWrite
     );
 
 endmodule

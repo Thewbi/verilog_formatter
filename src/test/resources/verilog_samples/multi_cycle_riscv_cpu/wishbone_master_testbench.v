@@ -150,6 +150,7 @@ module wishbone_master_testbench();
 
         i_cmd_stb = 1; // without a strobe, the master will not decode the command
         //i_cmd_word = { 2'b00, 30'b00101010101010101010101010101010 }; // set new base address without increment feature
+
         i_cmd_word = { 2'b00, 10'b1010101010 }; // set new base address without increment feature
 
         #10

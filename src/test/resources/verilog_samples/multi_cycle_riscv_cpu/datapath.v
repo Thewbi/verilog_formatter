@@ -1,23 +1,74 @@
 module datapath(
+
+    // clock and reset
     input   wire        clk,
     input   wire        reset,
-    // input wire [1:0] ResultSrc,
-    // input wire PCSrc,
-    input wire [1:0] ALUSrcA,
-    input wire [1:0] ALUSrcB,
-    // input wire RegWrite,
-    // input wire [1:0] ImmSrc,
-    // input wire [2:0] ALUControl,
-    // output wire Zero,
-    output  wire [31:0] PC,         // currently stored value in the PCNext flip flop
-    input   wire [31:0] Instr,      // the instruction to execute
-    // output wire [31:0] ALUResult,
-    output  wire [31:0] WriteData,   // instruction sb, sh, sw wants to write data to memory
-    input        [31:0] ReadData     // instruction lb, lh, lw wants to read data to memory
+
+    // output
+    output  wire [6:0]  op,        // operation code from within the instruction
+    output  wire [2:0]  funct3,    // funct3 for instruction identification
+    output  wire        funct7b5,  // funct7b5
+    output  wire        Zero,      // the ALU has computed a result that is zero (for branching instruction making)
+
+    // input
+    input  wire         PCWrite,     // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
+    input  wire         AdrSrc,      // address source selector
+    input  wire         MemWrite,    // write enable for the memory module
+    input  wire         IRWrite,     // instruction register write
+    input  wire [1:0]   ResultSrc,   // controls the multiplexer that decides what goes onto the Result bus
+    input  wire [2:0]   ALUControl,  // tells the ALU which operation to perform
+    input  wire [1:0]   ALUSrcB,     // decides which line goes into the ALU B parameter input
+    input  wire [1:0]   ALUSrcA,     // decides which line goes into the ALU A parameter input
+    input  wire [1:0]   ImmSrc,      // enable sign extension of the immediate value
+    input  wire         RegWrite    // write enable for the register file
+
+    // // input wire [1:0] ResultSrc,
+    // // input wire PCSrc,
+    // input   wire [1:0]      ALUSrcA,
+    // input   wire [1:0]      ALUSrcB,
+    // // input wire RegWrite,
+    // // input wire [1:0] ImmSrc,
+    // // input wire [2:0] ALUControl,
+    // // output wire Zero,
+    // output  wire [31:0]     PC,             // currently stored value in the PCNext flip flop
+    // input   wire [31:0]     Instr,          // the instruction to execute
+    // // output wire [31:0] ALUResult,
+    // output  wire [31:0]     WriteData,      // instruction sb, sh, sw wants to write data to memory
+    // input        [31:0]     ReadData        // instruction lb, lh, lw wants to read data to memory
+
+    // // interface between the host and the master
+    // input                   i_cmd_stb,      // the host tells the master that it has provided address and data and that the strobe can begin
+    // input   [33:0]          i_cmd_word,     // (34 bits) data to write wrapped in a command
+    // output  reg	            o_cmd_busy,     // the client stalls the master, the master forwards the stall signal to the host here
+    // output  reg             o_rsp_stb,      // when this value is 1, then the master is ready to start a strobe
+    // output  reg [33:0]      o_rsp_word,     // (34 bits) data that has been read (or dummy data on a read)
 );
 
+    reg [3:0] wb_sel;
+
+    initial
+        begin
+            // fill indexes into wb_data to show where data to be written is located
+            // In this case all four bytes of the word are written
+            wb_sel[0] = 1'b1;
+            wb_sel[1] = 1'b1;
+            wb_sel[2] = 1'b1;
+            wb_sel[3] = 1'b1;
+        end
+
+    wire [31:0] PC;
+    wire [31:0] OldPC;
     wire [31:0] PCNext; // input to pcreg. connects the mux infront of pcreg to pcreg.
+    wire [31:0] adr;
+    wire [31:0] data;
+    wire [31:0] Instr;
     wire [31:0] InstrNext;
+    wire [31:0] RD1;
+    wire [31:0] RD2;
+    wire [31:0] A;
+    wire [31:0] WriteData;
+    wire [31:0] ALUResult;
+    wire [31:0] ALUOut;
     // wire [31:0] PCPlus4;
     // wire [31:0] PCTarget;
 
@@ -29,15 +80,82 @@ module datapath(
 
     // next PC logic (PCNext is the input which is stored in posedge clock.)
     // The flip flop will output the stored data onto PC
-    flopr #(32) pcreg(clk, reset, PCNext, PC);
+    flopenr #(32) pcreg(clk, reset, PCWrite, PCNext, PC);
 
     // adder pcadd4(PC, 32'd4, PCPlus4);
     // adder pcaddbranch(PC, ImmExt, PCTarget);
     // mux2 #(32) pcmux(PCPlus4, PCTarget, PCSrc, PCNext);
 
-    mux2 #(32) addrmux(PCPlus4, PCTarget, PCSrc, PCNext);
+    mux2 #(32) addrmux(PC, Result, AdrSrc, adr);
 
-    flopr #(32) Instr(clk, reset, PCNext, PC);
+    // interface between the master and the slave
+    wire            wb_err;         // an error occured, the wishbone master has to reset
+    wire            wb_stall;       // slave stalls
+    wire            wb_ack;         // slave acknowledges the execution of the wishbone transaction
+    wire [31:0]     wb_data;        //
+    wire            wb_cyc;         //
+    wire            wb_stb;         //
+    wire [ 9:0]     wb_addr;        //
+    wire            wb_we;          //
+    wire [31:0]     wb_data_output; //
+
+    wire  [33:0] cmd_word;
+    assign cmd_word = { 2'b00, adr[9:0] }; // set new base address without increment feature
+
+    wire [33:0]      rsp_word;
+
+    // wishbone master
+    wishbone_master master (
+
+        // clock and reset
+        clk,            // i_clk
+        reset,          // i_reset,
+
+        // interface between the host and the master
+        cmd_stb,        // i_cmd_stb, // TODO: I think the strobe has to be generated by the control logic
+        cmd_word,       // i_cmd_word,
+        cmd_busy,       // o_cmd_busy,      // the master is busy processing a command
+        rsp_stb,        // o_rsp_stb,       // when this value is 1, then the master is ready to start a strobe
+        rsp_word,       // o_rsp_word,      // (34 bits) data that has been read (or dummy data on a read)
+
+        // interface between the master and the slave
+        wb_err,
+        wb_stall,
+        wb_ack,
+        wb_data,
+        wb_cyc,
+        wb_stb,
+        wb_addr,
+        wb_we,
+        wb_data_output
+    );
+
+    // wishbone slave for memory
+    main_memory mem (
+
+        clk,
+
+        // // debug interface (Access to memory without wishbone)
+        // i_inst_addr,
+        // o_inst_out,
+        // i_stb_inst,
+        // o_ack_inst,
+
+        // wishbone interface
+        wb_cyc,         // cycle
+        wb_stb,         // strobe
+        wb_we,          // 1 = write, 0 = read
+        wb_addr,        // address to read to / write from
+        wb_data_output, // data to write
+        wb_sel,         // index into data to write
+        wb_ack,         // slave acknowledge
+        wb_stall,       // slave stall
+        wb_data         // slave returns read data
+    );
+
+    flopenr #(32) OldPCFF(clk, reset, IRWrite, PC, OldPC);
+    flopenr #(32) InstrFF(clk, reset, IRWrite, wb_data, Instr);
+    flopr #(32) DataFF(clk, reset, wb_data, data);
 
     // register file logic
     regfile rf (
@@ -47,23 +165,29 @@ module datapath(
         Instr[24:20],       // [in] register 2 to read (no clock tick needed)
         Instr[11:7],        // [in] register to write
         Result,             // [in] data value to write
-        SrcA,               // [out] the output where the value from register a1 appears
-        WriteData           // [out] the output where the value from register a2 appears
+        RD1,                // [out] the output where the value from register a1 appears
+        RD2                 // [out] the output where the value from register a2 appears
     );
 
-    // causes coersion and brakes the value inside Instr
+    flopr #(32) Data_RD1(clk, reset, RD1, A);
+    flopr #(32) Data_RD2(clk, reset, RD2, WriteData);
+
     //flopr #(32) instrreg(clk, reset, InstrNext, Instr);
-    flopr #(32) instrreg(clk, reset, Instr, InstrNext);
+    //flopr #(32) instrreg(clk, reset, Instr, InstrNext);
 
     // sign extend module
     extend ext(Instr[31:7], ImmSrc, ImmExt);
 
-    // ALU logic
-    mux3 #(32) srcbmux(PC, OldPC, rd1, ALUSrcA, SrcA);
-    mux3 #(32) srcbmux(rd2, ImmExt, 32'h00000004, ALUSrcB, SrcB);
+    // ALU input muxes
+    mux3 #(32) srcamux(PC, OldPC, A, ALUSrcA, SrcA);
+    mux3 #(32) srcbmux(WriteData, ImmExt, 32'h00000004, ALUSrcB, SrcB);
+
+    // ALU
     alu alu(SrcA, SrcB, ALUControl, ALUResult, Zero);
 
+    flopr #(32) aluResult(clk, reset, ALUResult, ALUOut);
+
     // this mux decides, which value is driving the result BUS
-    mux3 #(32) resultmux(ALUResult, ReadData, PCPlus4, ResultSrc, Result);
+    mux3 #(32) resultmux(ALUResult, data, ALUOut, ResultSrc, Result);
 
 endmodule

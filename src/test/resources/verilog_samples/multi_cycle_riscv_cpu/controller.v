@@ -15,16 +15,24 @@ module controller (
     input   wire        Zero,       // the ALU has computed a result that is zero (for branching instruction making)
 
     // output
-    output  wire        PCWrite;    // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
-    output  wire        AdrSrc;     // address source selector
-    output  wire        MemWrite,   // write enable for the memory module
-    output  wire        IRWrite,    // instruction register write
-    output  wire [1:0]  ResultSrc,  // controls the multiplexer that decides what goes onto the Result bus
-    output  wire [2:0]  ALUControl, // tells the ALU which operation to perform
-    output  wire [1:0]  ALUSrcB,    // decides which line goes into the ALU B parameter input
-    output  wire [1:0]  ALUSrcA,    // decides which line goes into the ALU A parameter input
+    output  reg         PCWrite,    // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
+    output  reg         AdrSrc,     // address source selector
+    output  reg         MemWrite,   // write enable for the memory module
+    output  reg         IRWrite,    // instruction register write
+    output  reg  [1:0]  ResultSrc,  // controls the multiplexer that decides what goes onto the Result bus
+    output  reg  [2:0]  ALUControl, // tells the ALU which operation to perform
+    output  reg  [1:0]  ALUSrcB,    // decides which line goes into the ALU B parameter input
+    output  reg  [1:0]  ALUSrcA,    // decides which line goes into the ALU A parameter input
     output  wire [1:0]  ImmSrc,     // enable sign extension of the immediate value
-    output  wire        RegWrite,   // write enable for the register file
+    output  reg         RegWrite,   // write enable for the register file
+
+    // wishbone memory access
+    // interface between the host and the master
+    output  reg         cmd_stb,
+    output  reg [33:0]  cmd_word,
+    input   wire        cmd_busy,
+    input   wire        rsp_stb,
+    input   wire [33:0] rsp_word
 );
 
     //
