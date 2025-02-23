@@ -35,6 +35,21 @@ module controller (
     input   wire [33:0] rsp_word
 );
 
+
+    initial
+    begin
+        $monitor("[controller], rsp_word = %h", rsp_word);
+    end
+
+    initial
+    begin
+        cmd_stb = 0;
+        cmd_word = 0;
+        // cmd_busy = 0;
+        // rsp_stb = 0;
+        // rsp_word = 0;
+    end
+
     //
     // All states of the Moore state machine (= output only depends on the current state)
     //
@@ -42,19 +57,19 @@ module controller (
     //
 
     parameter
-        FetchState          = 4'b0000,      // S0 "Fetch" State
-        DecodeState         = 4'b0001,      // S1 "Decode" State
-        MemAddrState        = 4'b0010,      // S2 "MemAddr" State
-        MemReadState        = 4'b0011,      // S3 "MemRead" State
-        MemWBState          = 4'b0100,      // S4 "MemWB" State
-        MemWriteState       = 4'b0101,      // S5 "MemWrite" State
-        ExecuteRState       = 4'b0110,      // S6 "ExecuteR" State
-        ALUWriteBackState   = 4'b0111,      // S7 "ALUWriteBackState" State
-        ExecuteIState       = 4'b1000,      // S8 "ExecuteI" State // execute I-Type instruction
-        JALState            = 4'b1001,      // S9 "JAL" State
-        BEQState            = 4'b1010,      // S10 "BEQ" State
-                                            // S11
-                                            // S12
+        ResetState        = 4'b0000,      // S0 "Fetch_1" State
+        FetchState_1         = 4'b0001,      // S1 "Decode" State
+        FetchState_2        = 4'b0010,      // S2 "MemAddr" State
+        DecodeState        = 4'b0011,      // S3 "MemRead" State
+        MemAddrState          = 4'b0100,      // S4 "MemWB" State
+        MemReadState       = 4'b0101,      // S5 "MemWrite" State
+        MemWBState       = 4'b0110,      // S6 "ExecuteR" State
+        MemWriteState   = 4'b0111,      // S7 "ALUWriteBackState" State
+        ExecuteRState       = 4'b1000,      // S8 "ExecuteI" State // execute I-Type instruction
+        ALUWriteBackState            = 4'b1001,      // S9 "JAL" State
+        ExecuteIState            = 4'b1010,      // S10 "BEQ" State
+        JALState            = 4'b1011,       // S11
+        BEQState            = 4'b1100,              // S12
                                             // S13
                                             // S14
         ErrorState          = 4'b1111       // S15 "ERROR" State
@@ -71,7 +86,7 @@ module controller (
         begin
             $display("[controller] reset");
             // when reset=1, reset the state of the FSM to "Fetch" State
-            current_state <= FetchState;
+            current_state <= ResetState;
         end
         else
         begin
@@ -88,15 +103,36 @@ module controller (
     // to determine next state
     //
 
-    always @(current_state, op)
+    always @(current_state, op, reset)
     begin
         case(current_state)
 
-            // S0 "Fetch" State
-            FetchState:
+            // S0 "Reset" State
+            ResetState:
             begin
-                $display("goto FetchState -> DecodeState");
-                next_state = DecodeState;
+                $display("reset: %d", reset);
+                if (reset == 0)
+                begin
+                    $display("goto ResetState -> FetchState_1");
+                    next_state = FetchState_1;
+                end
+            end
+
+            // S0 "Fetch_1" State
+            FetchState_1:
+            begin
+                $display("goto FetchState_1 -> FetchState_2");
+                next_state = FetchState_2;
+            end
+
+            // S0 "Fetch_2" State
+            FetchState_2:
+            begin
+                if(rsp_stb) // when the wishbone master has finished the transaction
+                begin
+                    $display("goto FetchState_2 -> DecodeState");
+                    next_state = DecodeState;
+                end
             end
 
             // S1 "Decode" State
@@ -139,13 +175,13 @@ module controller (
             // S4 "MemWB" State
             MemWBState:
             begin
-                next_state = FetchState;
+                next_state = FetchState_1;
             end
 
             // S5 "MemWrite" State
             MemWriteState:
             begin
-                next_state = FetchState;
+                next_state = FetchState_1;
             end
 
             // S6 "ExecuteR" State
@@ -177,7 +213,7 @@ module controller (
             // S10 "BEQ" State
             BEQState:
             begin
-                next_state = FetchState;
+                next_state = FetchState_1;
             end
 
             // S15 "ERROR" State
@@ -201,10 +237,36 @@ module controller (
     always @(current_state)
     begin
         case(current_state)
-            // S0 "Fetch" State
-            FetchState:
+        // S0 "Reset" State
+            ResetState:
             begin
-                $display("[CTRL.OUTPUT.FETCH_STATE]");
+                $display("[CTRL.OUTPUT.ResetState]");
+            end
+
+            // S0 "Fetch_1" State
+            FetchState_1:
+            begin
+                $display("[CTRL.OUTPUT.FETCH_STATE_1]");
+
+                $display("[CPU] ADDRESS ADDRESS ADDRESS");
+
+                // activate wishbone interface
+                cmd_stb = 1;
+                // formulate a read command
+                // set new base address without increment feature
+                cmd_word = { 2'b10, 1'b0, 1'b1, 30'b000000000000000000000000000000 };
+            end
+
+            // S0 "Fetch_2" State
+            FetchState_2:
+            begin
+
+                $display("[CPU] READ READ READ");
+
+                cmd_stb = 1;
+                cmd_word = { 2'b00, 32'b00000000000000000000000000000000 };
+
+                $display("[CTRL.OUTPUT.FETCH_STATE_2]");
                 // Instr <- Mem[PC]
                 AdrSrc <= 0;            // address for memory access is taken from the PC register
                 IRWrite <= 1;           // write enable the register that will store the data retrieved from memory

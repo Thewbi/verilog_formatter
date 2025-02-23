@@ -36,6 +36,8 @@ module riscv_multi(
     wire [1:0]  ALUSrcB;
     wire [1:0]  ALUSrcA;
 
+
+
     // TODO: use the register and immediate offset to compute the target address
     // and encode that target address into the command for the wishbone master.
 
@@ -114,7 +116,15 @@ module riscv_multi(
         ALUSrcB,
         ALUSrcA,
         ImmSrc,
-        RegWrite
+        RegWrite,
+
+        // wishbone memory access
+        // interface between the host and the master
+        cmd_stb,
+        cmd_word,
+        cmd_busy,
+        rsp_stb,
+        rsp_word
     );
 
 endmodule

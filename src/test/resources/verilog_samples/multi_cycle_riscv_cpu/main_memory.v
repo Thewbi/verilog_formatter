@@ -1,3 +1,5 @@
+`define TRACE_MEMORY 1
+
 // This is a wishbone slave for RAM memory (instructions and data)
 //
 // Instruction and data memory (combined memory)
@@ -33,6 +35,8 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
         $display("Reading file into memory for simulation!");
         $readmemh("progmem.txt", memory_regfile);
     end
+
+
 
     // never stall
     assign o_wb_stall = 0;

@@ -69,13 +69,22 @@ module wishbone_master (
     initial	newaddr     = 1'b0;
     initial	o_rsp_stb   = 1'b0; // to host: ???
 
+    initial
+    begin
+        // cmd_stb = 0;
+        // cmd_word = 0;
+        o_cmd_busy = 0;
+        o_rsp_stb = 0;
+        o_rsp_word = 0;
+    end
+
     always @(posedge i_clk)
     begin
 
         $display("");
-        $display("[WISHBONE MASTER] i_cmd_word: %b", i_cmd_word);
+        $display("[WISHBONE MASTER] i_cmd_word: %b, i_cmd_stb: %d", i_cmd_word, i_cmd_stb);
 
-
+        // reset
         if ((i_reset) || (i_wb_err))
         begin
 
@@ -85,6 +94,7 @@ module wishbone_master (
 
             $display("[WISHBONE MASTER] RESET STATE");
 
+            o_wb_we     <= 1'b0;
             o_wb_cyc    <= 1'b0; // to slave: no cycle (= transaction) takes place
             o_wb_stb    <= 1'b0; // to slave: no strobe takes place
             o_cmd_busy  <= 1'b0; // to host: master is not busy
