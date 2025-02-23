@@ -131,7 +131,7 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
                     memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]][31:24] = i_wb_data[31:24];
                 end
 
-                $display("MEMORY CONTENT: %0h", memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]][31:0]);
+                $display("[mem] MEMORY CONTENT: %0h", memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]][31:0]);
 
                 o_wb_ack <= 1'b1;
             end

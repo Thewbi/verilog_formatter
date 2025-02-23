@@ -8,7 +8,8 @@ module controller (
     input   wire        clk,
     input   wire        reset,
 
-    // input
+    // input - TODO: next step, decode opcode into these inputs somehow!!!!!!!!!!
+    TODO: compiler error in purpose so brain no forgetty sphagetty
     input   wire [6:0]  op,         // operation code from within the instruction
     input   wire [2:0]  funct3,     // funct3 for instruction identification
     input   wire        funct7b5,   // funct7b5
@@ -34,11 +35,11 @@ module controller (
     input   wire        rsp_stb,
     input   wire [33:0] rsp_word
 );
-
+    reg data_available = 0;
 
     initial
     begin
-        $monitor("[controller], rsp_word = %h", rsp_word);
+        $monitor("[controller], rsp_word = %h, current_state = %d, cmd_busy = %d", rsp_word, current_state, cmd_busy);
     end
 
     initial
@@ -48,6 +49,8 @@ module controller (
         // cmd_busy = 0;
         // rsp_stb = 0;
         // rsp_word = 0;
+
+        data_available = 0;
     end
 
     //
@@ -96,6 +99,14 @@ module controller (
         end
     end
 
+    always @(cmd_busy)
+    begin
+        $display("[controller] data_available!");
+        data_available = 1;
+
+        //op = 15;
+    end
+
     //
     // next state
     //
@@ -103,7 +114,7 @@ module controller (
     // to determine next state
     //
 
-    always @(current_state, op, reset)
+    always @(current_state, op, reset, data_available)
     begin
         case(current_state)
 
@@ -113,14 +124,18 @@ module controller (
                 $display("reset: %d", reset);
                 if (reset == 0)
                 begin
+                    $display("[controller] rsp_stb: %d, cmd_busy: %d", rsp_stb, cmd_busy);
                     $display("goto ResetState -> FetchState_1");
                     next_state = FetchState_1;
+
+                    data_available = 0;
                 end
             end
 
             // S0 "Fetch_1" State
             FetchState_1:
             begin
+                $display("[controller] rsp_stb: %d, cmd_busy: %d", rsp_stb, cmd_busy);
                 $display("goto FetchState_1 -> FetchState_2");
                 next_state = FetchState_2;
             end
@@ -128,7 +143,10 @@ module controller (
             // S0 "Fetch_2" State
             FetchState_2:
             begin
-                if(rsp_stb) // when the wishbone master has finished the transaction
+                $display("[controller] rsp_stb: %d, cmd_busy: %d", rsp_stb, cmd_busy);
+                //if(rsp_stb) // when the wishbone master has finished the transaction
+                //if(cmd_busy == 0)
+                if (data_available == 1)
                 begin
                     $display("goto FetchState_2 -> DecodeState");
                     next_state = DecodeState;
@@ -139,7 +157,9 @@ module controller (
             DecodeState:
             begin
                 if ((op == 7'b0000011) || (op == 7'b010011)) // lw or sw
+                begin
                     next_state = MemAddrState;
+                end
                 else if (op == 7'b0110011) // R-Type
                 begin
                     $display("goto DecodeState -> ExecuteRState");
@@ -237,7 +257,8 @@ module controller (
     always @(current_state)
     begin
         case(current_state)
-        // S0 "Reset" State
+
+            // S0 "Reset" State
             ResetState:
             begin
                 $display("[CTRL.OUTPUT.ResetState]");
@@ -379,15 +400,15 @@ module controller (
                 PCWrite <= 1'b1;        // branch ???
             end
 
-            // S105 "ERROR" State
-            BEQState:
+            // S15 "ERROR" State
+            ErrorState:
             begin
                 $display("[CTRL.OUTPUT.ERROR_STATE]");
             end
 
             default:
             begin
-                $display("[CTRL.OUTPUT.?]");
+                $display("[CTRL.OUTPUT.?] No case in always @(current_state) current_state = %d", current_state);
             end
         endcase
     end

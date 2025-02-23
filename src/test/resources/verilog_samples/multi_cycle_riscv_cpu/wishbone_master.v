@@ -82,7 +82,7 @@ module wishbone_master (
     begin
 
         $display("");
-        $display("[WISHBONE MASTER] i_cmd_word: %b, i_cmd_stb: %d", i_cmd_word, i_cmd_stb);
+        $display("[WISHBONE MASTER] i_cmd_word: %b, i_cmd_stb: %d, o_rsp_word: %h", i_cmd_word, i_cmd_stb, o_rsp_word);
 
         // reset
         if ((i_reset) || (i_wb_err))
@@ -183,12 +183,12 @@ module wishbone_master (
             // acknowledge to the host
             if (newaddr)
             begin
-                $display("newaddr o_wb_addr = %b", o_wb_addr);
+                $display("[WISHBONE MASTER] newaddr o_wb_addr = %b", o_wb_addr);
 
                 o_rsp_stb   <= 1'b1;
                 o_rsp_word  <= { `RSP_SUB_ADDR, o_wb_addr, 1'b0, !inc };
 
-                $display("newaddr o_rsp_word = %b", o_rsp_word);
+                $display("[WISHBONE MASTER] newaddr o_rsp_word = %b", o_rsp_word);
             end
 
             // to slave: this is a write request or not
@@ -259,7 +259,7 @@ module wishbone_master (
                 if (i_wb_ack)
                 begin
 
-                    $display("SLAVE ACK DURING WAITING STATE. o_wb_we = %d", o_wb_we);
+                    $display("[WISHBONE MASTER] SLAVE ACK DURING WAITING STATE. o_wb_we = %d, i_wb_data = %h", o_wb_we, i_wb_data);
 
                     o_wb_cyc    <= 1'b0; // to slave: cycle is over
                     o_cmd_busy  <= 1'b0; // to host: not busy any more
@@ -297,7 +297,7 @@ module wishbone_master (
             if (i_wb_ack)
             begin
 
-                $display("SLAVE ACK DURING CYCLE END STATE");
+                $display("[WISHBONE MASTER] SLAVE ACK DURING CYCLE END STATE");
 
                 o_wb_cyc    <= 1'b0; // to slave: cycle is over
                 o_cmd_busy  <= 1'b0; // to host: not busy any more
