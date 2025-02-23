@@ -1,5 +1,9 @@
 module riscv_multi(
 
+    // clock and reset
+    input wire clk,
+    input wire reset,
+
     output  wire [31:0] PC,
 
     output  wire [31:0] WriteData,
@@ -18,50 +22,6 @@ module riscv_multi(
     wire [1:0]  ResultSrc;
     wire [1:0]  ImmSrc;
     wire [2:0]  ALUControl;
-
-    // initial
-    // begin
-
-    //     //
-    //     // Read
-    //     //
-
-    //     #60
-
-    //     $display("");
-    //     $display("-----------------------------------------------------------------");
-    //     $display("[CPU] reading 1 ...");
-
-    //     //
-    //     // address
-    //     //
-
-    //     $display("[CPU] ADDRESS ADDRESS ADDRESS");
-
-    //     cmd_stb = 1;
-    //     // formulate a read command
-    //     // set new base address without increment feature
-    //     cmd_word = { 2'b10, 1'b0, 1'b1, 30'b000000000000000000000000000000 };
-
-    //     #10
-
-    //     $display("");
-    //     $display("[CPU] READ READ READ");
-
-    //     cmd_stb = 1;
-    //     cmd_word = { 2'b00, 32'b00000000000000000000000000000000 };
-
-    //     #20
-
-    //     $display("");
-    //     $display("-----------------------------------------------------------------");
-    //     $display("[CPU] reading 1 done.");
-
-    //     $display("[CPU] rsp_word = %0h, rsp_word = %08h, Instr = %08h", rsp_word, rsp_word[31:0], Instr);
-
-    //     cmd_stb = 0;
-    //     cmd_word = 0;
-    // end
 
     // wishbone memory access
     // interface between the host and the master
@@ -105,8 +65,10 @@ module riscv_multi(
         // rsp_stb,
         // rsp_word,
 
+        // clock and reset
         clk,
         reset,
+
         op,
         funct3,
         funct7b5,

@@ -69,11 +69,13 @@ module controller (
     begin
         if (reset == 1)
         begin
+            $display("[controller] reset");
             // when reset=1, reset the state of the FSM to "Fetch" State
             current_state <= FetchState;
         end
         else
         begin
+            $display("[controller] next state");
             // otherwise, next state
             current_state <= next_state;
         end
@@ -209,7 +211,7 @@ module controller (
                 // PC <- PC + 4
                 ALUSrcA <= 2'b00;       // A input to the ALU: use the content of PC
                 ALUSrcB <= 2'b10;       // B input to the ALU: hardcoded 4 to increment PC by one 32bit instruction
-                // reset
+                // ALU
                 ALUControl <= 3'b000;   // operation add?
                 ResultSrc <= 2'b00;     // ALU result goes onto the result bus
             end

@@ -28,7 +28,8 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
 
     reg[31:0] memory_regfile[MEMORY_DEPTH/4 - 1:0]; // 1024/4 = 256
 
-    initial begin
+    initial
+    begin
         $display("Reading file into memory for simulation!");
         $readmemh("progmem.txt", memory_regfile);
     end
@@ -50,7 +51,9 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
 
     always @(posedge i_clk)
     begin
+`ifdef TRACE_MEMORY
         $display("[mem] signals: i_wb_we: %d, i_wb_stb: %d, i_wb_cyc: %d", i_wb_we, i_wb_stb, i_wb_cyc);
+`endif
     end
 
     // reading must be registered to be inferred as block ram
@@ -59,8 +62,9 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
 
         if (!i_wb_we && i_wb_stb && i_wb_cyc)
             begin
+`ifdef TRACE_MEMORY
                 $display("[mem] reading. i_wb_addr = %0h", i_wb_addr);
-
+`endif
                 // debug interface
                 // o_ack_inst  <= i_stb_inst; // go high next cycle after receiving request (data o_inst_out is also sent at next cycle)
                 // o_inst_out  <= memory_regfile[{i_inst_addr >> 2}]; // read instruction
@@ -69,11 +73,15 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
                 o_wb_ack    = i_wb_stb && i_wb_cyc;
                 o_wb_data   = memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]]; // read data
 
+`ifdef TRACE_MEMORY
                 $display("[mem] reading. o_wb_data = %08h", o_wb_data);
+`endif
             end
         else
             begin
+`ifdef TRACE_MEMORY
                 $display("[mem] not reading");
+`endif
             end
 
     end
@@ -84,30 +92,38 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
 
         if (i_wb_we && i_wb_stb && i_wb_cyc)
             begin
-
+`ifdef TRACE_MEMORY
                 $display("[mem] writing. i_wb_addr = %0h", i_wb_addr);
                 $display("[mem] writing. A = %0h, B = %0h, C = %0h, D = %0h", i_wb_data[ 7: 0], i_wb_data[15: 8], i_wb_data[23:16], i_wb_data[31:24]);
-
+`endif
                 // wb_sel is an index into the wb_data array and is used during write cycles
                 // The slave will only access data from wb_data when it is indexed by wb_sel
                 if (i_wb_sel[0])
                 begin
+`ifdef TRACE_MEMORY
                     $display("[mem] writing A");
+`endif
                     memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]][ 7: 0] = i_wb_data[ 7: 0];
                 end
                 if (i_wb_sel[1])
                 begin
+`ifdef TRACE_MEMORY
                     $display("[mem] writing B");
+`endif
                     memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]][15: 8] = i_wb_data[15: 8];
                 end
                 if (i_wb_sel[2])
                 begin
+`ifdef TRACE_MEMORY
                     $display("[mem] writing C");
+`endif
                     memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]][23:16] = i_wb_data[23:16];
                 end
                 if (i_wb_sel[3])
                 begin
+`ifdef TRACE_MEMORY
                     $display("[mem] writing D");
+`endif
                     memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]][31:24] = i_wb_data[31:24];
                 end
 
@@ -117,7 +133,9 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
             end
         else
             begin
+`ifdef TRACE_MEMORY
                 $display("[mem] not writing");
+`endif
             end
 
     end

@@ -55,6 +55,11 @@ module top(
     //riscvsingle rvsingle(clk, reset, PC, Instr, MemWrite, DataAdr, WriteData, ReadData);
 
     riscv_multi rvmulti(
+
+        // clock and reset
+        clk,
+        reset,
+
         PC,
         // // memory access
         // cmd_stb,
