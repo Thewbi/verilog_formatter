@@ -1,40 +1,26 @@
 module datapath(
 
     // clock and reset
-    input   wire        clk,
-    input   wire        reset,
+    input   wire            clk,
+    input   wire            reset,
 
     // output
-    output  wire [6:0]  op,        // operation code from within the instruction
-    output  wire [2:0]  funct3,    // funct3 for instruction identification
-    output  wire        funct7b5,  // funct7b5
-    output  wire        Zero,      // the ALU has computed a result that is zero (for branching instruction making)
+    output  wire [6:0]      op,             // operation code from within the instruction
+    output  wire [2:0]      funct3,         // funct3 for instruction identification
+    output  wire            funct7b5,       // funct7b5
+    output  wire            Zero,           // the ALU has computed a result that is zero (for branching instruction making)
 
     // input
-    input  wire         PCWrite,     // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
-    input  wire         AdrSrc,      // address source selector
-    input  wire         MemWrite,    // write enable for the memory module
-    input  wire         IRWrite,     // instruction register write
-    input  wire [1:0]   ResultSrc,   // controls the multiplexer that decides what goes onto the Result bus
-    input  wire [2:0]   ALUControl,  // tells the ALU which operation to perform
-    input  wire [1:0]   ALUSrcB,     // decides which line goes into the ALU B parameter input
-    input  wire [1:0]   ALUSrcA,     // decides which line goes into the ALU A parameter input
-    input  wire [1:0]   ImmSrc,      // enable sign extension of the immediate value
-    input  wire         RegWrite,    // write enable for the register file
-
-    // // input wire [1:0] ResultSrc,
-    // // input wire PCSrc,
-    // input   wire [1:0]      ALUSrcA,
-    // input   wire [1:0]      ALUSrcB,
-    // // input wire RegWrite,
-    // // input wire [1:0] ImmSrc,
-    // // input wire [2:0] ALUControl,
-    // // output wire Zero,
-    // output  wire [31:0]     PC,             // currently stored value in the PCNext flip flop
-    // input   wire [31:0]     Instr,          // the instruction to execute
-    // // output wire [31:0] ALUResult,
-    // output  wire [31:0]     WriteData,      // instruction sb, sh, sw wants to write data to memory
-    // input        [31:0]     ReadData        // instruction lb, lh, lw wants to read data to memory
+    input  wire             PCWrite,        // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
+    input  wire             AdrSrc,         // address source selector
+    input  wire             MemWrite,       // write enable for the memory module
+    input  wire             IRWrite,        // instruction register write
+    input  wire [1:0]       ResultSrc,      // controls the multiplexer that decides what goes onto the Result bus
+    input  wire [2:0]       ALUControl,     // tells the ALU which operation to perform
+    input  wire [1:0]       ALUSrcB,        // decides which line goes into the ALU B parameter input
+    input  wire [1:0]       ALUSrcA,        // decides which line goes into the ALU A parameter input
+    input  wire [1:0]       ImmSrc,         // enable sign extension of the immediate value
+    input  wire             RegWrite,       // write enable for the register file
 
     // interface between the host and the master
     input                   cmd_stb,        // the host tells the master that it has provided address and data and that the strobe can begin
@@ -180,11 +166,15 @@ module datapath(
     //flopr #(32) instrreg(clk, reset, Instr, InstrNext);
 
     // sign extend module
+    // param 1 = instruction bits
+    // param 2 = type of instruction that is sign extension applied to
+    // param 3 = output
     extend ext(Instr[31:7], ImmSrc, ImmExt);
 
     // ALU input muxes
-    mux3 #(32) srcamux(PC, OldPC, A, ALUSrcA, SrcA);
-    mux3 #(32) srcbmux(WriteData, ImmExt, 32'h00000004, ALUSrcB, SrcB);
+    //                 Input A      Input B     Input C         SelectSignal        Output
+    mux3 #(32) srcamux(PC,          OldPC,      A,              ALUSrcA,            SrcA);
+    mux3 #(32) srcbmux(WriteData,   ImmExt,     32'h00000004,   ALUSrcB,            SrcB);
 
     // ALU
     alu alu(SrcA, SrcB, ALUControl, ALUResult, Zero);
@@ -192,6 +182,7 @@ module datapath(
     flopr #(32) aluResult(clk, reset, ALUResult, ALUOut);
 
     // this mux decides, which value is driving the result BUS
-    mux3 #(32) resultmux(ALUResult, data, ALUOut, ResultSrc, Result);
+    //                      Input A     Input B     Input C         SelectSignal        Output
+    mux3 #(32) resultmux(   ALUResult,  data,       ALUOut,         ResultSrc,          Result);
 
 endmodule

@@ -1,14 +1,14 @@
 // RV32 register file for all 32 32-bit registers
 // three ported register file
 module regfile(
-    input wire clk,         // clock
-    input wire we3,         // write enable, register a3 is written with wd3
-    input wire [4:0] a1,    // register 1 to read (no clock tick needed)
-    input wire [4:0] a2,    // register 2 to read (no clock tick needed)
-    input wire [4:0] a3,    // register to write
-    input wire [31:0] wd3,  // data value to write
-    output wire [31:0] rd1, // the output where the value from register a1 appears
-    output wire [31:0] rd2  // the output where the value from register a2 appears
+    input   wire        clk,    // clock
+    input   wire        we3,    // write enable, register a3 is written with wd3
+    input   wire [4:0]  a1,     // register 1 to read (no clock tick needed)
+    input   wire [4:0]  a2,     // register 2 to read (no clock tick needed)
+    input   wire [4:0]  a3,     // register to write
+    input   wire [31:0] wd3,    // data value to write
+    output  wire [31:0] rd1,    // the output where the value from register a1 appears
+    output  wire [31:0] rd2     // the output where the value from register a2 appears
 );
 
     reg [31:0] rf[31:0];
@@ -21,6 +21,7 @@ module regfile(
     begin
         if (we3)
         begin
+            $display("[regfile] WriteBack. a3=%d, wd3=%h", a3, wd3);
             rf[a3] <= wd3;
         end
     end

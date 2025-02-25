@@ -10,7 +10,7 @@ module controller (
 
     // input
     input   wire [6:0]  op,         // operation code from within the instruction
-    input   wire [2:0]  funct3,     // funct3 for instruction identification
+    input   wire [2:0]  funct3,     // funct3 for instruction identification. This encodes the operation that the ALU has to execute
     input   wire        funct7b5,   // funct7b5
     input   wire        Zero,       // the ALU has computed a result that is zero (for branching instruction making)
 
@@ -19,11 +19,11 @@ module controller (
     output  reg         AdrSrc,     // address source selector
     output  reg         MemWrite,   // write enable for the memory module
     output  reg         IRWrite,    // instruction register write
-    output  reg  [1:0]  ResultSrc,  // controls the multiplexer that decides what goes onto the Result bus
-    output  reg  [2:0]  ALUControl, // tells the ALU which operation to perform
-    output  reg  [1:0]  ALUSrcB,    // decides which line goes into the ALU B parameter input
-    output  reg  [1:0]  ALUSrcA,    // decides which line goes into the ALU A parameter input
-    output  wire [1:0]  ImmSrc,     // enable sign extension of the immediate value
+    output  reg [1:0]   ResultSrc,  // controls the multiplexer that decides what goes onto the Result bus
+    output  reg [2:0]   ALUControl, // tells the ALU which operation to perform
+    output  reg [1:0]   ALUSrcB,    // decides which line goes into the ALU B parameter input
+    output  reg [1:0]   ALUSrcA,    // decides which line goes into the ALU A parameter input
+    output  reg [1:0]   ImmSrc,     // enable sign extension of the immediate value
     output  reg         RegWrite,   // write enable for the register file
 
     // wishbone memory access
@@ -39,6 +39,8 @@ module controller (
     initial
     begin
         $monitor("[controller], rsp_word = %h, current_state = %d, cmd_busy = %d", rsp_word, current_state, cmd_busy);
+
+        RegWrite = 1'b0;        // write disable the register file
     end
 
     initial
@@ -59,19 +61,19 @@ module controller (
     //
 
     parameter
-        ResetState        = 4'b0000,      // S0 "Fetch_1" State
-        FetchState_1         = 4'b0001,      // S1 "Decode" State
+        ResetState          = 4'b0000,      // S0 "Fetch_1" State
+        FetchState_1        = 4'b0001,      // S1 "Decode" State
         FetchState_2        = 4'b0010,      // S2 "MemAddr" State
-        DecodeState        = 4'b0011,      // S3 "MemRead" State
-        MemAddrState          = 4'b0100,      // S4 "MemWB" State
-        MemReadState       = 4'b0101,      // S5 "MemWrite" State
-        MemWBState       = 4'b0110,      // S6 "ExecuteR" State
-        MemWriteState   = 4'b0111,      // S7 "ALUWriteBackState" State
+        DecodeState         = 4'b0011,      // S3 "MemRead" State
+        MemAddrState        = 4'b0100,      // S4 "MemWB" State
+        MemReadState        = 4'b0101,      // S5 "MemWrite" State
+        MemWBState          = 4'b0110,      // S6 "ExecuteR" State
+        MemWriteState       = 4'b0111,      // S7 "ALUWriteBackState" State
         ExecuteRState       = 4'b1000,      // S8 "ExecuteI" State // execute I-Type instruction
-        ALUWriteBackState            = 4'b1001,      // S9 "JAL" State
-        ExecuteIState            = 4'b1010,      // S10 "BEQ" State
-        JALState            = 4'b1011,       // S11
-        BEQState            = 4'b1100,              // S12
+        ALUWriteBackState   = 4'b1001,      // S9 "JAL" State
+        ExecuteIState       = 4'b1010,      // S10 "BEQ" State
+        JALState            = 4'b1011,      // S11
+        BEQState            = 4'b1100,      // S12
                                             // S13
                                             // S14
         ErrorState          = 4'b1111       // S15 "ERROR" State
@@ -301,6 +303,9 @@ module controller (
 
                 $display("[CPU] ADDRESS ADDRESS ADDRESS");
 
+                // turn off register file write
+                RegWrite = 1'b0;
+
                 // activate wishbone interface
                 cmd_stb = 1;
                 // formulate a read command
@@ -392,7 +397,7 @@ module controller (
             begin
                 $display("[CTRL.OUTPUT.ALUWriteBackState]");
                 // rd <- ALUOut         // write the ALU result back into the register file to the rd register
-                ResultSrc = 2'b01;      // data value goes on to the result bus
+                ResultSrc = 2'b00;      // data value goes on to the result bus
                 RegWrite = 1'b1;        // write enable the register file
             end
 
@@ -403,7 +408,8 @@ module controller (
                 // ALUOut <- rs1opimm   // an operator is applied to rs1 and the immediate value
                 ALUSrcA <= 2'b10;       // A input to the ALU: value currently stored in the register identified by rd1
                 ALUSrcB <= 2'b01;       // B input to the ALU: ???
-                ALUControl <= 3'b010;   // some operation (?)
+                ALUControl <= funct3;   // determines the operation that the ALU performs
+                ImmSrc <= 2'b00;        // control the immediate extension module TODO: this has to be done for other types of instructions too!
             end
 
             // S9 "JAL" State

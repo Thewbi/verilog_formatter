@@ -201,7 +201,7 @@ module wishbone_master (
             // waiting for the slave to acknowledge, stall or err-out)
             if (i_cmd_bus)
             begin
-                $display("[MASTER] start a transcation");
+                $display("[MASTER] start a transaction");
                 o_wb_cyc    <= 1'b1; // to slave: start a cycle
                 o_wb_stb    <= 1'b1; // to slave: start a strobe
                 o_cmd_busy  <= 1'b1; // to host: master is busy
