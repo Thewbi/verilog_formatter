@@ -37,11 +37,11 @@ module datapath(
     // input        [31:0]     ReadData        // instruction lb, lh, lw wants to read data to memory
 
     // interface between the host and the master
-    input                   cmd_stb,      // the host tells the master that it has provided address and data and that the strobe can begin
-    input   [33:0]          cmd_word,     // (34 bits) data to write wrapped in a command
-    output  wire	            cmd_busy,     // the client stalls the master, the master forwards the stall signal to the host here
-    output  wire             rsp_stb,      // when this value is 1, then the master is ready to start a strobe
-    output  wire [33:0]      rsp_word     // (34 bits) data that has been read (or dummy data on a read)
+    input                   cmd_stb,        // the host tells the master that it has provided address and data and that the strobe can begin
+    input   [33:0]          cmd_word,       // (34 bits) data to write wrapped in a command
+    output  wire            cmd_busy,       // the client stalls the master, the master forwards the stall signal to the host here
+    output  wire            rsp_stb,        // when this value is 1, then the master is ready to start a strobe
+    output  wire [33:0]     rsp_word        // (34 bits) data that has been read (or dummy data on a read)
 );
 
     reg [3:0] wb_sel;
@@ -156,6 +156,10 @@ module datapath(
     flopenr #(32) OldPCFF(clk, reset, IRWrite, PC, OldPC);
     flopenr #(32) InstrFF(clk, reset, IRWrite, wb_data, Instr);
     flopr #(32) DataFF(clk, reset, wb_data, data);
+
+    assign op = Instr[6:0];
+    assign funct3 = Instr[14:12];
+    assign funct7b5 = Instr[30:0];
 
     // register file logic
     regfile rf (

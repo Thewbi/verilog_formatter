@@ -25,7 +25,7 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
     input   wire [3:0]                      i_wb_sel, // this could be hardcoded to an array that has all elements set to 1 so all elements are indexed
     output  reg                             o_wb_ack,
     output  wire                            o_wb_stall,
-    output  reg [31:0]                      o_wb_data
+    output  reg [31:0]                      o_wb_data   // this memory slave will return read memory here
 );
 
     reg[31:0] memory_regfile[MEMORY_DEPTH/4 - 1:0]; // 1024/4 = 256

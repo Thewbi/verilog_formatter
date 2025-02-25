@@ -8,8 +8,7 @@ module controller (
     input   wire        clk,
     input   wire        reset,
 
-    // input - TODO: next step, decode opcode into these inputs somehow!!!!!!!!!!
-    TODO: compiler error in purpose so brain no forgetty sphagetty
+    // input
     input   wire [6:0]  op,         // operation code from within the instruction
     input   wire [2:0]  funct3,     // funct3 for instruction identification
     input   wire        funct7b5,   // funct7b5
@@ -99,12 +98,10 @@ module controller (
         end
     end
 
-    always @(cmd_busy)
+    always @(posedge cmd_busy)
     begin
         $display("[controller] data_available!");
         data_available = 1;
-
-        //op = 15;
     end
 
     //
@@ -125,7 +122,7 @@ module controller (
                 if (reset == 0)
                 begin
                     $display("[controller] rsp_stb: %d, cmd_busy: %d", rsp_stb, cmd_busy);
-                    $display("goto ResetState -> FetchState_1");
+                    $display("[controller] goto ResetState -> FetchState_1");
                     next_state = FetchState_1;
 
                     data_available = 0;
@@ -136,7 +133,7 @@ module controller (
             FetchState_1:
             begin
                 $display("[controller] rsp_stb: %d, cmd_busy: %d", rsp_stb, cmd_busy);
-                $display("goto FetchState_1 -> FetchState_2");
+                $display("[controller] goto FetchState_1 -> FetchState_2");
                 next_state = FetchState_2;
             end
 
@@ -148,7 +145,7 @@ module controller (
                 //if(cmd_busy == 0)
                 if (data_available == 1)
                 begin
-                    $display("goto FetchState_2 -> DecodeState");
+                    $display("[controller] goto FetchState_2 -> DecodeState");
                     next_state = DecodeState;
                 end
             end
@@ -156,94 +153,127 @@ module controller (
             // S1 "Decode" State
             DecodeState:
             begin
-                if ((op == 7'b0000011) || (op == 7'b010011)) // lw or sw
+                $display("[controller] op: %d", op);
+                if ((op == 7'b0000011) || (op == 7'b0100011)) // lw or sw
                 begin
+                    $display("[controller] goto DecodeState -> MemAddrState");
                     next_state = MemAddrState;
                 end
                 else if (op == 7'b0110011) // R-Type
                 begin
-                    $display("goto DecodeState -> ExecuteRState");
+                    $display("[controller] goto DecodeState -> ExecuteRState");
                     next_state = ExecuteRState;
                 end
                 else if (op == 7'b0010011) // I-Type ALU
+                begin
+                    $display("[controller] goto DecodeState -> ExecuteIState");
                     next_state = ExecuteIState;
+                end
                 else if (op == 7'b1101111) // JAL
+                begin
+                    $display("[controller] goto DecodeState -> JALState");
                     next_state = JALState;
+                end
                 else if (op == 7'b1100011) // BEQ
+                begin
+                    $display("[controller] goto DecodeState -> BEQState");
                     next_state = BEQState;
+                end
                 else
+                begin
+                    $display("[controller] goto DecodeState -> ErrorState");
                     next_state = ErrorState;
+                end
             end
 
             // S2 "MemAddr" State
             MemAddrState:
             begin
                 if (op == 7'b0000011) // lw
+                begin
+                    $display("[controller] goto MemAddrState -> MemReadState");
                     next_state = MemReadState;
+                end
                 else if (op == 7'b0100011) // sw
+                begin
+                    $display("[controller] goto MemAddrState -> MemWriteState");
                     next_state = MemWriteState;
+                end
                 else
+                begin
+                    $display("[controller] goto MemAddrState -> ErrorState");
                     next_state = ErrorState;
+                end
             end
 
             // S3 "MemRead" State
             MemReadState:
             begin
+                $display("[controller] goto MemReadState -> MemWBState");
                 next_state = MemWBState;
             end
 
             // S4 "MemWB" State
             MemWBState:
             begin
+                $display("[controller] goto MemWBState -> FetchState_1");
                 next_state = FetchState_1;
             end
 
             // S5 "MemWrite" State
             MemWriteState:
             begin
+                $display("[controller] goto MemWriteState -> FetchState_1");
                 next_state = FetchState_1;
             end
 
             // S6 "ExecuteR" State
             ExecuteRState:
             begin
-                $display("goto ExecuteRState -> ALUWriteBackState");
+                $display("[controller] goto ExecuteRState -> ALUWriteBackState");
                 next_state = ALUWriteBackState;
             end
 
             // S7 "ALUWB" State
             ALUWriteBackState:
             begin
-                $display("goto ALUWriteBackState -> FetchState");
-                next_state = ALUWriteBackState;
+                $display("[controller] goto ALUWriteBackState -> FetchState_1");
+                next_state = FetchState_1;
             end
 
             // S8 "ExecuteI" State // execute I-Type instruction
             ExecuteIState:
             begin
+                $display("[controller] goto ExecuteIState -> ALUWriteBackState");
                 next_state = ALUWriteBackState;
             end
 
             // S9 "JAL" State
             JALState:
             begin
+                $display("[controller] goto JALState -> ALUWriteBackState");
                 next_state = ALUWriteBackState;
             end
 
             // S10 "BEQ" State
             BEQState:
             begin
+                $display("[controller] goto BEQState -> FetchState_1");
                 next_state = FetchState_1;
             end
 
             // S15 "ERROR" State
             ErrorState:
             begin
+                $display("[controller] goto ErrorState -> ErrorState");
                 next_state = ErrorState;
             end
 
             default:
+            begin
+                $display("[controller] default goto default -> ErrorState");
                 next_state = ErrorState;
+            end
 
         endcase
     end

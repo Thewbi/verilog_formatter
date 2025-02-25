@@ -36,8 +36,6 @@ module riscv_multi(
     wire [1:0]  ALUSrcB;
     wire [1:0]  ALUSrcA;
 
-
-
     // TODO: use the register and immediate offset to compute the target address
     // and encode that target address into the command for the wishbone master.
 
@@ -46,27 +44,6 @@ module riscv_multi(
     // succesfully performed a read / write
     //
     controller ctr (
-        // Instr[6:0],     // [in]
-        // Instr[14:12],   // [in]
-        // Instr[30],      // [in]
-        // Zero,
-        // ResultSrc,
-        // MemWrite, // this signal says wether to read or write. Build this into the command for the wishbone master. whishbone_master.i_cmd_word[33:32] == 2'b00 for read and 2'b01 for write
-        // PCSrc,
-        // ALUSrc,
-        // RegWrite,
-        // Jump,
-        // ImmSrc,
-        // ALUControl
-
-        // // wishbone memory access
-        // // interface between the host and the master
-        // cmd_stb,
-        // cmd_word,
-        // cmd_busy,
-        // rsp_stb,
-        // rsp_word,
-
         // clock and reset
         clk,
         reset,
