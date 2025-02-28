@@ -74,7 +74,7 @@ module datapath(
     // The flip flop will output the stored data onto PC
     //                      clock       reset,      enable,     input       output
     //flopenr #(32) pcreg(    clk,        reset,      PCWrite,    PCNext,     PC);
-    flopenr #(32) pcreg(    clk,        reset,      PCWrite,    Result,     PC);
+    flopenr #(32) pcreg(3'b000,     clk,        reset,      PCWrite,    Result,     PC);
 
     mux2 #(32) addrmux(PC, Result, AdrSrc, adr);
 
@@ -145,8 +145,8 @@ module datapath(
     );
 
     //                    clock     reset,      enable,     input       output
-    flopenr #(32) OldPCFF(clk,      reset,      IRWrite,    PC,         OldPC);
-    flopenr #(32) InstrFF(clk,      reset,      IRWrite,    wb_data,    Instr);
+    flopenr #(32) OldPCFF(3'b001, clk,      reset,      IRWrite,    PC,         OldPC);
+    flopenr #(32) InstrFF(3'b010, clk,      reset,      IRWrite,    wb_data,    Instr);
     flopr #(32) DataFF(clk, reset, wb_data, data);
 
     assign op = Instr[6:0];
@@ -189,6 +189,6 @@ module datapath(
 
     // this mux decides, which value is driving the result BUS
     //                      Input A     Input B     Input C         SelectSignal        Output
-    mux3 #(32) resultmux(   ALUResult,  data,       ALUOut,         ResultSrc,          Result);
+    mux3 #(32) resultmux(   ALUOut,  data,       ALUResult,         ResultSrc,          Result);
 
 endmodule

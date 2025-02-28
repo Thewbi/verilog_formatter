@@ -102,10 +102,12 @@ module controller (
         end
     end
 
-    always @(posedge cmd_busy)
+    always @(negedge cmd_busy)
     begin
         $display("[controller] data_available!");
         data_available = 1;
+
+        cmd_stb <= 0; // make the wishbone master go to NO-Statee
     end
 
     //
@@ -151,6 +153,7 @@ module controller (
                 begin
                     $display("[controller] goto FetchState_2 -> DecodeState");
                     next_state = DecodeState;
+                    data_available = 0;
                 end
             end
 
@@ -296,7 +299,7 @@ module controller (
             ResetState:
             begin
                 $display("[CTRL.OUTPUT.ResetState]");
-                PCWrite <= 1'b0;
+                PCWrite = 1'b0;
             end
 
             // S0 "Fetch_1" State
@@ -304,7 +307,7 @@ module controller (
             begin
                 $display("[CTRL.OUTPUT.FETCH_STATE_1]");
 
-                PCWrite <= 1'b0;
+                // PCWrite = 1'b1;
 
                 $display("[CPU] ADDRESS ADDRESS ADDRESS");
 
@@ -313,6 +316,23 @@ module controller (
 
                 // activate wishbone interface
                 cmd_stb = 1;
+
+                //
+                // increment PC
+                //
+
+
+
+                // PC <- PC + 4
+                ALUSrcA <= 2'b00;       // A input to the ALU: use the content of PC
+                ALUSrcB <= 2'b10;       // B input to the ALU: hardcoded 4 to increment PC by one 32bit instruction
+                // ALU
+                ALUControl <= 3'b000;   // operation add?
+                ResultSrc <= 2'b10;     // ALU result goes onto the result bus
+
+                PCWrite <= 1'b1;        // enable the PC write to store the incremented PC
+
+
 
                 // formulate a read command
                 // set new base address without increment feature
@@ -328,24 +348,21 @@ module controller (
             FetchState_2:
             begin
 
-                $display("[CPU] READ READ READ");
+                PCWrite <= 0;
 
-                cmd_stb = 1;
-                cmd_word = { 2'b00, 32'b00000000000000000000000000000000 }; // the 32 bits are ignored for a read command
-
-                $display("[CTRL.OUTPUT.FETCH_STATE_2]");
                 // Instr <- Mem[PC]
                 AdrSrc <= 0;            // address for memory access is taken from the PC register
                 IRWrite <= 1;           // write enable the register that will store the data retrieved from memory
 
-                // PC <- PC + 4
-                ALUSrcA <= 2'b00;       // A input to the ALU: use the content of PC
-                ALUSrcB <= 2'b10;       // B input to the ALU: hardcoded 4 to increment PC by one 32bit instruction
-                // ALU
-                ALUControl <= 3'b000;   // operation add?
-                ResultSrc <= 2'b10;     // ALU result goes onto the result bus
 
-                PCWrite <= 1'b1;        // enable the PC write to store the incremented PC
+
+                $display("[CPU] READ READ READ");
+
+                cmd_stb <= 1;
+                cmd_word <= { 2'b00, 32'b00000000000000000000000000000000 }; // the 32 bits are ignored for a read command
+
+                $display("[CTRL.OUTPUT.FETCH_STATE_2]");
+
 
 
             end
@@ -362,10 +379,10 @@ module controller (
                 ALUSrcB <= 2'b01;       // B input to the ALU: sign extended immediate
                 ALUControl <= 3'b000;   // some operation (add?)
 
-                if(cmd_busy == 0)
-                begin
-                    cmd_stb <= 0;
-                end
+                // if(cmd_busy == 0)
+                // begin
+                //     cmd_stb <= 0;
+                // end
             end
 
             // S2 "MemAddr" State
@@ -389,8 +406,8 @@ module controller (
                 PCWrite <= 1'b0;
 
                 // Data <- Mem[ALUOut]
-                ResultSrc = 2'b00;      // ALUOut is the value that is placed onto the ResultSrc bus
-                AdrSrc = 1'b1;          // The ResultSrc bus is used as an input to the memory module
+                ResultSrc <= 2'b00;      // ALUOut is the value that is placed onto the ResultSrc bus
+                AdrSrc <= 1'b1;          // The ResultSrc bus is used as an input to the memory module
             end
 
             // S4 "MemWB" State
@@ -401,8 +418,8 @@ module controller (
                 PCWrite <= 1'b0;
 
                 // rd <- Data           // write the memmory value back into the register file to the rd register
-                ResultSrc = 2'b01;      // data read from memory is the value that is placed onto the ResultSrc bus
-                RegWrite = 1'b1;        // write enable the register file
+                ResultSrc <= 2'b01;      // data read from memory is the value that is placed onto the ResultSrc bus
+                RegWrite <= 1'b1;        // write enable the register file
             end
 
             // S5 "MemWrite" State
@@ -413,9 +430,9 @@ module controller (
                 PCWrite <= 1'b0;
 
                 // Mem[ALUOut] <- rd    // value in the rd register goes into memory
-                ResultSrc = 2'b00;
-                AdrSrc = 1'b1;
-                MemWrite = 1'b1;        // Write enable the memory
+                ResultSrc <= 2'b00;
+                AdrSrc <= 1'b1;
+                MemWrite <= 1'b1;        // Write enable the memory
             end
 
             // S6 "ExecuteR" State
@@ -439,8 +456,8 @@ module controller (
                 PCWrite <= 1'b0;
 
                 // rd <- ALUOut         // write the ALU result back into the register file to the rd register
-                ResultSrc = 2'b00;      // data value goes on to the result bus
-                RegWrite = 1'b1;        // write enable the register file
+                ResultSrc <= 2'b00;      // data value goes on to the result bus
+                RegWrite <= 1'b1;        // write enable the register file
             end
 
             // S8 "ExecuteI" State // execute I-Type instruction
@@ -466,6 +483,7 @@ module controller (
                 ALUSrcB <= 2'b10;       // hardcoded value 4
                 ALUControl <= 3'b000;   // some operation (add?)
                 ResultSrc <= 2'b00;     // ALU goes onto the result bus
+
                 PCWrite <= 1'b1;        // enable the PC write to store the incremented PC
             end
 
@@ -478,6 +496,7 @@ module controller (
                 ALUSrcB <= 2'b00;       // register file rs2
                 ALUControl <= 3'b001;   // some operation (minus?)
                 ResultSrc <= 2'b00;     // ALU goes onto the result bus
+
                 PCWrite <= 1'b1;        // enable the PC write to store the incremented PC
             end
 

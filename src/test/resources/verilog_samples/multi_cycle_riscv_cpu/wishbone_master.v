@@ -188,11 +188,12 @@ module wishbone_master (
                 o_rsp_stb   <= 1'b1;
                 o_rsp_word  <= { `RSP_SUB_ADDR, o_wb_addr, 1'b0, !inc };
 
-                $display("[WISHBONE MASTER] newaddr o_rsp_word = %b", o_rsp_word);
+                //$display("[WISHBONE MASTER] newaddr o_rsp_word = %b", o_rsp_word);
+                $display("[WISHBONE MASTER] newaddr o_rsp_word = %h", o_rsp_word);
             end
 
             // to slave: this is a write request or not
-            $display("[WISHBONE MASTER] i_cmd_stb = %b, i_cmd_wr = %b, i_cmd_rd = %b, i_cmd_bus = %d",
+            $display("[WISHBONE MASTER -- TO_SLAVE:] i_cmd_stb = %b, i_cmd_wr = %b, i_cmd_rd = %b, i_cmd_bus = %d",
                 i_cmd_stb, i_cmd_wr, i_cmd_rd, i_cmd_bus);
             o_wb_we <= i_cmd_wr;
 
@@ -278,6 +279,10 @@ module wishbone_master (
 
                     // back to idle state
                 end
+
+                // o_wb_we = 0;
+                // o_wb_cyc = 0;
+                // o_wb_stb = 0;
             end
         end
         else if (o_wb_cyc) // state to wait for the slave responding with the data read
