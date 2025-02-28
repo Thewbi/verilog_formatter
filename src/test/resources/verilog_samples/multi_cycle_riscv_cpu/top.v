@@ -20,7 +20,7 @@ module top(
     initial
         begin
             $display("Hello, World");
-            $monitor("[TOP.v] At time %t, PC = %h (%0d)", $time, PC, PC);
+            // $monitor("[TOP.v] At time %t, PC = %h (%0d)", $time, PC, PC);
 
             // // fill indexes into wb_data to show where data to be written is located
             // // In this case all four bytes of the word are written
@@ -39,7 +39,7 @@ module top(
                 $time, clk, rsp_word);
         end
 
-    wire [31:0] PC;
+    // wire [31:0] PC;
     wire [31:0] Instr;
 
     wire [31:0] WriteData;
@@ -60,7 +60,7 @@ module top(
         clk,
         reset,
 
-        PC,
+        // PC,
         // // memory access
         // cmd_stb,
         // cmd_word,

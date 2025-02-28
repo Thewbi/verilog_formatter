@@ -49,7 +49,7 @@ module wishbone_master (
     input   wire [31:0] i_wb_data,      // slave returns read data here
     output  reg         o_wb_cyc,       //
     output  reg         o_wb_stb,       // without strobe, the slave is disabled
-    output  reg [ 9:0]  o_wb_addr,      //
+    output  reg [ 9:0]  o_wb_addr,      // this is the address that the slave has to read from or write to
     output  reg         o_wb_we,        //
     output  reg [31:0]  o_wb_data       // data for the slave to process is output here
 );

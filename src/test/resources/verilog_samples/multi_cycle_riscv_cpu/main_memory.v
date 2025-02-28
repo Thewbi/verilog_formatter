@@ -36,8 +36,6 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
         $readmemh("progmem.txt", memory_regfile);
     end
 
-
-
     // never stall
     assign o_wb_stall = 0;
 

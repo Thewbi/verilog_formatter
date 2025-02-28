@@ -4,7 +4,7 @@ module riscv_multi(
     input wire clk,
     input wire reset,
 
-    output  wire [31:0] PC,
+    // output  wire [31:0] PC,
 
     output  wire [31:0] WriteData,
     input   wire [31:0] ReadData
@@ -13,12 +13,13 @@ module riscv_multi(
 
     // the wishbone response contains data in the lower word
     wire [31:0] Instr;
-    assign Instr = rsp_word[31:0];
+    assign      Instr = rsp_word[31:0];
 
     wire        ALUSrc;
     wire        RegWrite;
     wire        Jump;
     wire        Zero;
+    wire [31:0] PC;
     wire [1:0]  ResultSrc;
     wire [1:0]  ImmSrc;
     wire [2:0]  ALUControl;
@@ -36,6 +37,11 @@ module riscv_multi(
     wire [1:0]  ALUSrcB;
     wire [1:0]  ALUSrcA;
 
+    initial
+    begin
+        $monitor("PC: %d", PC);
+    end
+
     // TODO: use the register and immediate offset to compute the target address
     // and encode that target address into the command for the wishbone master.
 
@@ -52,6 +58,7 @@ module riscv_multi(
         funct3,
         funct7b5,
         Zero,
+        PC,
         PCWrite,
         AdrSrc,
         MemWrite,
@@ -82,6 +89,7 @@ module riscv_multi(
         funct3,
         funct7b5,
         Zero,
+        PC,
 
         // input
         PCWrite,

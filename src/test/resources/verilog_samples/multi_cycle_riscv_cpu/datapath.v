@@ -9,6 +9,7 @@ module datapath(
     output  wire [2:0]      funct3,         // funct3 for instruction identification
     output  wire            funct7b5,       // funct7b5
     output  wire            Zero,           // the ALU has computed a result that is zero (for branching instruction making)
+    output  wire [31:0]     PC,
 
     // input
     input  wire             PCWrite,        // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
@@ -28,6 +29,7 @@ module datapath(
     output  wire            cmd_busy,       // the client stalls the master, the master forwards the stall signal to the host here
     output  wire            rsp_stb,        // when this value is 1, then the master is ready to start a strobe
     output  wire [33:0]     rsp_word        // (34 bits) data that has been read (or dummy data on a read)
+
 );
 
     reg [3:0] wb_sel;
@@ -40,11 +42,15 @@ module datapath(
             wb_sel[1] = 1'b1;
             wb_sel[2] = 1'b1;
             wb_sel[3] = 1'b1;
+
+            //PC <= 0;
+
+            //$monitor("PC: %d", PC);
         end
 
-    wire [31:0] PC;
+    // wire [31:0] PC;
     wire [31:0] OldPC;
-    wire [31:0] PCNext; // input to pcreg. connects the mux infront of pcreg to pcreg.
+    // wire [31:0] PCNext; // input to pcreg. connects the mux infront of pcreg to pcreg.
     wire [31:0] adr;
     wire [31:0] data;
     wire [31:0] Instr;
@@ -66,11 +72,9 @@ module datapath(
 
     // next PC logic (PCNext is the input which is stored in posedge clock.)
     // The flip flop will output the stored data onto PC
-    flopenr #(32) pcreg(clk, reset, PCWrite, PCNext, PC);
-
-    // adder pcadd4(PC, 32'd4, PCPlus4);
-    // adder pcaddbranch(PC, ImmExt, PCTarget);
-    // mux2 #(32) pcmux(PCPlus4, PCTarget, PCSrc, PCNext);
+    //                      clock       reset,      enable,     input       output
+    //flopenr #(32) pcreg(    clk,        reset,      PCWrite,    PCNext,     PC);
+    flopenr #(32) pcreg(    clk,        reset,      PCWrite,    Result,     PC);
 
     mux2 #(32) addrmux(PC, Result, AdrSrc, adr);
 
@@ -119,6 +123,7 @@ module datapath(
     // wishbone slave for memory
     main_memory mem (
 
+        // clock
         clk,
 
         // // debug interface (Access to memory without wishbone)
@@ -139,8 +144,9 @@ module datapath(
         wb_data         // slave returns read data
     );
 
-    flopenr #(32) OldPCFF(clk, reset, IRWrite, PC, OldPC);
-    flopenr #(32) InstrFF(clk, reset, IRWrite, wb_data, Instr);
+    //                    clock     reset,      enable,     input       output
+    flopenr #(32) OldPCFF(clk,      reset,      IRWrite,    PC,         OldPC);
+    flopenr #(32) InstrFF(clk,      reset,      IRWrite,    wb_data,    Instr);
     flopr #(32) DataFF(clk, reset, wb_data, data);
 
     assign op = Instr[6:0];

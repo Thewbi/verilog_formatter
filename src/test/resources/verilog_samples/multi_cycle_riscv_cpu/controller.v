@@ -13,6 +13,8 @@ module controller (
     input   wire [2:0]  funct3,     // funct3 for instruction identification. This encodes the operation that the ALU has to execute
     input   wire        funct7b5,   // funct7b5
     input   wire        Zero,       // the ALU has computed a result that is zero (for branching instruction making)
+    input   wire [31:0] PC,
+
 
     // output
     output  reg         PCWrite,    // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
@@ -144,7 +146,7 @@ module controller (
             begin
                 $display("[controller] rsp_stb: %d, cmd_busy: %d", rsp_stb, cmd_busy);
                 //if(rsp_stb) // when the wishbone master has finished the transaction
-                //if(cmd_busy == 0)
+
                 if (data_available == 1)
                 begin
                     $display("[controller] goto FetchState_2 -> DecodeState");
@@ -294,12 +296,15 @@ module controller (
             ResetState:
             begin
                 $display("[CTRL.OUTPUT.ResetState]");
+                PCWrite <= 1'b0;
             end
 
             // S0 "Fetch_1" State
             FetchState_1:
             begin
                 $display("[CTRL.OUTPUT.FETCH_STATE_1]");
+
+                PCWrite <= 1'b0;
 
                 $display("[CPU] ADDRESS ADDRESS ADDRESS");
 
@@ -308,9 +313,15 @@ module controller (
 
                 // activate wishbone interface
                 cmd_stb = 1;
+
                 // formulate a read command
                 // set new base address without increment feature
-                cmd_word = { 2'b10, 1'b0, 1'b1, 30'b000000000000000000000000000000 };
+                //cmd_word = { 2'b10, 1'b0, 1'b1, 30'b000000000000000000000000000000 };
+
+                $display("[controller] PC PC PC :::::::::::::::::::::::::::: %0h", PC);
+
+                cmd_word = { 2'b10, 1'b0, 1'b1, PC[29:0] };
+
             end
 
             // S0 "Fetch_2" State
@@ -320,34 +331,50 @@ module controller (
                 $display("[CPU] READ READ READ");
 
                 cmd_stb = 1;
-                cmd_word = { 2'b00, 32'b00000000000000000000000000000000 };
+                cmd_word = { 2'b00, 32'b00000000000000000000000000000000 }; // the 32 bits are ignored for a read command
 
                 $display("[CTRL.OUTPUT.FETCH_STATE_2]");
                 // Instr <- Mem[PC]
                 AdrSrc <= 0;            // address for memory access is taken from the PC register
                 IRWrite <= 1;           // write enable the register that will store the data retrieved from memory
+
                 // PC <- PC + 4
                 ALUSrcA <= 2'b00;       // A input to the ALU: use the content of PC
                 ALUSrcB <= 2'b10;       // B input to the ALU: hardcoded 4 to increment PC by one 32bit instruction
                 // ALU
                 ALUControl <= 3'b000;   // operation add?
-                ResultSrc <= 2'b00;     // ALU result goes onto the result bus
+                ResultSrc <= 2'b10;     // ALU result goes onto the result bus
+
+                PCWrite <= 1'b1;        // enable the PC write to store the incremented PC
+
+
             end
 
             // S1 "Decode" State
             DecodeState:
             begin
                 $display("[CTRL.OUTPUT.DECODE_STATE]");
+
+                PCWrite <= 1'b0;
+
                 // ALUOut <- PCTarget (this computes the target address of a jump/branch instruction)
                 ALUSrcA <= 2'b01;       // A input to the ALU: use the oldPC
                 ALUSrcB <= 2'b01;       // B input to the ALU: sign extended immediate
                 ALUControl <= 3'b000;   // some operation (add?)
+
+                if(cmd_busy == 0)
+                begin
+                    cmd_stb <= 0;
+                end
             end
 
             // S2 "MemAddr" State
             MemAddrState:
             begin
                 $display("[CTRL.OUTPUT.MEMADDR_STATE]");
+
+                PCWrite <= 1'b0;
+
                 // ALUOut <- rs1 + imm
                 ALUSrcA <= 2'b10;       // A input to the ALU: value currently stored in the register identified by rd1
                 ALUSrcB <= 2'b01;       // B input to the ALU: sign extended immediate
@@ -358,6 +385,9 @@ module controller (
             MemReadState:
             begin
                 $display("[CTRL.OUTPUT.MEMREAD_STATE]");
+
+                PCWrite <= 1'b0;
+
                 // Data <- Mem[ALUOut]
                 ResultSrc = 2'b00;      // ALUOut is the value that is placed onto the ResultSrc bus
                 AdrSrc = 1'b1;          // The ResultSrc bus is used as an input to the memory module
@@ -367,6 +397,9 @@ module controller (
             MemWBState:
             begin
                 $display("[CTRL.OUTPUT.MEMWB_STATE]");
+
+                PCWrite <= 1'b0;
+
                 // rd <- Data           // write the memmory value back into the register file to the rd register
                 ResultSrc = 2'b01;      // data read from memory is the value that is placed onto the ResultSrc bus
                 RegWrite = 1'b1;        // write enable the register file
@@ -376,6 +409,9 @@ module controller (
             MemWriteState:
             begin
                 $display("[CTRL.OUTPUT.MEMWRITE_STATE]");
+
+                PCWrite <= 1'b0;
+
                 // Mem[ALUOut] <- rd    // value in the rd register goes into memory
                 ResultSrc = 2'b00;
                 AdrSrc = 1'b1;
@@ -386,6 +422,9 @@ module controller (
             ExecuteRState:
             begin
                 $display("[CTRL.OUTPUT.EXECUTER_STATE]");
+
+                PCWrite <= 1'b0;
+
                 // ALUOut <- rs1oprs2   // an operator is applied to rs1 and rs2
                 ALUSrcA <= 2'b10;       // A input to the ALU: value currently stored in the register identified by rd1
                 ALUSrcB <= 2'b00;       // B input to the ALU: sign extended immediate
@@ -396,6 +435,9 @@ module controller (
             ALUWriteBackState:
             begin
                 $display("[CTRL.OUTPUT.ALUWriteBackState]");
+
+                PCWrite <= 1'b0;
+
                 // rd <- ALUOut         // write the ALU result back into the register file to the rd register
                 ResultSrc = 2'b00;      // data value goes on to the result bus
                 RegWrite = 1'b1;        // write enable the register file
@@ -405,6 +447,9 @@ module controller (
             ExecuteIState:
             begin
                 $display("[CTRL.OUTPUT.EXECUTEI_STATE]");
+
+                PCWrite <= 1'b0;
+
                 // ALUOut <- rs1opimm   // an operator is applied to rs1 and the immediate value
                 ALUSrcA <= 2'b10;       // A input to the ALU: value currently stored in the register identified by rd1
                 ALUSrcB <= 2'b01;       // B input to the ALU: ???
@@ -421,7 +466,7 @@ module controller (
                 ALUSrcB <= 2'b10;       // hardcoded value 4
                 ALUControl <= 3'b000;   // some operation (add?)
                 ResultSrc <= 2'b00;     // ALU goes onto the result bus
-                PCWrite <= 1'b1;        // enable the PC write
+                PCWrite <= 1'b1;        // enable the PC write to store the incremented PC
             end
 
             // S10 "BEQ" State
@@ -433,7 +478,7 @@ module controller (
                 ALUSrcB <= 2'b00;       // register file rs2
                 ALUControl <= 3'b001;   // some operation (minus?)
                 ResultSrc <= 2'b00;     // ALU goes onto the result bus
-                PCWrite <= 1'b1;        // branch ???
+                PCWrite <= 1'b1;        // enable the PC write to store the incremented PC
             end
 
             // S15 "ERROR" State
