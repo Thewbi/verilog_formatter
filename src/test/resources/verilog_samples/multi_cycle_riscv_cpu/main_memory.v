@@ -28,12 +28,34 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
     output  reg [31:0]                      o_wb_data   // this memory slave will return read memory here
 );
 
-    reg[31:0] memory_regfile[MEMORY_DEPTH/4 - 1:0]; // 1024/4 = 256
+    reg [31:0] memory_regfile[MEMORY_DEPTH/4 - 1:0]; // 1024/4 = 256
 
     initial
     begin
-        $display("Reading file into memory for simulation!");
-        $readmemh("progmem.txt", memory_regfile);
+        // $display("Reading file into memory for simulation!");
+        // $readmemh("progmem.txt", memory_regfile);
+
+        memory_regfile[32'd0] = 32'h00500113;
+        memory_regfile[32'd4] = 32'h00c00193;
+        memory_regfile[32'd8] = 32'hFF718393;
+        memory_regfile[32'd12] = 32'h0023E233;
+        memory_regfile[32'd16] = 32'h0041F2B3;
+        memory_regfile[32'd20] = 32'h004282B3;
+        memory_regfile[32'd24] = 32'h02728863;
+        memory_regfile[32'd28] = 32'h0041A233;
+        memory_regfile[32'd32] = 32'h00020463;
+        memory_regfile[32'd36] = 32'h00000293;
+        memory_regfile[32'd40] = 32'h0023A233;
+        memory_regfile[32'd44] = 32'h005203B3;
+        memory_regfile[32'd48] = 32'h402383B3;
+        memory_regfile[32'd52] = 32'h0471AA23;
+        memory_regfile[32'd56] = 32'h06002103;
+        memory_regfile[32'd60] = 32'h005104B3;
+        memory_regfile[32'd64] = 32'h008001EF;
+        memory_regfile[32'd68] = 32'h00100113;
+        memory_regfile[32'd72] = 32'h00910133;
+        memory_regfile[32'd76] = 32'h0221A023;
+        memory_regfile[32'd80] = 32'h00210063;
     end
 
     // never stall
@@ -72,8 +94,11 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
                 // o_inst_out  <= memory_regfile[{i_inst_addr >> 2}]; // read instruction
 
                 // wishbone interface
-                o_wb_ack    = i_wb_stb && i_wb_cyc;
-                o_wb_data   = memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]]; // read data
+                o_wb_ack    <= i_wb_stb && i_wb_cyc;
+                o_wb_data   <= memory_regfile[i_wb_addr];
+                //o_wb_data   <= memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:2]]; // read data
+                //o_wb_data   <= memory_regfile[i_wb_addr[$clog2(MEMORY_DEPTH)-1:0]]; // read data
+                //o_wb_data   <= memory_regfile[32'd4];
 
 `ifdef TRACE_MEMORY
                 $display("[mem] reading. o_wb_data = %08h", o_wb_data);

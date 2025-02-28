@@ -309,7 +309,7 @@ module controller (
 
                 // PCWrite = 1'b1;
 
-                $display("[CPU] ADDRESS ADDRESS ADDRESS");
+
 
                 // turn off register file write
                 RegWrite = 1'b0;
@@ -340,7 +340,9 @@ module controller (
 
                 $display("[controller] PC PC PC :::::::::::::::::::::::::::: %0h", PC);
 
-                cmd_word = { 2'b10, 1'b0, 1'b1, PC[29:0] };
+                $display("[CPU] ADDRESS ADDRESS ADDRESS");
+                // Read/Write, add to bus adddres, incrememnt on each read, address value
+                cmd_word = { 2'b10, 1'b0, 1'b0, PC[29:0] };
 
             end
 
@@ -356,7 +358,7 @@ module controller (
 
 
 
-                $display("[CPU] READ READ READ");
+                $display("[CPU] READ READ READ COMMAND");
 
                 cmd_stb <= 1;
                 cmd_word <= { 2'b00, 32'b00000000000000000000000000000000 }; // the 32 bits are ignored for a read command
