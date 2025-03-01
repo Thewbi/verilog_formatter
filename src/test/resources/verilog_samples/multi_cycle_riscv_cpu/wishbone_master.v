@@ -149,7 +149,7 @@ module wishbone_master (
 
                     // no auto-increment mode enabled
                     // just use the base address to read data from
-                    o_wb_addr = i_cmd_word[29:0];
+                    o_wb_addr<= i_cmd_word[29:0];
 
                     $display("[WISHBONE MASTER] IDLE STATE - no_auto increment - o_wb_addr = %b", i_cmd_word[29:0]);
                 end
@@ -183,7 +183,8 @@ module wishbone_master (
             // acknowledge to the host
             if (newaddr)
             begin
-                $display("[WISHBONE MASTER] newaddr o_wb_addr = %b", o_wb_addr);
+                //$display("[WISHBONE MASTER] newaddr o_wb_addr = %b", o_wb_addr);
+                $display("[WISHBONE MASTER] newaddr o_wb_addr = %d", o_wb_addr);
 
                 o_rsp_stb   <= 1'b1;
                 o_rsp_word  <= { `RSP_SUB_ADDR, o_wb_addr, 1'b0, !inc };
@@ -249,11 +250,11 @@ module wishbone_master (
             begin
 
                 // the request has been accepted by the slave, do not request again.
-                o_wb_stb = 1'b0;   // to slave: master does not drive the strobe line any more
+                o_wb_stb <= 1'b0;   // to slave: master does not drive the strobe line any more
                                     // this makes the state machine go to the next state on the next clock cycle
 
                 // increment the address for the auto increment feature
-                o_wb_addr = o_wb_addr + inc;
+                o_wb_addr <= o_wb_addr + inc;
 
                 // if we get an ack from the slave on the same cycle as the request,
                 // quietly transition back to idle.
@@ -321,9 +322,9 @@ module wishbone_master (
                 end
             end
 
-            o_wb_we = 0;
-            o_wb_cyc = 0;
-            o_wb_stb = 0;
+            o_wb_we <= 0;
+            o_wb_cyc <= 0;
+            o_wb_stb <= 0;
 
         end
         else

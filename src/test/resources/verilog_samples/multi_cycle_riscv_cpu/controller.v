@@ -338,7 +338,7 @@ module controller (
                 // set new base address without increment feature
                 //cmd_word = { 2'b10, 1'b0, 1'b1, 30'b000000000000000000000000000000 };
 
-                $display("[controller] PC PC PC :::::::::::::::::::::::::::: %0h", PC);
+                $display("[controller] PC PC PC :::::::::::::::::::::::::::: 0x%0h", PC);
 
                 $display("[CPU] ADDRESS ADDRESS ADDRESS");
                 // Read/Write, add to bus adddres, incrememnt on each read, address value

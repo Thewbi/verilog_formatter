@@ -17,7 +17,7 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
     // wishbone interface
     input   wire                            i_wb_cyc,
     input   wire                            i_wb_stb,
-    input   wire                            i_wb_we,    // 1 = write, 0 = read
+    input   wire                            i_wb_we,    // write_enable, 1 = write, 0 = read
     input   wire [$clog2(MEMORY_DEPTH)-1:0] i_wb_addr,
     input   wire [31:0]                     i_wb_data,
     // wb_sel is basically an index into wb_data and shows,
@@ -73,17 +73,20 @@ module main_memory #(parameter MEMORY_DEPTH=1024) (
         o_wb_ack <= 0;
     end
 
-    always @(posedge i_clk)
-    begin
-`ifdef TRACE_MEMORY
-        $display("[mem] signals: i_wb_we: %d, i_wb_stb: %d, i_wb_cyc: %d", i_wb_we, i_wb_stb, i_wb_cyc);
-`endif
-    end
+//     always @(posedge i_clk)
+//     begin
+// `ifdef TRACE_MEMORY
+//         $display("[mem] signals: i_wb_we: %d, i_wb_stb: %d, i_wb_cyc: %d", i_wb_we, i_wb_stb, i_wb_cyc);
+// `endif
+//     end
 
     // reading must be registered to be inferred as block ram
     always @(posedge i_clk)
     begin
 
+        $display("[mem] signals: i_wb_we: %d, i_wb_stb: %d, i_wb_cyc: %d", i_wb_we, i_wb_stb, i_wb_cyc);
+
+        // not write_enable means to read.
         if (!i_wb_we && i_wb_stb && i_wb_cyc)
             begin
 `ifdef TRACE_MEMORY
