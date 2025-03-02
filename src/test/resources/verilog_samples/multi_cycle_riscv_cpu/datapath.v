@@ -112,7 +112,7 @@ module datapath(
         wb_err,
         wb_stall,
         wb_ack,
-        wb_data,
+        wb_data,        // slave returns read data
         wb_cyc,
         wb_stb,
         wb_addr,
@@ -146,7 +146,7 @@ module datapath(
 
     always @(wb_data)
     begin
-        $display("abc wb_data: 0x%h", wb_data);
+        $display("[datapath] abc wb_data: 0x%h", wb_data);
     end
 
     //                     id     clock     reset,      enable,     input       output

@@ -23,6 +23,9 @@ module alu #(parameter WIDTH = 32) (
                 $display("[ALU] add. a_in=%0d, b_in=%0d", a_in, b_in);
                 ALUResult = a_in + b_in;
                 $display("[ALU] add. a_in=%0d, b_in=%0d, ALUResult=%0d", a_in, b_in, ALUResult);
+
+                // compute zero
+                Z = (ALUResult == 0);
             end
 
             // sub
@@ -30,6 +33,11 @@ module alu #(parameter WIDTH = 32) (
             begin
                 $display("[ALU] sub. a_in=%0d, b_in=%0d", a_in, b_in);
                 ALUResult = a_in + (~b_in + 1'b1);
+
+                // compute zero
+                Z = (ALUResult == 0);
+
+                $display("[ALU] sub. Z=%0d", Z);
             end
 
             // and, andi
@@ -37,6 +45,9 @@ module alu #(parameter WIDTH = 32) (
             begin
                 $display("[ALU] and, andi");
                 ALUResult = a_in & b_in;
+
+                // compute zero
+                Z = (ALUResult == 0);
             end
 
             // or, ori
@@ -44,6 +55,9 @@ module alu #(parameter WIDTH = 32) (
             begin
                 $display("[ALU] or, ori");
                 ALUResult = a_in | b_in;
+
+                // compute zero
+                Z = (ALUResult == 0);
             end
 
             // slt, slti
@@ -54,18 +68,23 @@ module alu #(parameter WIDTH = 32) (
             begin
                 $display("[ALU] slt, slti");
                 ALUResult = a_in < b_in ? 1 : 0;
+
+                // compute zero
+                Z = (ALUResult == 0);
             end
 
             default:
             begin
                 $display("[ALU] default");
                 ALUResult = 1'b0;
+
+                // compute zero
+                Z = (ALUResult == 0);
             end
 
         endcase
 
-        // compute zero
-        Z = (ALUResult == 0);
+
 
     end
 

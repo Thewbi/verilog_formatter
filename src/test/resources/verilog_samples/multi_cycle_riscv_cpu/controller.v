@@ -267,8 +267,8 @@ module controller (
             // S10 "BEQ" State
             BEQState:
             begin
-                //$display("[controller] goto BEQState -> FetchState_1");
-                // next_state = FetchState_1;
+                $display("[controller] goto BEQState -> FetchState_1. Zero = %d", Zero);
+                next_state = FetchState_1;
             end
 
             // S15 "ERROR" State
@@ -324,15 +324,24 @@ module controller (
                 //
 
 
+                // if (Zero == 0)
+                // begin
+                    // PC <- PC + 4
+                    ALUSrcA <= 2'b00;       // A input to the ALU: use the content of PC
+                    ALUSrcB <= 2'b10;       // B input to the ALU: hardcoded 4 to increment PC by one 32bit instruction
+                    // ALU
+                    ALUControl <= 3'b000;   // operation add?
+                    ResultSrc <= 2'b10;     // ALU result goes onto the result bus
 
-                // PC <- PC + 4
-                ALUSrcA <= 2'b00;       // A input to the ALU: use the content of PC
-                ALUSrcB <= 2'b10;       // B input to the ALU: hardcoded 4 to increment PC by one 32bit instruction
-                // ALU
-                ALUControl <= 3'b000;   // operation add?
-                ResultSrc <= 2'b10;     // ALU result goes onto the result bus
+                    PCWrite <= 1'b1;        // enable the PC write to store the incremented PC
+                // end
 
-                PCWrite <= 1'b1;        // enable the PC write to store the incremented PC
+                if (Zero == 1)
+                begin
+                    $display("[CTRL.OUTPUT.BEQ_STATE] Branch taken");
+                    ResultSrc = 2'b00;     // ALU goes onto the result bus
+                    PCWrite <= 1'b1;
+                end;
 
 
 
@@ -382,7 +391,55 @@ module controller (
                 ALUSrcB = 2'b01;       // B input to the ALU: sign extended immediate (Because BEQ stores the offset as an immediate within the instruction)
                 ALUControl = 3'b000;   // some operation (add?)
 
-                ImmSrc = 10;        // TODO: This tells the sign extension module which instruction is sign extended! This has to be adjusted to the instruction at hand!
+                //  This tells the sign extension module which instruction is sign extended!
+                if ((op == 7'b0000011) || (op == 7'b0010011))
+                begin
+                    //7'b0000011: controls = 11'b1_00_1_0_01_0_00_0; // lw
+                    //7'b0010011: controls = 11'b1_00_1_0_00_0_10_0; // I–type ALU
+
+                    // I−type
+                    ImmSrc = 2'b00;
+                end
+
+                if (op == 7'b0100011)
+                begin
+                    //7'b0100011: controls = 11'b0_01_1_1_00_0_00_0; // sw
+
+                    // S−type (stores)
+                    ImmSrc = 2'b01;
+                end
+
+                if (op == 7'b0110011)
+                begin
+                    //7'b0110011: controls = 11'b1_xx_0_0_00_0_10_0; // R–type
+
+                    // R–type
+                    ImmSrc = 2'bxx;
+                end
+
+                if (op == 7'b1100011)
+                begin
+                    //7'b1100011: controls = 11'b0_10_0_0_00_1_01_0; // beq
+
+                    // B−type (branches) (BEQ, ...)
+                    ImmSrc = 2'b10;
+                end
+
+                if (op == 7'b1101111)
+                begin
+                    //7'b1101111: controls = 11'b1_11_0_0_10_0_00_1; // jal
+
+                    // J−type (jal)
+                    ImmSrc = 2'b11;
+                end
+
+
+
+
+
+
+                //ImmSrc = 10;        // TODO: This tells the sign extension module which instruction is sign extended!
+                                    // This has to be adjusted to the instruction at hand!
 
                 // if(cmd_busy == 0)
                 // begin
