@@ -188,6 +188,11 @@ module controller (
                     $display("[controller] goto DecodeState -> BEQState");
                     next_state = BEQState;
                 end
+                else if (op == 7'b0000000) // nop
+                begin
+                    $display("[controller] goto DecodeState -> ExecuteIState");
+                    next_state = ExecuteIState;
+                end
                 else
                 begin
                     $display("[controller] goto DecodeState -> ErrorState");
@@ -336,12 +341,12 @@ module controller (
                     PCWrite <= 1'b1;        // enable the PC write to store the incremented PC
                 // end
 
-                if (Zero == 1)
-                begin
-                    $display("[CTRL.OUTPUT.BEQ_STATE] Branch taken");
-                    ResultSrc = 2'b00;     // ALU goes onto the result bus
-                    PCWrite <= 1'b1;
-                end;
+                // if (Zero == 1)
+                // begin
+                //     $display("[CTRL.OUTPUT.BEQ_STATE] Branch taken");
+                //     ResultSrc = 2'b00;     // ALU goes onto the result bus
+                //     PCWrite <= 1'b1;
+                // end;
 
 
 
@@ -433,8 +438,11 @@ module controller (
                     ImmSrc = 2'b11;
                 end
 
-
-
+                // dont cares
+                ResultSrc = 2'b00;
+                AdrSrc = 1'b0;
+                MemWrite = 1'b0;
+                ImmSrc = 2'b00;
 
 
 
@@ -458,6 +466,18 @@ module controller (
                 ALUSrcA = 2'b10;       // A input to the ALU: value currently stored in the register identified by rd1
                 ALUSrcB = 2'b01;       // B input to the ALU: sign extended immediate
                 ALUControl = 3'b000;   // some operation (add?)
+
+                // dont cares
+                //PCWrite = 1'b0;
+                //ALUSrcA = 2'b00;
+                //ALUSrcB = 2'b00;
+                //ALUControl = 3'b000;
+                ResultSrc = 2'b00;
+                AdrSrc = 1'b0;
+                RegWrite = 1'b0;
+                MemWrite = 1'b0;
+                ImmSrc = 2'b00;
+                IRWrite = 1'b0;
             end
 
             // S3 "MemRead" State
@@ -470,6 +490,18 @@ module controller (
                 // Data <- Mem[ALUOut]
                 ResultSrc = 2'b00;      // ALUOut is the value that is placed onto the ResultSrc bus
                 AdrSrc = 1'b1;          // The ResultSrc bus is used as an input to the memory module
+
+                // dont cares
+                //PCWrite = 1'b0;
+                ALUSrcA = 2'b00;
+                ALUSrcB = 2'b00;
+                ALUControl = 3'b000;
+                //ResultSrc = 2'b00;
+                //AdrSrc = 1'b0;
+                RegWrite = 1'b0;
+                MemWrite = 1'b0;
+                ImmSrc = 2'b00;
+                IRWrite = 1'b0;
             end
 
             // S4 "MemWB" State
@@ -482,6 +514,18 @@ module controller (
                 // rd <- Data           // write the memmory value back into the register file to the rd register
                 ResultSrc = 2'b01;      // data read from memory is the value that is placed onto the ResultSrc bus
                 RegWrite = 1'b1;        // write enable the register file
+
+                // dont cares
+                //PCWrite = 1'b0;
+                ALUSrcA = 2'b00;
+                ALUSrcB = 2'b00;
+                ALUControl = 3'b000;
+                //ResultSrc = 2'b00;
+                AdrSrc = 1'b0;
+                //RegWrite = 1'b0;
+                MemWrite = 1'b0;
+                ImmSrc = 2'b00;
+                IRWrite = 1'b0;
             end
 
             // S5 "MemWrite" State
@@ -495,6 +539,18 @@ module controller (
                 ResultSrc = 2'b00;
                 AdrSrc = 1'b1;
                 MemWrite = 1'b1;        // Write enable the memory
+
+                // dont care
+                //PCWrite = 1'b0;
+                ALUSrcA = 2'b00;
+                ALUSrcB = 2'b00;
+                ALUControl = 3'b000;
+                //ResultSrc = 2'b00;
+                //AdrSrc = 1'b0;
+                RegWrite = 1'b0;
+                //MemWrite = 1'b0;
+                ImmSrc = 2'b00;
+                IRWrite = 1'b0;
             end
 
             // S6 "ExecuteR" State
@@ -509,6 +565,18 @@ module controller (
                 ALUSrcB = 2'b00;       // B input to the ALU: sign extended immediate
                 //ALUControl <= 3'b010;   // some operation (?)
                 ALUControl = funct3;
+
+                // dont care
+                //PCWrite = 1'b0;
+                //ALUSrcA = 2'b00;
+                //ALUSrcB = 2'b00;
+                //ALUControl = 3'b000;
+                ResultSrc = 2'b00;
+                AdrSrc = 1'b0;
+                RegWrite = 1'b0;
+                MemWrite = 1'b0;
+                ImmSrc = 2'b00;
+                IRWrite = 1'b0;
             end
 
             // S7 "ALUWriteBackState" State
@@ -521,6 +589,26 @@ module controller (
                 // rd <- ALUOut         // write the ALU result back into the register file to the rd register
                 ResultSrc = 2'b00;      // data value goes on to the result bus
                 RegWrite = 1'b1;        // write enable the register file
+
+                // set dont cares to 0
+                //PCWrite = 1'b0;
+                ALUSrcA = 2'b00;
+                ALUSrcB = 2'b00;
+                ALUControl = 3'b000;
+                //ResultSrc = 2'b00;
+                AdrSrc = 1'b0;
+                //RegWrite = 1'b0;
+                MemWrite = 1'b0;
+                ImmSrc = 2'b00;
+                IRWrite = 1'b0;
+
+
+                // if (Zero == 1)
+                // begin
+                //     $display("[CTRL.OUTPUT.ALUWriteBackState] Branch taken");
+                //     ResultSrc = 2'b00;     // ALU goes onto the result bus
+                //     PCWrite <= 1'b1;
+                // end;
             end
 
             // S8 "ExecuteI" State // execute I-Type instruction
@@ -535,6 +623,21 @@ module controller (
                 ALUSrcB = 2'b01;       // B input to the ALU: ???
                 ALUControl = funct3;   // determines the operation that the ALU performs
                 ImmSrc = 2'b00;        // control the immediate extension module TODO: this has to be done for other types of instructions too!
+
+                // dont care
+                //PCWrite = 1'b0;
+                //ALUSrcA = 2'b00;
+                //ALUSrcB = 2'b00;
+                //ALUControl = 3'b000;
+                ResultSrc = 2'b00;
+                AdrSrc = 1'b0;
+                RegWrite = 1'b0;
+                MemWrite = 1'b0;
+                //ImmSrc = 2'b00;
+                IRWrite = 1'b0;
+
+
+
             end
 
             // S9 "JAL" State
@@ -550,7 +653,17 @@ module controller (
                 ALUControl = 3'b000;   // some operation (add?)
                 ResultSrc = 2'b00;     // ALU goes onto the result bus
 
-
+                // dont care
+                //PCWrite = 1'b0;
+                //ALUSrcA = 2'b00;
+                //ALUSrcB = 2'b00;
+                //ALUControl = 3'b000;
+                //ResultSrc = 2'b00;
+                AdrSrc = 1'b0;
+                RegWrite = 1'b0;
+                MemWrite = 1'b0;
+                ImmSrc = 2'b00;
+                IRWrite = 1'b0;
             end
 
             // S10 "BEQ" State
@@ -583,12 +696,44 @@ module controller (
 
                 //     // PCWrite <= 1'b1;        // enable the PC write to store the incremented PC
                 // end
+
+                // Dont cares
+                //PCWrite = 1'b0;
+                //ALUSrcA = 2'b00;
+                //ALUSrcB = 2'b00;
+                //ALUControl = 3'b000;
+                ResultSrc = 2'b00;
+                AdrSrc = 1'b0;
+                RegWrite = 1'b0;
+                MemWrite = 1'b0;
+                ImmSrc = 2'b00;
+                IRWrite = 1'b0;
+
+
+                // if (Zero == 1)
+                // begin
+                //     $display("[CTRL.OUTPUT.BEQ_STATE] Branch taken");
+                //     ResultSrc = 2'b00;     // ALU goes onto the result bus
+                //     PCWrite <= 1'b1;
+                // end;
             end
 
             // S15 "ERROR" State
             ErrorState:
             begin
                 $display("[CTRL.OUTPUT.ERROR_STATE]");
+
+                // Dont cares
+                PCWrite = 1'b0;
+                ALUSrcA = 2'b00;
+                ALUSrcB = 2'b00;
+                ALUControl = 3'b000;
+                ResultSrc = 2'b00;
+                AdrSrc = 1'b0;
+                RegWrite = 1'b0;
+                MemWrite = 1'b0;
+                ImmSrc = 2'b00;
+                IRWrite = 1'b0;
             end
 
             default:
