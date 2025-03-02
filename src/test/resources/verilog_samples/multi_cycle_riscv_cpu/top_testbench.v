@@ -26,7 +26,8 @@ module top_testbench();
 
     initial
          begin
-            #4000 $finish();
+            #1000 $finish();
+            //#4000 $finish();
          end
 
     initial

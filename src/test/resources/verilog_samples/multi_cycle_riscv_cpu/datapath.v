@@ -8,7 +8,7 @@ module datapath(
     output  wire [6:0]      op,             // operation code from within the instruction
     output  wire [2:0]      funct3,         // funct3 for instruction identification
     output  wire            funct7b5,       // funct7b5
-    output  wire            Zero,           // the ALU has computed a result that is zero (for branching instruction making)
+    output  wire            Zero,           // the ALU has computed a result that is zero (for branching instructions)
     output  wire [31:0]     PC,
 
     // input
@@ -72,8 +72,8 @@ module datapath(
 
     // next PC logic (PCNext is the input which is stored in posedge clock.)
     // The flip flop will output the stored data onto PC
-    //                      clock       reset,      enable,     input       output
-    //flopenr #(32) pcreg(    clk,        reset,      PCWrite,    PCNext,     PC);
+    //                    id        clock       reset,      enable,     input       output
+    //flopenr #(32) pcreg(id        clk,        reset,      PCWrite,    PCNext,     PC);
     flopenr #(32) pcreg(3'b000,     clk,        reset,      PCWrite,    Result,     PC);
 
     mux2 #(32) addrmux(PC, Result, AdrSrc, adr);
@@ -144,9 +144,15 @@ module datapath(
         wb_data         // slave returns read data
     );
 
-    //                    clock     reset,      enable,     input       output
+    always @(wb_data)
+    begin
+        $display("abc wb_data: 0x%h", wb_data);
+    end
+
+    //                     id     clock     reset,      enable,     input       output
     flopenr #(32) OldPCFF(3'b001, clk,      reset,      IRWrite,    PC,         OldPC);
     flopenr #(32) InstrFF(3'b010, clk,      reset,      IRWrite,    wb_data,    Instr);
+
     flopr #(32) DataFF(clk, reset, wb_data, data);
 
     assign op = Instr[6:0];
@@ -172,7 +178,7 @@ module datapath(
     //flopr #(32) instrreg(clk, reset, Instr, InstrNext);
 
     // sign extend module
-    // param 1 = instruction bits
+    // param 1 = instruction bits (part of the instruction to sign extend)
     // param 2 = type of instruction that is sign extension applied to
     // param 3 = output
     extend ext(Instr[31:7], ImmSrc, ImmExt);
@@ -183,12 +189,13 @@ module datapath(
     mux3 #(32) srcbmux(WriteData,   ImmExt,     32'h00000004,   ALUSrcB,            SrcB);
 
     // ALU
-    alu alu(SrcA, SrcB, ALUControl, ALUResult, Zero);
+    //      input A     input B     operation       result output       zero flag
+    alu alu(SrcA,       SrcB,       ALUControl,     ALUResult,          Zero);
 
     flopr #(32) aluResult(clk, reset, ALUResult, ALUOut);
 
     // this mux decides, which value is driving the result BUS
-    //                      Input A     Input B     Input C         SelectSignal        Output
-    mux3 #(32) resultmux(   ALUOut,  data,       ALUResult,         ResultSrc,          Result);
+    //                      Input A (00)     Input B (01)       Input C (10)        SelectSignal        Output
+    mux3 #(32) resultmux(   ALUOut,          data,              ALUResult,          ResultSrc,          Result);
 
 endmodule

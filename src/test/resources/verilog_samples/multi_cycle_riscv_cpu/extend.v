@@ -22,7 +22,7 @@ module extend(
                 immext = { {20{instr[31]}}, instr[31:25], instr[11:7] };
             end
 
-            // B−type (branches)
+            // B−type (branches) (BEQ, ...)
             2'b10:
             begin
                 $display("[extend] B−type");

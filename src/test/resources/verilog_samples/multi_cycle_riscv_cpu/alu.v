@@ -1,34 +1,34 @@
 // from: https://itsembedded.com/dhd/verilator_1/
 
 module alu #(parameter WIDTH = 32) (
-        input       [WIDTH-1:0]             a_in,
-        input       [WIDTH-1:0]             b_in,
-        input  wire [2:0]                   ALUControl,
-        output reg  [WIDTH-1:0]             ALUResult,
-        output reg                          Z // zero
+        input       [WIDTH-1:0]     a_in,
+        input       [WIDTH-1:0]     b_in,
+        input  wire [2:0]           ALUControl, // operation to perform
+        output reg  [WIDTH-1:0]     ALUResult, // result to output
+        output reg                  Z // zero
 );
 
     // compute the result
-    always @*
+    //always @*
+    always @(a_in, b_in, ALUControl)
     begin
 
-        ALUResult = 1'b0;
+        //ALUResult = 1'b0;
 
         case (ALUControl)
 
             // add (see alu_decoder.sv)
-            //3'b000: {C, ALUResult} = a_in + b_in; // this works in questa
             3'b000:
             begin
+                $display("[ALU] add. a_in=%0d, b_in=%0d", a_in, b_in);
                 ALUResult = a_in + b_in;
-                $display("[ALU] add. a_in=%d, b_in=%d, ALUResult=%d", a_in, b_in, ALUResult);
+                $display("[ALU] add. a_in=%0d, b_in=%0d, ALUResult=%0d", a_in, b_in, ALUResult);
             end
 
             // sub
-            //3'b001: {C, ALUResult} = a_in + (~b_in + 1'b1); // this works in questa
             3'b001:
             begin
-                $display("[ALU] sub");
+                $display("[ALU] sub. a_in=%0d, b_in=%0d", a_in, b_in);
                 ALUResult = a_in + (~b_in + 1'b1);
             end
 
@@ -40,7 +40,7 @@ module alu #(parameter WIDTH = 32) (
             end
 
             // or, ori
-            3'b011:
+            3'b110:
             begin
                 $display("[ALU] or, ori");
                 ALUResult = a_in | b_in;
@@ -65,7 +65,7 @@ module alu #(parameter WIDTH = 32) (
         endcase
 
         // compute zero
-        Z = ALUResult == 0;
+        Z = (ALUResult == 0);
 
     end
 

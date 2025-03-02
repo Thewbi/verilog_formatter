@@ -32,7 +32,7 @@ module riscv_multi(
     wire        rsp_stb;
     wire [33:0] rsp_word;
 
-    wire [6:0]  op; // TODO: this is not connected
+    wire [6:0]  op;
     wire [2:0]  funct3;
     wire [1:0]  ALUSrcB;
     wire [1:0]  ALUSrcA;
@@ -54,21 +54,24 @@ module riscv_multi(
         clk,
         reset,
 
-        op,
+        // input
+        op, // operation code from within the instruction
         funct3,
         funct7b5,
         Zero,
         PC,
+
+        // output
         PCWrite,
         AdrSrc,
         MemWrite,
         IRWrite,
-        ResultSrc,
-        ALUControl,
-        ALUSrcB,
-        ALUSrcA,
-        ImmSrc,
-        RegWrite,
+        ResultSrc,      // controls the multiplexer that decides what goes onto the Result bus
+        ALUControl,     // tells the ALU which operation to perform
+        ALUSrcB,        // decides which line goes into the ALU B parameter input
+        ALUSrcA,        // decides which line goes into the ALU A parameter input
+        ImmSrc,         // enable sign extension of the immediate value
+        RegWrite,       // write enable for the register file
 
         // wishbone memory access
         // interface between the host and the master
@@ -96,12 +99,12 @@ module riscv_multi(
         AdrSrc,
         MemWrite,
         IRWrite,
-        ResultSrc,
-        ALUControl,
-        ALUSrcB,
-        ALUSrcA,
-        ImmSrc,
-        RegWrite,
+        ResultSrc,      // controls the multiplexer that decides what goes onto the Result bus
+        ALUControl,     // tells the ALU which operation to perform
+        ALUSrcB,        // decides which line goes into the ALU B parameter input
+        ALUSrcA,        // decides which line goes into the ALU A parameter input
+        ImmSrc,         // enable sign extension of the immediate value
+        RegWrite,       // write enable for the register file
 
         // wishbone memory access
         // interface between the host and the master

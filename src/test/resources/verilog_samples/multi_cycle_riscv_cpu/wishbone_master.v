@@ -151,7 +151,7 @@ module wishbone_master (
                     // just use the base address to read data from
                     o_wb_addr<= i_cmd_word[29:0];
 
-                    $display("[WISHBONE MASTER] IDLE STATE - no_auto increment - o_wb_addr = %b", i_cmd_word[29:0]);
+                    $display("[WISHBONE MASTER] IDLE STATE - no_auto increment - o_wb_addr = 0x%h", i_cmd_word[29:0]);
                 end
                 else
                 begin
@@ -264,6 +264,7 @@ module wishbone_master (
                     $display("[WISHBONE MASTER] SLAVE ACK DURING WAITING STATE. o_wb_we = %d, i_wb_data = %h", o_wb_we, i_wb_data);
 
                     o_wb_cyc    <= 1'b0; // to slave: cycle is over
+                    o_wb_stb    <= 1'b0; // to slave: stb is over
                     o_cmd_busy  <= 1'b0; // to host: not busy any more
                     o_rsp_stb   <= 1'b1; // to host: ???
 
