@@ -14,6 +14,7 @@ module controller (
     input   wire        funct7b5,   // funct7b5
     input   wire        Zero,       // the ALU has computed a result that is zero (for branching instruction making)
     input   wire [31:0] PC,
+    input   wire [31:0] ReadData,
 
     // output
     output  reg         PCWrite,    // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
@@ -27,6 +28,9 @@ module controller (
     output  reg [1:0]   ImmSrc,     // enable sign extension of the immediate value
     output  reg         RegWrite   // write enable for the register file
 );
+
+    wire [6:0]  op2;
+    assign op2 = ReadData[6:0];
 
     // initial
     // begin
@@ -84,6 +88,17 @@ module controller (
             $display("[controller] reset");
             // when reset=1, reset the state of the FSM to "Fetch" State
             current_state <= ResetState;
+
+            PCWrite = 1'b0;
+            ALUSrcA = 2'b00;
+            ALUSrcB = 2'b00;
+            ALUControl = 3'b000;
+            ResultSrc = 2'b00;
+            AdrSrc = 1'b0;
+            RegWrite = 1'b0;
+            MemWrite = 1'b0;
+            ImmSrc = 2'b00;
+            IRWrite = 1'b0;
         end
         else
         begin
@@ -93,184 +108,7 @@ module controller (
         end
     end
 
-    //
-    // next state
-    //
-    // combinational logic of the Moore FSM
-    // to determine next state
-    //
 
-    always @(current_state, reset)
-    begin
-
-        case(current_state)
-
-            // S0 "Reset" State
-            ResetState:
-            begin
-                $display("reset: %d", reset);
-                if (reset == 0)
-                begin
-                    $display("[controller] goto ResetState -> FetchState_1");
-                    next_state = FetchState_1;
-
-                    // data_available = 0;
-                end
-            end
-
-            // S0 "Fetch_1" State
-            FetchState_1:
-            begin
-                $display("[controller] goto FetchState_1 -> FetchState_2");
-                next_state = DecodeState;
-            end
-
-            // // S0 "Fetch_2" State
-            // FetchState_2:
-            // begin
-            //     $display("[controller] rsp_stb: %d, cmd_busy: %d", rsp_stb, cmd_busy);
-            //     //if(rsp_stb) // when the wishbone master has finished the transaction
-
-            //     if (data_available == 1)
-            //     begin
-            //         $display("[controller] goto FetchState_2 -> DecodeState");
-            //         next_state = DecodeState;
-            //         data_available = 0;
-            //     end
-            // end
-
-            // S1 "Decode" State
-            DecodeState:
-            begin
-                $display("[controller] op: %b", op);
-                if ((op == 7'b0000011) || (op == 7'b0100011)) // lw or sw
-                begin
-                    $display("[controller] goto DecodeState -> MemAddrState");
-                    next_state = MemAddrState;
-                end
-                else if (op == 7'b0110011) // R-Type
-                begin
-                    $display("[controller] goto DecodeState -> ExecuteRState");
-                    next_state = ExecuteRState;
-                end
-                else if (op == 7'b0010011) // I-Type ALU
-                begin
-                    $display("[controller] goto DecodeState -> ExecuteIState");
-                    next_state = ExecuteIState;
-                end
-                else if (op == 7'b1101111) // JAL
-                begin
-                    $display("[controller] goto DecodeState -> JALState");
-                    next_state = JALState;
-                end
-                else if (op == 7'b1100011) // BEQ
-                begin
-                    $display("[controller] goto DecodeState -> BEQState");
-                    next_state = BEQState;
-                end
-                else if (op == 7'b0000000) // nop
-                begin
-                    $display("[controller] goto DecodeState -> ExecuteIState");
-                    next_state = ExecuteIState;
-                end
-                else
-                begin
-                    $display("[controller] goto DecodeState -> ErrorState");
-                    next_state = ErrorState;
-                end
-            end
-
-            // S2 "MemAddr" State
-            MemAddrState:
-            begin
-                if (op == 7'b0000011) // lw
-                begin
-                    $display("[controller] goto MemAddrState -> MemReadState");
-                    next_state = MemReadState;
-                end
-                else if (op == 7'b0100011) // sw
-                begin
-                    $display("[controller] goto MemAddrState -> MemWriteState");
-                    next_state = MemWriteState;
-                end
-                else
-                begin
-                    $display("[controller] goto MemAddrState -> ErrorState");
-                    next_state = ErrorState;
-                end
-            end
-
-            // S3 "MemRead" State
-            MemReadState:
-            begin
-                $display("[controller] goto MemReadState -> MemWBState");
-                next_state = MemWBState;
-            end
-
-            // S4 "MemWB" State
-            MemWBState:
-            begin
-                $display("[controller] goto MemWBState -> FetchState_1");
-                next_state = FetchState_1;
-            end
-
-            // S5 "MemWrite" State
-            MemWriteState:
-            begin
-                $display("[controller] goto MemWriteState -> FetchState_1");
-                next_state = FetchState_1;
-            end
-
-            // S6 "ExecuteR" State
-            ExecuteRState:
-            begin
-                $display("[controller] goto ExecuteRState -> ALUWriteBackState");
-                next_state = ALUWriteBackState;
-            end
-
-            // S7 "ALUWB" State
-            ALUWriteBackState:
-            begin
-                $display("[controller] goto ALUWriteBackState -> FetchState_1");
-                next_state = FetchState_1;
-            end
-
-            // S8 "ExecuteI" State // execute I-Type instruction
-            ExecuteIState:
-            begin
-                $display("[controller] goto ExecuteIState -> ALUWriteBackState");
-                next_state = ALUWriteBackState;
-            end
-
-            // S9 "JAL" State
-            JALState:
-            begin
-                $display("[controller] goto JALState -> ALUWriteBackState");
-                next_state = ALUWriteBackState;
-            end
-
-            // S10 "BEQ" State
-            BEQState:
-            begin
-                $display("[controller] goto BEQState -> FetchState_1. Zero = %d", Zero);
-                next_state = FetchState_1;
-            end
-
-            // S15 "ERROR" State
-            ErrorState:
-            begin
-                $display("[controller] goto ErrorState -> ErrorState");
-                next_state = ErrorState;
-            end
-
-            default:
-            begin
-                $display("[controller] default goto default -> ErrorState");
-                next_state = ErrorState;
-            end
-
-        endcase
-    end
 
     //
     // combinational logic to determine the output
@@ -292,10 +130,12 @@ module controller (
             // S0 "Fetch_1" State
             FetchState_1:
             begin
+                $display("");
+                $display("");
                 $display("[CTRL.OUTPUT.FETCH_STATE_1]");
 
                 // turn off register file write
-                RegWrite = 1'b0;
+                //RegWrite = 1'b0;
 
                 //
                 // increment PC
@@ -311,7 +151,21 @@ module controller (
                     ResultSrc <= 2'b10;     // ALU result goes onto the result bus
 
                     PCWrite <= 1'b1;        // enable the PC write to store the incremented PC
+
+                    IRWrite = 1'b1; // write the fetched instruction into the instruction flipflop.
                 // end
+
+                // dont cares
+                //PCWrite = 1'b0;
+                //ALUSrcA = 2'b00;
+                //ALUSrcB = 2'b00;
+                //ALUControl = 3'b000;
+                //ResultSrc = 2'b00;
+                AdrSrc = 1'b0;
+                RegWrite = 1'b0;
+                MemWrite = 1'b0;
+                ImmSrc = 2'b00;
+                //IRWrite = 1'b0; // do not write the fetched instruction into the instruction flipflop.
 
                 // if (Zero == 1)
                 // begin
@@ -339,7 +193,9 @@ module controller (
                 ALUControl = 3'b000;   // some operation (add?)
 
                 //  This tells the sign extension module which instruction is sign extended!
-                if ((op == 7'b0000011) || (op == 7'b0010011))
+                $display("[controller decode state logic] op: %b", op2);
+
+                if ((op2 == 7'b0000011) || (op2 == 7'b0010011))
                 begin
                     //7'b0000011: controls = 11'b1_00_1_0_01_0_00_0; // lw
                     //7'b0010011: controls = 11'b1_00_1_0_00_0_10_0; // I–type ALU
@@ -348,7 +204,7 @@ module controller (
                     ImmSrc = 2'b00;
                 end
 
-                if (op == 7'b0100011)
+                if (op2 == 7'b0100011)
                 begin
                     //7'b0100011: controls = 11'b0_01_1_1_00_0_00_0; // sw
 
@@ -356,7 +212,7 @@ module controller (
                     ImmSrc = 2'b01;
                 end
 
-                if (op == 7'b0110011)
+                if (op2 == 7'b0110011)
                 begin
                     //7'b0110011: controls = 11'b1_xx_0_0_00_0_10_0; // R–type
 
@@ -364,7 +220,7 @@ module controller (
                     ImmSrc = 2'bxx;
                 end
 
-                if (op == 7'b1100011)
+                if (op2 == 7'b1100011)
                 begin
                     //7'b1100011: controls = 11'b0_10_0_0_00_1_01_0; // beq
 
@@ -372,7 +228,7 @@ module controller (
                     ImmSrc = 2'b10;
                 end
 
-                if (op == 7'b1101111)
+                if (op2 == 7'b1101111)
                 begin
                     //7'b1101111: controls = 11'b1_11_0_0_10_0_00_1; // jal
 
@@ -613,7 +469,7 @@ module controller (
             begin
                 $display("[CTRL.OUTPUT.BEQ_STATE]");
 
-                PCWrite <= 1'b1;        // enable the PC write to store the incremented PC
+                //PCWrite <= 1'b1;        // enable the PC write to store the incremented PC
                 // IRWrite <= 1'b0;
 
                 // ALUResult = rs1-rs2; if Zero, PC = ALUOut
@@ -640,7 +496,7 @@ module controller (
                 // end
 
                 // Dont cares
-                //PCWrite = 1'b0;
+                PCWrite = 1'b0;
                 //ALUSrcA = 2'b00;
                 //ALUSrcB = 2'b00;
                 //ALUControl = 3'b000;
@@ -682,6 +538,190 @@ module controller (
             begin
                 $display("[CTRL.OUTPUT.?] No case in always @(current_state) current_state = %d", current_state);
             end
+        endcase
+    end
+
+
+
+
+
+
+    //
+    // next state
+    //
+    // combinational logic of the Moore FSM
+    // to determine next state
+    //
+
+    always @(current_state, reset)
+    begin
+
+        case(current_state)
+
+            // S0 "Reset" State
+            ResetState:
+            begin
+                $display("reset: %d", reset);
+                if (reset == 0)
+                begin
+                    $display("[controller] goto ResetState -> FetchState_1");
+                    next_state = FetchState_1;
+
+                    // data_available = 0;
+                end
+            end
+
+            // S0 "Fetch_1" State
+            FetchState_1:
+            begin
+                $display("[controller] goto FetchState_1 -> DecodeState");
+                next_state = DecodeState;
+            end
+
+            // // S0 "Fetch_2" State
+            // FetchState_2:
+            // begin
+            //     $display("[controller] rsp_stb: %d, cmd_busy: %d", rsp_stb, cmd_busy);
+            //     //if(rsp_stb) // when the wishbone master has finished the transaction
+
+            //     if (data_available == 1)
+            //     begin
+            //         $display("[controller] goto FetchState_2 -> DecodeState");
+            //         next_state = DecodeState;
+            //         data_available = 0;
+            //     end
+            // end
+
+            // S1 "Decode" State
+            DecodeState:
+            begin
+                $display("[controller next state logic] op2: %d", op2);
+                if ((op2 == 7'b0000011) || (op2 == 7'b0100011)) // lw or sw
+                begin
+                    $display("[controller] goto DecodeState -> MemAddrState");
+                    next_state = MemAddrState;
+                end
+                else if (op2 == 7'b0110011) // R-Type
+                begin
+                    $display("[controller] goto DecodeState -> ExecuteRState");
+                    next_state = ExecuteRState;
+                end
+                else if (op2 == 7'b0010011) // I-Type ALU
+                begin
+                    $display("[controller] goto DecodeState -> ExecuteIState. op2 = %d", op2);
+                    next_state = ExecuteIState;
+                end
+                else if (op2 == 7'b1101111) // JAL
+                begin
+                    $display("[controller] goto DecodeState -> JALState");
+                    next_state = JALState;
+                end
+                else if (op2 == 7'b1100011) // BEQ
+                begin
+                    $display("[controller] goto DecodeState -> BEQState");
+                    next_state = BEQState;
+                end
+                else if (op2 == 7'b0000000) // nop
+                begin
+                    $display("[controller] goto DecodeState -> FetchState_1 for nop");
+                    next_state = FetchState_1;
+                end
+                else
+                begin
+                    $display("[controller] goto DecodeState -> ErrorState");
+                    next_state = ErrorState;
+                end
+            end
+
+            // S2 "MemAddr" State
+            MemAddrState:
+            begin
+                if (op2 == 7'b0000011) // lw
+                begin
+                    $display("[controller] goto MemAddrState -> MemReadState");
+                    next_state = MemReadState;
+                end
+                else if (op2 == 7'b0100011) // sw
+                begin
+                    $display("[controller] goto MemAddrState -> MemWriteState");
+                    next_state = MemWriteState;
+                end
+                else
+                begin
+                    $display("[controller] goto MemAddrState -> ErrorState");
+                    next_state = ErrorState;
+                end
+            end
+
+            // S3 "MemRead" State
+            MemReadState:
+            begin
+                $display("[controller] goto MemReadState -> MemWBState");
+                next_state = MemWBState;
+            end
+
+            // S4 "MemWB" State
+            MemWBState:
+            begin
+                $display("[controller] goto MemWBState -> FetchState_1");
+                next_state = FetchState_1;
+            end
+
+            // S5 "MemWrite" State
+            MemWriteState:
+            begin
+                $display("[controller] goto MemWriteState -> FetchState_1");
+                next_state = FetchState_1;
+            end
+
+            // S6 "ExecuteR" State
+            ExecuteRState:
+            begin
+                $display("[controller] goto ExecuteRState -> ALUWriteBackState");
+                next_state = ALUWriteBackState;
+            end
+
+            // S7 "ALUWB" State
+            ALUWriteBackState:
+            begin
+                $display("[controller] goto ALUWriteBackState -> FetchState_1");
+                next_state = FetchState_1;
+            end
+
+            // S8 "ExecuteI" State // execute I-Type instruction
+            ExecuteIState:
+            begin
+                $display("[controller] goto ExecuteIState -> ALUWriteBackState");
+                next_state = ALUWriteBackState;
+            end
+
+            // S9 "JAL" State
+            JALState:
+            begin
+                $display("[controller] goto JALState -> ALUWriteBackState");
+                next_state = ALUWriteBackState;
+            end
+
+            // S10 "BEQ" State
+            BEQState:
+            begin
+                $display("[controller] goto BEQState -> FetchState_1. Zero = %d", Zero);
+                next_state = FetchState_1;
+            end
+
+            // S15 "ERROR" State
+            ErrorState:
+            begin
+                $display("[controller] goto ErrorState -> ErrorState");
+                next_state = ErrorState;
+            end
+
+            default:
+            begin
+                $display("[controller] default goto default -> ErrorState");
+                next_state = ErrorState;
+            end
+
         endcase
     end
 

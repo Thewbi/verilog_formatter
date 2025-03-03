@@ -74,11 +74,12 @@ module regfile(
     assign rd1 = (a1 != 0) ? rf[a1] : 0;
     assign rd2 = (a2 != 0) ? rf[a2] : 0;
 
-    always @(rd1) begin
-        $display("[regfile] a1: %d, rd1: %d", a1, rd1);
+    always @(a1, a2) begin
+        $display("[regfile output] a1: %d, rd1: %d", a1, rd1);
+        $display("[regfile output] a2: %d, rd2: %d", a2, rd2);
     end;
-    always @(rd2) begin
-        $display("[regfile] a2: %d, rd2: %d", a2, rd2);
-    end;
+    // always @(a2) begin
+    //     $display("[regfile output] a2: %d, rd2: %d", a2, rd2);
+    // end;
 
 endmodule

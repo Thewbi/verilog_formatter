@@ -10,6 +10,7 @@ module riscv_multi(
     wire        Jump;
     wire        Zero;
     wire [31:0] PC;
+    wire [31:0] ReadData;
     wire [1:0]  ResultSrc;
     wire [1:0]  ImmSrc;
     wire [2:0]  ALUControl;
@@ -30,6 +31,7 @@ module riscv_multi(
         funct7b5,
         Zero,           // ALU result is zero
         PC,             // current programm counter
+        ReadData,
 
         // output
         PCWrite,
@@ -55,6 +57,7 @@ module riscv_multi(
         funct7b5,
         Zero,
         PC,
+        ReadData,
 
         // input
         PCWrite,
@@ -66,7 +69,7 @@ module riscv_multi(
         ALUSrcB,        // decides which line goes into the ALU B parameter input
         ALUSrcA,        // decides which line goes into the ALU A parameter input
         ImmSrc,         // enable sign extension of the immediate value
-        RegWrite       // write enable for the register file
+        RegWrite        // write enable for the register file
     );
 
 endmodule

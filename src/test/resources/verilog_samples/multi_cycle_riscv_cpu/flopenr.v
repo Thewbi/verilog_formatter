@@ -21,7 +21,7 @@ module flopenr #(parameter WIDTH = 8) (
         end
         else if (en)
         begin
-            $display("[flopenr %d] set %d", id, d);
+            $display("[flopenr %d] set 0x%h", id, d);
             q <= d;
         end
     end

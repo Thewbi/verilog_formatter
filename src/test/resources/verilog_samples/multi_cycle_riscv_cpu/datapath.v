@@ -9,7 +9,8 @@ module datapath(
     output  wire [2:0]      funct3,         // funct3 for instruction identification
     output  wire            funct7b5,       // funct7b5
     output  wire            Zero,           // the ALU has computed a result that is zero (for branching instructions)
-    output  wire [31:0]     PC,
+    output  wire [31:0]     PC,             // current program counter value
+    output  wire [31:0]     ReadData,
 
     // input
     input  wire             PCWrite,        // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
@@ -21,7 +22,7 @@ module datapath(
     input  wire [1:0]       ALUSrcB,        // decides which line goes into the ALU B parameter input
     input  wire [1:0]       ALUSrcA,        // decides which line goes into the ALU A parameter input
     input  wire [1:0]       ImmSrc,         // enable sign extension of the immediate value
-    input  wire             RegWrite       // write enable for the register file
+    input  wire             RegWrite        // write enable for the register file
 );
 
     wire [31:0] OldPC;
@@ -42,7 +43,16 @@ module datapath(
     wire [31:0] Result;
     wire [31:0] SrcA;
 
-    wire [31:0] ReadData;
+
+
+    // // sequential memory of the Moore FSM
+    // always @(posedge reset)
+    // begin
+    //     if (reset == 1)
+    //     begin
+    //         PC = 0;
+    //     end
+    // end
 
     // next PC logic (PCNext is the input which is stored in posedge clock.)
     // The flip flop will output the stored data onto PC
@@ -63,15 +73,28 @@ module datapath(
     assign op = Instr[6:0];
     assign funct3 = Instr[14:12];
     assign funct7b5 = Instr[30:0];
+    // always @(posedge Instr)
+    // begin
+    //     op <= Instr[6:0];
+    //     funct3 <= Instr[14:12];
+    //     funct7b5 <= Instr[30:0];
+    // end
 
     // register file logic
     regfile rf (
+
+        // clock write enable
         clk,                // [in] clock
         RegWrite,           // [in] write enable, register a3 is written with wd3
+
+
         Instr[19:15],       // [in] register 1 to read (no clock tick needed)
         Instr[24:20],       // [in] register 2 to read (no clock tick needed)
+
         Instr[11:7],        // [in] register to write
         Result,             // [in] data value to write
+
+        // output
         RD1,                // [out] the output where the value from register a1 appears
         RD2                 // [out] the output where the value from register a2 appears
     );
