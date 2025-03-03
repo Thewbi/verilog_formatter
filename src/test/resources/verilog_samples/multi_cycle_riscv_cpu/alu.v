@@ -1,11 +1,15 @@
 // from: https://itsembedded.com/dhd/verilator_1/
 
 module alu #(parameter WIDTH = 32) (
-        input       [WIDTH-1:0]     a_in,
-        input       [WIDTH-1:0]     b_in,
-        input  wire [2:0]           ALUControl, // operation to perform
-        output reg  [WIDTH-1:0]     ALUResult, // result to output
-        output reg                  Z // zero
+
+    // input
+    input       [WIDTH-1:0]     a_in,
+    input       [WIDTH-1:0]     b_in,
+    input  wire [2:0]           ALUControl, // operation to perform
+
+    // output
+    output reg  [WIDTH-1:0]     ALUResult, // result to output
+    output reg                  Z // zero
 );
 
     // compute the result
