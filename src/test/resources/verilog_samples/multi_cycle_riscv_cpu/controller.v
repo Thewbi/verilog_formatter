@@ -155,6 +155,7 @@ module controller (
                 // increment PC
                 //
 
+                // in the first cycle, ZERO is 1 but we do not want to execute zero
                 if (Zero == 0 || PC == 0)
                 begin
                     // PC <- PC + 4
@@ -368,7 +369,7 @@ module controller (
             // S6 "ExecuteR" State
             ExecuteRState:
             begin
-                $display("[CTRL.OUTPUT.EXECUTER_STATE]");
+                $display("[CTRL.OUTPUT.EXECUTER_STATE] funct3: %d", funct3);
 
                 PCWrite = 1'b0;
 

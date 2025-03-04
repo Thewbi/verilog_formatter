@@ -1,9 +1,13 @@
 // decodes ALU control signals from the instruction
 module aludec(
-    input   wire                opb5,
-    input   wire    [2:0]       funct3,
-    input   wire                funct7b5,
+
+    // input
+    input   wire                opb5,       // opcode, bit 5 from RISCV instruction
+    input   wire    [2:0]       funct3,     // funct3 from RISCV instruction
+    input   wire                funct7b5,   // funct7, bit 5 from RISCV instruction
     input   wire    [1:0]       ALUOp,
+
+    // output
     output  reg     [2:0]       ALUControl);
 
     wire  RtypeSub;
