@@ -45,6 +45,11 @@ module datapath(
     wire [31:0] SrcA;
 
 
+    initial
+        begin
+            $dumpfile("test2.vcd");
+            $dumpvars(0, PC);
+        end
 
     // // sequential memory of the Moore FSM
     // always @(posedge reset)
@@ -72,10 +77,12 @@ module datapath(
     //                 clock    reset   data-in     data-out
     flopr #(32) DataFF(clk,     reset,  ReadData,   data);
 
-    assign op = Instr[6:0];
-    assign funct3 = Instr[14:12];
-    assign funct7b5 = Instr[30:0];
-    assign funct7 = Instr[31:25];
+    assign op = ReadData[6:0];
+    assign funct3 = ReadData[14:12];
+    assign funct7b5 = ReadData[30:0];
+    assign funct7 = ReadData[31:25];
+
+
     // always @(posedge Instr)
     // begin
     //     op <= Instr[6:0];

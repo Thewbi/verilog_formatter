@@ -8,7 +8,9 @@ module aludec(
     input   wire    [1:0]       ALUOp,
 
     // output
-    output  reg     [2:0]       ALUControl);
+    output  reg     [2:0]       ALUControl
+
+);
 
     wire  RtypeSub;
 
