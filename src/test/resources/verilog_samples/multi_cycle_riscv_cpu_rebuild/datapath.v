@@ -82,6 +82,10 @@ module datapath(
     assign funct7b5 = ReadData[30:0];
     assign funct7 = ReadData[31:25];
 
+    // assign op = Instr[6:0];
+    // assign funct3 = Instr[14:12];
+    // assign funct7b5 = Instr[30:0];
+    // assign funct7 = Instr[31:25];
 
     // always @(posedge Instr)
     // begin

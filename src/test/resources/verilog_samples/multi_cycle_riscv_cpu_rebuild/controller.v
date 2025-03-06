@@ -1,3 +1,5 @@
+
+
 // control unit or control logic for the multicycle CPU
 //
 // This module implements a state machine that produces
@@ -29,6 +31,182 @@ module controller (
     output  reg [1:0]   ImmSrc,     // enable sign extension of the immediate value
     output  reg         RegWrite   // write enable for the register file
 );
+
+    function [2:0] decode (input [6:0] opcode, input [2:0] funct3, input [6:0] funct7);
+    begin
+        $display("decode() op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
+        case (opcode)
+
+            7'b0010011:
+            begin
+
+                case (funct3)
+
+                    3'b000:
+                    begin
+                        // addi
+                        //$display("[ALU_DEC] addi");
+                        decode = 3'b000; // add, addi
+                    end
+
+                    3'b010:
+                    begin
+                        // slti
+                        $display("[ALU_DEC] slti");
+                        decode = 3'b101; // slt, slti
+                    end
+
+                    3'b011:
+                    begin
+                        // sltiu
+                    end
+
+                    3'b100:
+                    begin
+                        // xori
+                    end
+
+                    3'b110:
+                    begin
+                        // ori
+                        $display("[ALU_DEC] ori");
+                        decode = 3'b011; // or, ori
+                    end
+
+                    3'b111:
+                    begin
+                        // andi
+                        $display("[ALU_DEC] andi");
+                        decode = 3'b010; // and, andi
+                    end
+
+                    3'b001:
+                    begin
+                        // slli
+                    end
+
+                    3'b101:
+                    begin
+                        case (funct7)
+
+                            7'b0000000:
+                            begin
+                                // srli
+                            end
+
+                            7'b0100000:
+                            begin
+                                // srai
+                            end
+
+                        endcase
+                    end
+
+                endcase
+            end
+
+            7'b0110011:
+            begin
+
+                case (funct3)
+
+                    3'b000:
+                    begin
+
+                        case (funct7)
+
+                            7'b0000000:
+                            begin
+                                // add
+                                $display("[ALU_DEC] add");
+                                decode = 3'b000; // addition
+                            end
+
+                            7'b0100000:
+                            begin
+                                // sub
+                                $display("[ALU_DEC] sub");
+                                decode = 3'b001; // addition
+                            end
+
+                        endcase
+
+                    end
+
+                    3'b001:
+                    begin
+                        // sll
+                    end
+
+                    3'b010:
+                    begin
+                        // slt
+                        $display("[ALU_DEC] slt");
+                        decode = 3'b101; // slt, slti
+                    end
+
+                    3'b011:
+                    begin
+                        // sltu
+                    end
+
+                    3'b100:
+                    begin
+                        // xor
+                    end
+
+                    3'b101:
+                    begin
+
+                        case (funct7)
+
+                            7'b0000000:
+                            begin
+                                // srl
+                            end
+
+                            7'b0100000:
+                            begin
+                                // sra
+                            end
+
+                        endcase
+
+                    end
+
+                    3'b110:
+                    begin
+                        // or
+                        $display("[ALU_DEC] or");
+                        //decode = 3'b011; // or, ori
+                        decode = 3'b110; // or, ori
+                    end
+
+                    3'b111:
+                    begin
+                        // and
+                        $display("[ALU_DEC] and");
+                        decode = 3'b010; // and, andi
+                    end
+
+                endcase
+            end
+
+            default:
+            begin
+                $display("[ALU_DEC] default");
+                decode = 3'bxxx;
+            end
+
+        endcase
+    end
+    endfunction
+
+    function [7:0] sum (input [7:0] a, b);
+    begin
+        sum = a + b;
+    end
+    endfunction
 
     // wire [6:0]  op2;
     // assign op2 = ReadData[6:0];
@@ -65,20 +243,20 @@ module controller (
     //
 
     parameter
-        ResetState          = 4'b0000,      // S0 "Fetch_1" State
-        FetchState_1        = 4'b0001,      // S1 "Decode" State
-        FetchState_2        = 4'b0010,      // S2 "MemAddr" State
-        DecodeState         = 4'b0011,      // S3 "MemRead" State
-        MemAddrState        = 4'b0100,      // S4 "MemWB" State
-        MemReadState        = 4'b0101,      // S5 "MemWrite" State
-        MemWBState          = 4'b0110,      // S6 "ExecuteR" State
-        MemWriteState       = 4'b0111,      // S7 "ALUWriteBackState" State
-        ExecuteRState       = 4'b1000,      // S8 "ExecuteI" State // execute I-Type instruction
-        ALUWriteBackState   = 4'b1001,      // S9 "JAL" State
-        ExecuteIState       = 4'b1010,      // S10 "BEQ" State
-        JALState            = 4'b1011,      // S11
-        BEQState            = 4'b1100,      // S12
-        BRANCH_TAKEN        = 4'b1101,      // S13
+        ResetState          = 4'b0000,      // S0 "Reset" State
+        FetchState_1        = 4'b0001,      // S1 "FetchState_1" State
+        FetchState_2        = 4'b0010,      // S2 "FetchState_2" State
+        DecodeState         = 4'b0011,      // S3 "Decode" State
+        MemAddrState        = 4'b0100,      // S4 "MemAddr" State
+        MemReadState        = 4'b0101,      // S5 "MemRead" State
+        MemWBState          = 4'b0110,      // S6 "MemWB" State
+        MemWriteState       = 4'b0111,      // S7 "MemWrite" State
+        ExecuteRState       = 4'b1000,      // S8 "ExecuteR" State
+        ALUWriteBackState   = 4'b1001,      // S9 "ALUWriteBack"
+        ExecuteIState       = 4'b1010,      // S10 "ExecuteI" State // execute I-Type instruction
+        JALState            = 4'b1011,      // S11 "JAL" State
+        BEQState            = 4'b1100,      // S12 "BEQ" State
+        BRANCH_TAKEN_CHECK  = 4'b1101,      // S13 "BRANCH_TAKEN_CHECK" State
                                             // S14
         ErrorState          = 4'b1111       // S15 "ERROR" State
         ;
@@ -159,11 +337,6 @@ module controller (
                 $display("");
                 $display("[CTRL.OUTPUT.FETCH_STATE_1] ");
 
-
-
-
-
-
                 PCWrite = 1'b1;
 
                 // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
@@ -174,8 +347,6 @@ module controller (
                 IRWrite = 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
 
                 RegWrite = 1'b0;
-
-
 
                 // ACTION 2 - increment PC
                 ALUSrcA = 2'b00; // PC
@@ -206,12 +377,13 @@ module controller (
             begin
                 $display("");
                 $display("");
-                $display("[CTRL.OUTPUT.DECODE_STATE]");
+                $display("[CTRL.OUTPUT.DECODE_STATE] op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
 
                 PCWrite = 1'b0;
                 ALUSrcA = 2'b00;
                 ALUSrcB = 2'b00;
-                ALUControl = 3'b000;
+                //ALUControl = 3'b000;
+                ALUControl = decode(op, funct3, funct7);
                 ResultSrc = 2'b00;
                 AdrSrc = 1'b0;
                 RegWrite = 1'b0;
@@ -220,7 +392,50 @@ module controller (
                 IRWrite = 1'b0;
             end
 
-            // S8 "ExecuteI" State // execute I-Type instruction
+            // S8 "ExecuteRState" State // execute R-Type instruction
+            ExecuteRState:
+            begin
+
+                $display("");
+                $display("");
+                $display("[CTRL.OUTPUT.ExecuteRState] op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
+
+                PCWrite = 1'b0;
+
+                ALUSrcA = 2'b10; // register
+                ALUSrcB = 2'b00; // register
+
+                //ALUControl = 3'b000;
+                // ALUControl = decode(op, funct3, funct7);
+
+                ResultSrc = 2'b00;
+                AdrSrc = 1'b0;
+                RegWrite = 1'b0;
+                MemWrite = 1'b0;
+                ImmSrc = 2'b00;
+                IRWrite = 1'b0;
+            end
+
+            // S9 "ALUWriteBackState" State
+            ALUWriteBackState:
+            begin
+                $display("");
+                $display("");
+                $display("[CTRL.OUTPUT.ALUWB_STATE]");
+
+                PCWrite = 1'b0;
+                ALUSrcA = 2'b00;
+                ALUSrcB = 2'b00;
+                ALUControl = 3'b000;
+                ResultSrc = 2'b00; // Result bus is ALUOut flip flop
+                AdrSrc = 1'b0;
+                RegWrite = 1'b1; // enable the RegWrite feature of the register file so it stores the result bus into the destination register rd
+                MemWrite = 1'b0;
+                ImmSrc = 2'b00;
+                IRWrite = 1'b0;
+            end
+
+            // S10 "ExecuteI" State // execute I-Type instruction
             ExecuteIState:
             begin
                 $display("");
@@ -244,26 +459,7 @@ module controller (
                 IRWrite = 1'b0;
             end
 
-            // S7 "ALUWriteBackState" State
-            ALUWriteBackState:
-            begin
-                $display("");
-                $display("");
-                $display("[CTRL.OUTPUT.ALUWB_STATE]");
-
-                PCWrite = 1'b0;
-                ALUSrcA = 2'b00;
-                ALUSrcB = 2'b00;
-                ALUControl = 3'b000;
-                ResultSrc = 2'b00; // Result bus is ALUOut flip flop
-                AdrSrc = 1'b0;
-                RegWrite = 1'b1; // enable the RegWrite feature of the register file so it stores the result bus into the destination register rd
-                MemWrite = 1'b0;
-                ImmSrc = 2'b00;
-                IRWrite = 1'b0;
-            end
-
-            // S10 "BEQ" State
+            // S12 "BEQ" State
             BEQState:
             begin
                 $display("");
@@ -287,8 +483,8 @@ module controller (
                 // end
             end
 
-            // S10 "BRANCH_TAKEN" State
-            BRANCH_TAKEN:
+            // S13 "BRANCH_TAKEN_CHECK" State
+            BRANCH_TAKEN_CHECK:
             begin
                 $display("");
                 $display("");
@@ -299,14 +495,16 @@ module controller (
                     $display("[CTRL.OUTPUT.BEQ_STATE] Branch taken. Zero: %d", Zero);
 
                     PCWrite = 1'b1;
-                    ALUSrcA = 2'b10;
-                    ALUSrcB = 2'b01;
-                    ALUControl = 3'b000;
-                    ResultSrc = 2'b00;
+                    //ALUSrcA = 2'b10; // register
+                    ALUSrcA = 2'b01; // oldPC
+                    //ALUSrcA = 2'b00; // PC
+                    ALUSrcB = 2'b01; // immext
+                    ALUControl = 3'b000; // add
+                    ResultSrc = 2'b10;
                     AdrSrc = 1'b0;
                     RegWrite = 1'b0;
                     MemWrite = 1'b0;
-                    ImmSrc = 2'b00;
+                    ImmSrc = 2'b10;
                     IRWrite = 1'b0;
                 end
                 else
@@ -369,7 +567,7 @@ module controller (
             // S1 "Decode" State
             DecodeState:
             begin
-                // $display("[controller next state logic] op2: %d", op2);
+                 $display("[controller DecodeState] op: %b", op);
                 if ((op == 7'b0000011) || (op == 7'b0100011)) // lw or sw
                 begin
                     $display("[controller] goto DecodeState -> MemAddrState");
@@ -441,49 +639,49 @@ module controller (
             //     next_state = FetchState_1;
             // end
 
-            // // S5 "MemWrite" State
+            // // S7 "MemWrite" State
             // MemWriteState:
             // begin
             //     $display("[controller] goto MemWriteState -> FetchState_1");
             //     next_state = FetchState_1;
             // end
 
-            // // S6 "ExecuteR" State
-            // ExecuteRState:
-            // begin
-            //     $display("[controller] goto ExecuteRState -> ALUWriteBackState");
-            //     next_state = ALUWriteBackState;
-            // end
+            // S8 "ExecuteR" State
+            ExecuteRState:
+            begin
+                $display("[controller] goto ExecuteRState -> ALUWriteBackState");
+                next_state = ALUWriteBackState;
+            end
 
-            // S7 "ALUWB" State
+            // S9 "ALUWB" State
             ALUWriteBackState:
             begin
                 $display("[controller] goto ALUWriteBackState -> FetchState_1");
                 next_state = FetchState_1;
             end
 
-            // S8 "ExecuteI" State // execute I-Type instruction
+            // S10 "ExecuteI" State // execute I-Type instruction
             ExecuteIState:
             begin
                 $display("[controller] goto ExecuteIState -> ALUWriteBackState");
                 next_state = ALUWriteBackState;
             end
 
-            // // S9 "JAL" State
+            // // S11 "JAL" State
             // JALState:
             // begin
             //     $display("[controller] goto JALState -> ALUWriteBackState");
             //     next_state = ALUWriteBackState;
             // end
 
-            // S10 "BEQ" State
+            // S12 "BEQ" State
             BEQState:
             begin
                 // if (Zero == 1)
                 // begin
-                    //$display("[controller] goto BEQState -> BRANCH_TAKEN. Zero = %d", Zero);
-                    $display("[controller] goto BEQState -> BRANCH_TAKEN.");
-                    next_state = BRANCH_TAKEN;
+                    //$display("[controller] goto BEQState -> BRANCH_TAKEN_CHECK. Zero = %d", Zero);
+                    $display("[controller] goto BEQState -> BRANCH_TAKEN_CHECK.");
+                    next_state = BRANCH_TAKEN_CHECK;
                 // end
                 // else
                 // begin
@@ -492,10 +690,10 @@ module controller (
                 // end
             end
 
-            // S10 "BRANCH_TAKEN" State
-            BRANCH_TAKEN:
+            // S13 "BRANCH_TAKEN_CHECK" State
+            BRANCH_TAKEN_CHECK:
             begin
-                $display("[controller] goto BRANCH_TAKEN -> FetchState_1.");
+                $display("[controller] goto BRANCH_TAKEN_CHECK -> FetchState_1.");
                 next_state = FetchState_1;
             end
 
