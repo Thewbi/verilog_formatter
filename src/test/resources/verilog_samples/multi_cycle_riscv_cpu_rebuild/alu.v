@@ -80,7 +80,7 @@ module alu #(parameter WIDTH = 32) (
             default:
             begin
                 $display("[ALU] default");
-                ALUResult = 1'b0;
+                //ALUResult = 1'b0;
 
                 // compute zero
                 Z = (ALUResult == 0);

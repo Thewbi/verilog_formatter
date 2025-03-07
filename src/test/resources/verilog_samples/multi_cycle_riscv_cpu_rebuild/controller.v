@@ -19,6 +19,7 @@ module controller (
     input   wire        Zero,       // the ALU has computed a result that is zero (for branching instruction making)
     input   wire [31:0] PC,
     input   wire [31:0] ReadData,
+    input   wire [31:0] ReadDData,
 
     // output
     output  reg         PCWrite,    // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
@@ -417,6 +418,46 @@ module controller (
                 IRWrite = 1'b0;
             end
 
+            // S5 "MemRead" State
+            MemReadState:
+            begin
+                $display("");
+                $display("");
+                $display("[CTRL.OUTPUT.MemReadState] op: %b, oldOp: %b, funct3: %b, funct7: %b", op, oldOp, funct3, funct7);
+
+                PCWrite = 1'b0;
+                // ALUSrcA = 2'bxx;
+                // ALUSrcB = 2'bxx;
+                // ALUControl = 3'bxxx;
+                ResultSrc = 2'b00; // ALUOut register to Result bus
+                AdrSrc = 1'b1; // Result bus is connected to the memory addr port
+                RegWrite = 1'b0;
+                MemWrite = 1'b0;
+                ImmSrc = 2'b00;
+                IRWrite = 1'b0;
+            end
+
+            // S6 "MemWB" State
+            MemWBState:
+            begin
+                $display("");
+                $display("");
+                $display("[CTRL.OUTPUT.MemWBState] op: %b, oldOp: %b, funct3: %b, funct7: %b", op, oldOp, funct3, funct7);
+
+                $display("[CTRL.OUTPUT.MemWBState] ReadDData: 0x%0h", ReadDData);
+
+                PCWrite = 1'b0;
+                ALUSrcA = 2'b00;
+                ALUSrcB = 2'b00;
+                ALUControl = 3'b000;
+                ResultSrc = 2'b01; // take the value from the Data register and place it onto the result bus
+                AdrSrc = 1'b0;
+                RegWrite = 1'b1;
+                MemWrite = 1'b0;
+                ImmSrc = 2'b00;
+                IRWrite = 1'b0;
+            end
+
             // S7 "MemWrite" State
             MemWriteState:
             begin
@@ -425,14 +466,14 @@ module controller (
                 $display("[CTRL.OUTPUT.MemWriteState] op: %b, oldOp: %b, funct3: %b, funct7: %b", op, oldOp, funct3, funct7);
 
                 PCWrite = 1'b0;
-                ALUSrcA = 2'b00;
-                ALUSrcB = 2'b00;
-                ALUControl = 3'b000;
-                ResultSrc = 2'b00; // place ALU out onto the result bus
+                // ALUSrcA = 2'bxx;
+                // ALUSrcB = 2'bxx;
+                // ALUControl = 3'bxxx;
+                ResultSrc = 2'b10; // place ALU out onto the result bus
                 AdrSrc = 1'b1; // connect the result bus to the address line of the memory
                 RegWrite = 1'b0;
                 MemWrite = 1'b1; // enable a write to memory
-                ImmSrc = 2'b00;
+                ImmSrc = 2'b01;
                 IRWrite = 1'b0;
             end
 
@@ -697,12 +738,19 @@ module controller (
             //     end
             // end
 
-            // // S6 "MemWB" State
-            // MemWBState:
-            // begin
-            //     $display("[controller] goto MemWBState -> FetchState_1");
-            //     next_state = FetchState_1;
-            // end
+            // S5 "MemRead" State
+            MemReadState:
+            begin
+                $display("[controller] goto MemReadState -> MemWBState");
+                next_state = MemWBState;
+            end
+
+            // S6 "MemWB" State
+            MemWBState:
+            begin
+                $display("[controller] goto MemWBState -> FetchState_1");
+                next_state = FetchState_1;
+            end
 
             // S7 "MemWrite" State
             MemWriteState:

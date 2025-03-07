@@ -6,13 +6,14 @@ module datapath(
 
     // output
     output  wire [6:0]      op,             // operation code from within the instruction
-    output wire [6:0] oldOp,
+    output  wire [6:0]      oldOp,
     output  wire [2:0]      funct3,         // funct3 for instruction identification
     output  wire [30:0]     funct7b5,       // funct7b5
     output  wire [6:0]      funct7,
     output  wire            Zero,           // the ALU has computed a result that is zero (for branching instructions)
     output  wire [31:0]     PC,             // current program counter value
-    output  wire [31:0]     ReadData,
+    output  wire [31:0]     ReadData,       // output from instruction memory
+    output  wire [31:0]     ReadDData,      // output from data memory
 
     // input
     input  wire             PCWrite,        // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
@@ -45,7 +46,6 @@ module datapath(
     wire [31:0] Result;
     wire [31:0] SrcA;
 
-
     initial
         begin
             $dumpfile("test2.vcd");
@@ -63,8 +63,11 @@ module datapath(
 
     always @(posedge MemWrite)
     begin
-        $display("[datapath] MemWrite! Result: %h, WriteData: %h", Result, WriteData);
+        $display("[datapath] MemWrite! ALUResult: 0x%h, Result: 0x%h, WriteData: 0x%h", ALUResult, Result, WriteData);
     end
+
+    //          clk     write enable    addr        data            output read data
+    dmem dmem(  clk,    MemWrite,       Result,     WriteData,      ReadDData);
 
     // next PC logic (PCNext is the input which is stored in posedge clock.)
     // The flip flop will output the stored data onto PC
