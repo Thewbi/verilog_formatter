@@ -16,6 +16,7 @@ module riscv_multi(
     wire [2:0]  ALUControl;
 
     wire [6:0]  op;
+    wire [6:0]  oldOp;
     wire [2:0]  funct3;
     wire [30:0]  funct7b5;
     wire [6:0]  funct7;
@@ -29,6 +30,7 @@ module riscv_multi(
 
         // input
         op,             // operation code from within the instruction
+        oldOp,
         funct3,
         funct7b5,
         funct7,
@@ -39,7 +41,7 @@ module riscv_multi(
         // output
         PCWrite,
         AdrSrc,
-        MemWrite,
+        MemWrite,       // enable line for write operation into memory
         IRWrite,
         ResultSrc,      // controls the multiplexer that decides what goes onto the Result bus
         ALUControl,     // tells the ALU which operation to perform
@@ -58,6 +60,7 @@ module riscv_multi(
 
         // output
         op,
+        oldOp,
         funct3,
         funct7b5,
         funct7,

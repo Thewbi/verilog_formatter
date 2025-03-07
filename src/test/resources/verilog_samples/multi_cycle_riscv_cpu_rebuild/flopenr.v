@@ -6,9 +6,10 @@ module flopenr #(parameter WIDTH = 8) (
     // clock and reset
     input wire clk,
     input wire reset,
-
     input wire en,
     input wire [WIDTH-1:0] d,
+
+    // output
     output reg [WIDTH-1:0] q
 );
 

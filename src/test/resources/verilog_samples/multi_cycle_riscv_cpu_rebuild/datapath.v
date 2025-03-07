@@ -6,6 +6,7 @@ module datapath(
 
     // output
     output  wire [6:0]      op,             // operation code from within the instruction
+    output wire [6:0] oldOp,
     output  wire [2:0]      funct3,         // funct3 for instruction identification
     output  wire [30:0]     funct7b5,       // funct7b5
     output  wire [6:0]      funct7,
@@ -60,6 +61,11 @@ module datapath(
     //     end
     // end
 
+    always @(posedge MemWrite)
+    begin
+        $display("[datapath] MemWrite! Result: %h, WriteData: %h", Result, WriteData);
+    end
+
     // next PC logic (PCNext is the input which is stored in posedge clock.)
     // The flip flop will output the stored data onto PC
     //                    id        clock       reset,      enable,     input       output
@@ -82,7 +88,7 @@ module datapath(
     assign funct7b5 = ReadData[30:0];
     assign funct7 = ReadData[31:25];
 
-    // assign op = Instr[6:0];
+    assign oldOp = Instr[6:0];
     // assign funct3 = Instr[14:12];
     // assign funct7b5 = Instr[30:0];
     // assign funct7 = Instr[31:25];

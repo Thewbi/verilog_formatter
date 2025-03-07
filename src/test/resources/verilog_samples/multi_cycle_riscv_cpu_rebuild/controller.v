@@ -12,6 +12,7 @@ module controller (
 
     // input
     input   wire [6:0]  op,         // operation code from within the instruction
+    input   wire [6:0]  oldOp,
     input   wire [2:0]  funct3,     // funct3 for instruction identification. This encodes the operation that the ALU has to execute
     input   wire [30:0] funct7b5,     // funct7b5
     input   wire [6:0]  funct7,     // funct7b5
@@ -392,6 +393,49 @@ module controller (
                 IRWrite = 1'b0;
             end
 
+            // S4 "MemAddr" State
+            // sw rs2, offset(rs1) add offset to rs1 and store the value
+            // rs2(31:0) → mem[rs1 + imm12]
+            // sw x7, 84(x3)
+            MemAddrState:
+            begin
+                $display("");
+                $display("");
+                $display("[CTRL.OUTPUT.MemAddrState] op: %b, oldOp: %b, funct3: %b, funct7: %b", op, oldOp, funct3, funct7);
+
+                // compute the target address as rs1 + imm12
+
+                PCWrite = 1'b0;
+                ALUSrcA = 2'b10; // register
+                ALUSrcB = 2'b01; // immediate sign extended
+                ALUControl = 3'b000; // add
+                ResultSrc = 2'b00;
+                AdrSrc = 1'b0;
+                RegWrite = 1'b0;
+                MemWrite = 1'b0;
+                ImmSrc = 2'b01; // set the sign extender to S−type (stores)
+                IRWrite = 1'b0;
+            end
+
+            // S7 "MemWrite" State
+            MemWriteState:
+            begin
+                $display("");
+                $display("");
+                $display("[CTRL.OUTPUT.MemWriteState] op: %b, oldOp: %b, funct3: %b, funct7: %b", op, oldOp, funct3, funct7);
+
+                PCWrite = 1'b0;
+                ALUSrcA = 2'b00;
+                ALUSrcB = 2'b00;
+                ALUControl = 3'b000;
+                ResultSrc = 2'b00; // place ALU out onto the result bus
+                AdrSrc = 1'b1; // connect the result bus to the address line of the memory
+                RegWrite = 1'b0;
+                MemWrite = 1'b1; // enable a write to memory
+                ImmSrc = 2'b00;
+                IRWrite = 1'b0;
+            end
+
             // S8 "ExecuteRState" State // execute R-Type instruction
             ExecuteRState:
             begin
@@ -567,7 +611,7 @@ module controller (
             // S1 "Decode" State
             DecodeState:
             begin
-                 $display("[controller DecodeState] op: %b", op);
+                $display("[controller DecodeState] op: %b", op);
                 if ((op == 7'b0000011) || (op == 7'b0100011)) // lw or sw
                 begin
                     $display("[controller] goto DecodeState -> MemAddrState");
@@ -605,7 +649,35 @@ module controller (
                 end
             end
 
-            // // S2 "MemAddr" State
+            // // S3 "MemRead" State
+            // MemReadState:
+            // begin
+            //     $display("[controller] goto MemReadState -> MemWBState");
+            //     next_state = MemWBState;
+            // end
+
+            // S4 "MemAddr" State
+            MemAddrState:
+            begin
+                // $display("[controller] goto MemAddr -> FetchState_1");
+                // next_state = FetchState_1;
+
+                if (oldOp == 7'b0000011) // lw
+                begin
+                    $display("[controller] goto MemAddrState -> MemReadState");
+                    next_state = MemReadState;
+                end
+                else if (oldOp == 7'b0100011) // sw
+                begin
+                    $display("[controller] goto MemAddrState -> MemWriteState");
+                    next_state = MemWriteState;
+                end
+                else
+                begin
+                    $display("[controller] goto MemAddrState -> ErrorState");
+                    next_state = ErrorState;
+                end
+            end
             // MemAddrState:
             // begin
             //     if (op2 == 7'b0000011) // lw
@@ -625,26 +697,19 @@ module controller (
             //     end
             // end
 
-            // // S3 "MemRead" State
-            // MemReadState:
-            // begin
-            //     $display("[controller] goto MemReadState -> MemWBState");
-            //     next_state = MemWBState;
-            // end
-
-            // // S4 "MemWB" State
+            // // S6 "MemWB" State
             // MemWBState:
             // begin
             //     $display("[controller] goto MemWBState -> FetchState_1");
             //     next_state = FetchState_1;
             // end
 
-            // // S7 "MemWrite" State
-            // MemWriteState:
-            // begin
-            //     $display("[controller] goto MemWriteState -> FetchState_1");
-            //     next_state = FetchState_1;
-            // end
+            // S7 "MemWrite" State
+            MemWriteState:
+            begin
+                $display("[controller] goto MemWriteState -> FetchState_1");
+                next_state = FetchState_1;
+            end
 
             // S8 "ExecuteR" State
             ExecuteRState:
