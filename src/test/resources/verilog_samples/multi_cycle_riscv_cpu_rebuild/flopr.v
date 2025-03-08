@@ -19,22 +19,22 @@ module flopr #(parameter WIDTH = 8) (
 
             if (id == 3'b000)
             begin
-                $display("[FLOPR data] q:%08h <- d:%08h", q, d);
+                $display("[FLOPR data] q:0x%08h <- d:0x%08h", q, d);
             end
 
             if (id == 3'b001)
             begin
-                $display("[FLOPR RD1] q:%08h <- d:%08h", q, d);
+                $display("[FLOPR RD1] q:0x%08h <- d:0x%08h", q, d);
             end
 
             if (id == 3'b010)
             begin
-                $display("[FLOPR RD2] q:%08h <- d:%08h", q, d);
+                $display("[FLOPR RD2] q:0x%08h <- d:0x%08h", q, d);
             end
 
             if (id == 3'b011)
             begin
-                $display("[FLOPR ALUOut] q:%08h <- d:%08h", q, d);
+                $display("[FLOPR ALUOut] q:0x%08h <- d:0x%08h", q, d);
             end
 
             q <= d;

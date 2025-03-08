@@ -17,7 +17,7 @@ module top_testbench();
             $dumpvars(0, reset);
             $dumpvars(0, dut);
 
-            #1000 $finish();
+            #500 $finish();
             //#4000 $finish();
          end
 

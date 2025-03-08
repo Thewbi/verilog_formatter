@@ -22,8 +22,23 @@ module flopenr #(parameter WIDTH = 8) (
         end
         else if (en)
         begin
-            $display("[flopenr %d] set 0x%h", id, d);
-            q = d;
+            //$display("[flopenr %d] set 0x%h", id, d);
+            if (id == 3'b000)
+            begin
+                $display("[flopenr CurrPC] q:0x%08h <- d:0x%08h", q, d);
+            end
+
+            if (id == 3'b001)
+            begin
+                $display("[flopenr OldPC] q:0x%08h <- d:0x%08h", q, d);
+            end
+
+            if (id == 3'b010)
+            begin
+                $display("[flopenr Instr] q:0x%08h <- d:0x%08h", q, d);
+            end
+
+            q <= d;
         end
     end
 

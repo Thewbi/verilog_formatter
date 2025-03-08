@@ -72,6 +72,9 @@ module datapath(
     //          clk     write enable    addr        data            output read data
     //dmem dmem(  clk,    MemWrite,       Result,     WriteData,      ReadDData);
 
+    //                     id     clock     reset,      enable,     input       output
+    flopenr #(32) OldPCFF(3'b001, clk,      reset,      IRWrite,    PC,         OldPC);
+
     // next PC logic (PCNext is the input which is stored in posedge clock.)
     // The flip flop will output the stored data onto PC
     //                    id        clock       reset,      enable,     input       output
@@ -84,7 +87,7 @@ module datapath(
     //imem imem(PC, ReadData);
 
     //                     id     clock     reset,      enable,     input       output
-    flopenr #(32) OldPCFF(3'b001, clk,      reset,      IRWrite,    PC,         OldPC);
+    //flopenr #(32) OldPCFF(3'b001, clk,      reset,      IRWrite,    PC,         OldPC);
     flopenr #(32) InstrFF(3'b010, clk,      reset,      IRWrite,    ReadData,    Instr);
 
     //                          clock    reset   data-in     data-out

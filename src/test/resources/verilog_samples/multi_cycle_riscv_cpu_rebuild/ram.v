@@ -7,13 +7,13 @@ module ram(
     input wire [31:0] wd, // write data
 
     // output
-    output wire [31:0] rd // data read from memory
+    output reg [31:0] rd // data read from memory
 );
 
-    initial
-    begin
-        $monitor("[RAM] WriteEnable: %d, Address: 0x%08h, WriteData: 0x%08h, ReadData: 0x%08h", we, a, wd, rd);
-    end
+    // initial
+    // begin
+    //     $monitor("[RAM] WriteEnable: %d, Address: 0x%08h, WriteData: 0x%08h, ReadData: 0x%08h", we, a, wd, rd);
+    // end
 
     reg [31:0] RAM[127:0];
 
@@ -24,7 +24,14 @@ module ram(
             RAM[a[31:0]] <= wd;
         end
 
-    assign rd = RAM[a[31:0]];
+    //assign rd = RAM[a[31:0]];
+
+    always @(posedge clk)
+    begin
+        rd = RAM[a[31:0]];
+
+        $display("[RAM] WriteEnable: %d, Address: 0x%08h, WriteData: 0x%08h, ReadData: 0x%08h", we, a, wd, rd);
+    end
 
     initial
     begin
@@ -57,10 +64,10 @@ module ram(
         RAM[32'd56] = 32'h06002103; //         lw x2, 96(x0)           # x2 = [96] = 7             38          06002103
         RAM[32'd60] = 32'h005104B3; //         add x9, x2, x5          # x9 = (7 + 11) = 18        3C          005104B3
         RAM[32'd64] = 32'h008001EF; //         jal x3, end             # jump to end, x3 = 0x44    40          008001EF
-        RAM[32'd72] = 32'h00100113; //         addi x2, x0, 1          # shouldn't execute         44          00100113
-        RAM[32'd76] = 32'h00910133; // end:    add x2, x2, x9          # x2 = (7 + 18) = 25        48          00910133
-        RAM[32'd80] = 32'h0221A023; //         sw x2, 0x20(x3)         # [100] = 25                4C          0221A023
-        RAM[32'd84] = 32'h00210063; // done:   beq x2, x2, done        # infinite loop             50          00210063
+        RAM[32'd68] = 32'h00100113; //         addi x2, x0, 1          # shouldn't execute         44          00100113
+        RAM[32'd72] = 32'h00910133; // end:    add x2, x2, x9          # x2 = (7 + 18) = 25        48          00910133
+        RAM[32'd76] = 32'h0221A023; //         sw x2, 0x20(x3)         # [100] = 25                4C          0221A023
+        RAM[32'd80] = 32'h00210063; // done:   beq x2, x2, done        # infinite loop             50          00210063
 
         // //
         // // Harris & Harris, modified sample

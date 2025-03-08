@@ -47,7 +47,7 @@ module controller (
                     3'b000:
                     begin
                         // addi
-                        //$display("[ALU_DEC] addi");
+                        $display("[ALU_DEC] addi");
                         decodeAluOp = 3'b000; // add, addi
                     end
 
@@ -196,6 +196,12 @@ module controller (
             7'b1101111:
             begin
                 $display("[ALU_DEC] jal jal jal jal jal jal");
+                decodeAluOp = 3'b000; // addition
+            end
+
+            7'b1100011:
+            begin
+                $display("[ALU_DEC] beq beq beq beq beq beq");
                 decodeAluOp = 3'b000; // addition
             end
 
@@ -382,6 +388,12 @@ module controller (
             begin
                 $display("[ALU_DEC] jal jal jal jal jal jal");
                 decodeImmSrc = 2'b11; // I-Type
+            end
+
+            7'b1100011:
+            begin
+                $display("[ALU_DEC] beq beq beq beq beq beq");
+                decodeImmSrc = 2'b10; // B-Type
             end
 
             default:
@@ -574,7 +586,7 @@ module controller (
 
                 PCWrite = 1'b0;
                 ALUSrcA = 2'b01; // oldPC
-                ALUSrcB = 2'b01; // immediate sign extended (this will compute the jump target for JAL)
+                ALUSrcB = 2'b01; // immediate sign extended (this will compute the jump target for JAL and BEQ)
                 //ALUControl = 3'b000;
                 ALUControl = decodeAluOp(op, funct3, funct7);
                 ResultSrc = 2'bxx;
@@ -745,19 +757,17 @@ module controller (
 
                 PCWrite = 1'b1; // Write into the PC register
 
+                AdrSrc = 1'bx; // confuse the muxer so it does not perform any action
+                MemWrite = 1'b0;
+                IRWrite = 1'b0;
+                RegWrite = 1'b0;
                 ALUSrcA = 2'b01; // oldPC
                 ALUSrcB = 2'b10; // hard coded 4
 
+                ImmSrc = 2'b11; // Immediate sign extend (J-Type)
                 ALUControl = 3'b000; // add
 
                 ResultSrc = 2'b00; // ALUOut goes onto the result bus
-                AdrSrc = 1'bx; // confuse the muxer so it does not perform any action
-                RegWrite = 1'b0;
-                MemWrite = 1'b0;
-
-                ImmSrc = 2'b11; // Immediate sign extend (J-Type)
-
-                IRWrite = 1'b0;
             end
 
             // S12 "BEQ" State
