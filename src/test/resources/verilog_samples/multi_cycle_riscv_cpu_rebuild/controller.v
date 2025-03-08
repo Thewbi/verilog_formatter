@@ -19,7 +19,7 @@ module controller (
     input   wire        Zero,       // the ALU has computed a result that is zero (for branching instruction making)
     input   wire [31:0] PC,
     input   wire [31:0] ReadData,
-    input   wire [31:0] ReadDData,
+    // input   wire [31:0] ReadDData,
 
     // output
     output  reg         PCWrite,    // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
@@ -444,7 +444,7 @@ module controller (
                 $display("");
                 $display("[CTRL.OUTPUT.MemWBState] op: %b, oldOp: %b, funct3: %b, funct7: %b", op, oldOp, funct3, funct7);
 
-                $display("[CTRL.OUTPUT.MemWBState] ReadDData: 0x%0h", ReadDData);
+                // $display("[CTRL.OUTPUT.MemWBState] ReadDData: 0x%0h", ReadDData);
 
                 PCWrite = 1'b0;
                 ALUSrcA = 2'b00;

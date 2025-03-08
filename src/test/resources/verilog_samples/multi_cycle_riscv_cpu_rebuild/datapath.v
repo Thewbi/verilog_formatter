@@ -13,7 +13,7 @@ module datapath(
     output  wire            Zero,           // the ALU has computed a result that is zero (for branching instructions)
     output  wire [31:0]     PC,             // current program counter value
     output  wire [31:0]     ReadData,       // output from instruction memory
-    output  wire [31:0]     ReadDData,      // output from data memory
+    // output  wire [31:0]     ReadDData,      // output from data memory
 
     // input
     input  wire             PCWrite,        // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
@@ -66,18 +66,22 @@ module datapath(
         $display("[datapath] MemWrite! ALUResult: 0x%h, Result: 0x%h, WriteData: 0x%h", ALUResult, Result, WriteData);
     end
 
+    //          clk     write enable    addr        data to write           output read data
+    ram ram(  clk,    MemWrite,       adr,     WriteData,                ReadData);
+
     //          clk     write enable    addr        data            output read data
-    dmem dmem(  clk,    MemWrite,       Result,     WriteData,      ReadDData);
+    //dmem dmem(  clk,    MemWrite,       Result,     WriteData,      ReadDData);
 
     // next PC logic (PCNext is the input which is stored in posedge clock.)
     // The flip flop will output the stored data onto PC
     //                    id        clock       reset,      enable,     input       output
     flopenr #(32) pcreg(3'b000,     clk,        reset,      PCWrite,    Result,     PC);
 
-    mux2 #(32) addrmux(PC, Result, AdrSrc, adr);
+    //                  input A     input B     selector    muxed output
+    mux2 #(32) addrmux( PC,         Result,     AdrSrc,     adr);
 
     // fetch next instruction
-    imem imem(PC, ReadData);
+    //imem imem(PC, ReadData);
 
     //                     id     clock     reset,      enable,     input       output
     flopenr #(32) OldPCFF(3'b001, clk,      reset,      IRWrite,    PC,         OldPC);

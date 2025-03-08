@@ -11,7 +11,7 @@ module riscv_multi(
     wire        Zero;
     wire [31:0] PC;
     wire [31:0] ReadData;   // instruction memory
-    wire [31:0] ReadDData;  // data memory
+    // wire [31:0] ReadDData;  // data memory
     wire [1:0]  ResultSrc;
     wire [1:0]  ImmSrc;
     wire [2:0]  ALUControl;
@@ -38,7 +38,7 @@ module riscv_multi(
         Zero,           // ALU result is zero
         PC,             // current programm counter
         ReadData,
-        ReadDData,
+        // ReadDData,
 
         // output
         PCWrite,
@@ -69,7 +69,7 @@ module riscv_multi(
         Zero,
         PC,
         ReadData,       // instruction memory
-        ReadDData,      // data memory
+        // ReadDData,      // data memory
 
         // input
         PCWrite,
