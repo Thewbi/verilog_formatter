@@ -2,6 +2,7 @@
 // on posedge of the clock, will store the value d
 // on posedge of the clock, will return the current value q
 module flopr #(parameter WIDTH = 8) (
+    input wire [2:0] id,
     input wire clk,             // clock input
     input wire reset,           // reset input
     input wire [WIDTH-1:0] d,   // [in] d as in data. This is the input data
@@ -15,8 +16,29 @@ module flopr #(parameter WIDTH = 8) (
         end
         else
         begin
-            $display("[FLOPR] q:%08h <- d:%08h", q, d);
+
+            if (id == 3'b000)
+            begin
+                $display("[FLOPR data] q:%08h <- d:%08h", q, d);
+            end
+
+            if (id == 3'b001)
+            begin
+                $display("[FLOPR RD1] q:%08h <- d:%08h", q, d);
+            end
+
+            if (id == 3'b010)
+            begin
+                $display("[FLOPR RD2] q:%08h <- d:%08h", q, d);
+            end
+
+            if (id == 3'b011)
+            begin
+                $display("[FLOPR ALUOut] q:%08h <- d:%08h", q, d);
+            end
+
             q <= d;
         end
+
 
 endmodule

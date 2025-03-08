@@ -32,14 +32,14 @@ module extend(
             // J−type (jal)
             2'b11:
             begin
-                $display("[extend] J Type");
                 immext = { {12{instr[31]}}, instr[19:12], instr[20], instr[30:21], 1'b0 };
+                $display("[extend] J Type. immext = 0x%08h", immext);
             end
 
             default:
             begin
                 $display("[extend] default");
-                $display("instr: %h, immsrc: %d", instr, immsrc);
+                $display("[extend] instr: %h, immsrc: %d", instr, immsrc);
                 immext = 32'bx; // undefined
             end
         endcase

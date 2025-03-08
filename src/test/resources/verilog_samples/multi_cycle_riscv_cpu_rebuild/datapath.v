@@ -87,8 +87,8 @@ module datapath(
     flopenr #(32) OldPCFF(3'b001, clk,      reset,      IRWrite,    PC,         OldPC);
     flopenr #(32) InstrFF(3'b010, clk,      reset,      IRWrite,    ReadData,    Instr);
 
-    //                 clock    reset   data-in     data-out
-    flopr #(32) DataFF(clk,     reset,  ReadData,   data);
+    //                          clock    reset   data-in     data-out
+    flopr #(32) DataFF(3'b000,  clk,     reset,  ReadData,   data);
 
     assign op = ReadData[6:0];
     assign funct3 = ReadData[14:12];
@@ -126,8 +126,8 @@ module datapath(
         RD2                 // [out] the output where the value from register a2 appears
     );
 
-    flopr #(32) Data_RD1(clk, reset, RD1, A);
-    flopr #(32) Data_RD2(clk, reset, RD2, WriteData);
+    flopr #(32) Data_RD1(3'b001, clk, reset, RD1, A);
+    flopr #(32) Data_RD2(3'b010, clk, reset, RD2, WriteData);
 
     // sign extend module
     // param 1 = instruction bits (part of the instruction to sign extend)
@@ -144,7 +144,7 @@ module datapath(
     //      input A     input B     operation       result output       zero flag
     alu alu(SrcA,       SrcB,       ALUControl,     ALUResult,          Zero);
 
-    flopr #(32) aluResult(clk, reset, ALUResult, ALUOut);
+    flopr #(32) aluResult(3'b011, clk, reset, ALUResult, ALUOut);
 
     // this mux decides, which value is driving the result BUS
     //                      Input A (00)     Input B (01)       Input C (10)        SelectSignal        Output

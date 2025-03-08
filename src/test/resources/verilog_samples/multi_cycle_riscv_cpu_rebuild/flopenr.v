@@ -18,12 +18,12 @@ module flopenr #(parameter WIDTH = 8) (
         if (reset)
         begin
             $display("[flopenr %d] reset", id);
-            q <= 0;
+            q = 0;
         end
         else if (en)
         begin
             $display("[flopenr %d] set 0x%h", id, d);
-            q <= d;
+            q = d;
         end
     end
 

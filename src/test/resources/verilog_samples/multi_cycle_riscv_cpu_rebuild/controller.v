@@ -34,7 +34,7 @@ module controller (
     output  reg         RegWrite   // write enable for the register file
 );
 
-    function [2:0] decode (input [6:0] opcode, input [2:0] funct3, input [6:0] funct7);
+    function [2:0] decodeAluOp (input [6:0] opcode, input [2:0] funct3, input [6:0] funct7);
     begin
         $display("decode() op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
         case (opcode)
@@ -48,14 +48,14 @@ module controller (
                     begin
                         // addi
                         //$display("[ALU_DEC] addi");
-                        decode = 3'b000; // add, addi
+                        decodeAluOp = 3'b000; // add, addi
                     end
 
                     3'b010:
                     begin
                         // slti
                         $display("[ALU_DEC] slti");
-                        decode = 3'b101; // slt, slti
+                        decodeAluOp = 3'b101; // slt, slti
                     end
 
                     3'b011:
@@ -72,14 +72,14 @@ module controller (
                     begin
                         // ori
                         $display("[ALU_DEC] ori");
-                        decode = 3'b011; // or, ori
+                        decodeAluOp = 3'b011; // or, ori
                     end
 
                     3'b111:
                     begin
                         // andi
                         $display("[ALU_DEC] andi");
-                        decode = 3'b010; // and, andi
+                        decodeAluOp = 3'b010; // and, andi
                     end
 
                     3'b001:
@@ -121,14 +121,14 @@ module controller (
                             begin
                                 // add
                                 $display("[ALU_DEC] add");
-                                decode = 3'b000; // addition
+                                decodeAluOp = 3'b000; // addition
                             end
 
                             7'b0100000:
                             begin
                                 // sub
                                 $display("[ALU_DEC] sub");
-                                decode = 3'b001; // addition
+                                decodeAluOp = 3'b001; // subtraction
                             end
 
                         endcase
@@ -144,7 +144,7 @@ module controller (
                     begin
                         // slt
                         $display("[ALU_DEC] slt");
-                        decode = 3'b101; // slt, slti
+                        decodeAluOp = 3'b101; // slt, slti
                     end
 
                     3'b011:
@@ -180,24 +180,214 @@ module controller (
                     begin
                         // or
                         $display("[ALU_DEC] or");
-                        //decode = 3'b011; // or, ori
-                        decode = 3'b110; // or, ori
+                        decodeAluOp = 3'b110; // or, ori
                     end
 
                     3'b111:
                     begin
                         // and
                         $display("[ALU_DEC] and");
-                        decode = 3'b010; // and, andi
+                        decodeAluOp = 3'b010; // and, andi
                     end
 
                 endcase
             end
 
+            7'b1101111:
+            begin
+                $display("[ALU_DEC] jal jal jal jal jal jal");
+                decodeAluOp = 3'b000; // addition
+            end
+
             default:
             begin
                 $display("[ALU_DEC] default");
-                decode = 3'bxxx;
+                decodeAluOp = 3'bxxx;
+            end
+
+        endcase
+    end
+    endfunction
+
+    function [2:0] decodeImmSrc (input [6:0] opcode, input [2:0] funct3, input [6:0] funct7);
+    begin
+        $display("decodeImmSrc() op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
+        case (opcode)
+
+            7'b0010011:
+            begin
+
+                case (funct3)
+
+                    3'b000:
+                    begin
+                        // addi
+                        //$display("[ALU_DEC] addi");
+                        decodeImmSrc = 2'b00; // addi, I-Type
+                    end
+
+                    3'b010:
+                    begin
+                        // slti
+                        $display("[ALU_DEC] slti");
+                        decodeImmSrc = 2'b00; // slti, I-Type
+                    end
+
+                    3'b011:
+                    begin
+                        // sltiu
+                        $finish(1);
+                    end
+
+                    3'b100:
+                    begin
+                        // xori
+                        $finish(2);
+                    end
+
+                    3'b110:
+                    begin
+                        // ori
+                        $display("[ALU_DEC] ori");
+                        decodeImmSrc = 2'b00; // ori, I-Type
+                    end
+
+                    3'b111:
+                    begin
+                        // andi
+                        $display("[ALU_DEC] andi");
+                        decodeImmSrc = 2'b00; // I-Type
+                    end
+
+                    3'b001:
+                    begin
+                        // slli
+                        $finish(3);
+                    end
+
+                    3'b101:
+                    begin
+                        case (funct7)
+
+                            7'b0000000:
+                            begin
+                                // srli, I-Type
+                                decodeImmSrc = 2'b00; // I-Type
+                            end
+
+                            7'b0100000:
+                            begin
+                                // srai, I-Type
+                                decodeImmSrc = 2'b00; // I-Type
+                            end
+
+                        endcase
+                    end
+
+                endcase
+            end
+
+            7'b0110011:
+            begin
+
+                case (funct3)
+
+                    3'b000:
+                    begin
+
+                        case (funct7)
+
+                            7'b0000000:
+                            begin
+                                // add
+                                $display("[ALU_DEC] add");
+                                decodeImmSrc = 2'bxx; // addition, no immediate encoded within the instruction
+                            end
+
+                            7'b0100000:
+                            begin
+                                // sub
+                                $display("[ALU_DEC] sub");
+                                decodeImmSrc = 2'bxx; // subtraction, no immediate encoded within the instruction
+                            end
+
+                        endcase
+
+                    end
+
+                    3'b001:
+                    begin
+                        // sll
+                        $finish(4);
+                    end
+
+                    3'b010:
+                    begin
+                        // slt
+                        $display("[ALU_DEC] slt");
+                        decodeImmSrc = 2'bxx; // no immediate
+                    end
+
+                    3'b011:
+                    begin
+                        // sltu
+                        $finish(5);
+                    end
+
+                    3'b100:
+                    begin
+                        // xor
+                        $finish(6);
+                    end
+
+                    3'b101:
+                    begin
+
+                        case (funct7)
+
+                            7'b0000000:
+                            begin
+                                // srl
+                                $finish(7);
+                            end
+
+                            7'b0100000:
+                            begin
+                                // sra
+                                $finish(8);
+                            end
+
+                        endcase
+
+                    end
+
+                    3'b110:
+                    begin
+                        // or
+                        $display("[ALU_DEC] or");
+                        decodeImmSrc = 2'bxx; // or R-Type has no immediate!
+                    end
+
+                    3'b111:
+                    begin
+                        // and
+                        $display("[ALU_DEC] and");
+                        decodeImmSrc = 2'bxx; // and R-Type has no immediate!
+                    end
+
+                endcase
+            end
+
+            7'b1101111:
+            begin
+                $display("[ALU_DEC] jal jal jal jal jal jal");
+                decodeImmSrc = 2'b11; // I-Type
+            end
+
+            default:
+            begin
+                $display("[ALU_DEC] default");
+                decodeImmSrc = 2'bxx;
             end
 
         endcase
@@ -337,7 +527,7 @@ module controller (
             begin
                 $display("");
                 $display("");
-                $display("[CTRL.OUTPUT.FETCH_STATE_1] ");
+                $display("[CTRL.OUTPUT.FETCH_STATE_1] op: %b, oldOp: %b, funct3: %b, funct7: %b", op, oldOp, funct3, funct7);
 
                 PCWrite = 1'b1;
 
@@ -352,6 +542,7 @@ module controller (
 
                 // ACTION 2 - increment PC
                 ALUSrcA = 2'b00; // PC
+                ALUSrcB = 2'b10; // hardcoded 4
 
                 // if (Zero == 1)
                 // begin
@@ -361,8 +552,8 @@ module controller (
                 // end
                 // else
                 // begin
-                    ImmSrc = 2'bxx; // no immediate extension required
-                    ALUSrcB = 2'b10; // hardcoded 4
+                ImmSrc = 2'bxx; // no immediate extension required
+
                 // end
 
                 ALUControl = 3'b000; // add operation
@@ -382,15 +573,16 @@ module controller (
                 $display("[CTRL.OUTPUT.DECODE_STATE] op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
 
                 PCWrite = 1'b0;
-                ALUSrcA = 2'b00;
-                ALUSrcB = 2'b00;
+                ALUSrcA = 2'b01; // oldPC
+                ALUSrcB = 2'b01; // immediate sign extended (this will compute the jump target for JAL)
                 //ALUControl = 3'b000;
-                ALUControl = decode(op, funct3, funct7);
-                ResultSrc = 2'b00;
-                AdrSrc = 1'b0;
+                ALUControl = decodeAluOp(op, funct3, funct7);
+                ResultSrc = 2'bxx;
+                AdrSrc = 1'bx;
                 RegWrite = 1'b0;
                 MemWrite = 1'b0;
-                ImmSrc = 2'b00;
+                //ImmSrc = 2'b00;
+                ImmSrc = decodeImmSrc(op, funct3, funct7);
                 IRWrite = 1'b0;
             end
 
@@ -544,6 +736,30 @@ module controller (
                 IRWrite = 1'b0;
             end
 
+            // S11 "JAL" State // execute J Type instruction
+            JALState:
+            begin
+                $display("");
+                $display("");
+                $display("[CTRL.OUTPUT.JALState]");
+
+                PCWrite = 1'b1; // Write into the PC register
+
+                ALUSrcA = 2'b01; // oldPC
+                ALUSrcB = 2'b10; // hard coded 4
+
+                ALUControl = 3'b000; // add
+
+                ResultSrc = 2'b00; // ALUOut goes onto the result bus
+                AdrSrc = 1'bx; // confuse the muxer so it does not perform any action
+                RegWrite = 1'b0;
+                MemWrite = 1'b0;
+
+                ImmSrc = 2'b11; // Immediate sign extend (J-Type)
+
+                IRWrite = 1'b0;
+            end
+
             // S12 "BEQ" State
             BEQState:
             begin
@@ -573,7 +789,7 @@ module controller (
             begin
                 $display("");
                 $display("");
-                $display("[CTRL.OUTPUT.BRANCH_TAKEN_STATE]");
+                $display("[CTRL.OUTPUT.BRANCH_TAKEN_CHECK]");
 
                 if (Zero == 1)
                 begin
@@ -780,12 +996,12 @@ module controller (
                 next_state = ALUWriteBackState;
             end
 
-            // // S11 "JAL" State
-            // JALState:
-            // begin
-            //     $display("[controller] goto JALState -> ALUWriteBackState");
-            //     next_state = ALUWriteBackState;
-            // end
+            // S11 "JAL" State
+            JALState:
+            begin
+                $display("[controller] goto JALState -> ALUWriteBackState");
+                next_state = ALUWriteBackState;
+            end
 
             // S12 "BEQ" State
             BEQState:
