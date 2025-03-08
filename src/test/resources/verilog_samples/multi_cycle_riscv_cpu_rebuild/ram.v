@@ -21,7 +21,7 @@ module ram(
         if (we)
         begin
             $display("[RAM] Writing wd: 0x%0h, address: 0x%0h", wd, a[31:0]);
-            RAM[a[31:2]] <= wd;
+            RAM[a[31:0]] <= wd;
         end
 
     assign rd = RAM[a[31:0]];

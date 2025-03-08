@@ -10,8 +10,13 @@ module flopr #(parameter WIDTH = 8) (
 
     always @(posedge clk, posedge reset)
         if (reset)
+        begin
             q <= 0;
+        end
         else
+        begin
+            $display("[FLOPR] q:%08h <- d:%08h", q, d);
             q <= d;
+        end
 
 endmodule

@@ -429,7 +429,7 @@ module controller (
                 // ALUSrcA = 2'bxx;
                 // ALUSrcB = 2'bxx;
                 // ALUControl = 3'bxxx;
-                ResultSrc = 2'b00; // ALUOut register to Result bus
+                ResultSrc = 2'b10; // ALUOut register to Result bus
                 AdrSrc = 1'b1; // Result bus is connected to the memory addr port
                 RegWrite = 1'b0;
                 MemWrite = 1'b0;
@@ -451,7 +451,7 @@ module controller (
                 ALUSrcB = 2'b00;
                 ALUControl = 3'b000;
                 ResultSrc = 2'b01; // take the value from the Data register and place it onto the result bus
-                AdrSrc = 1'b0;
+                AdrSrc = 1'bx;
                 RegWrite = 1'b1;
                 MemWrite = 1'b0;
                 ImmSrc = 2'b00;
