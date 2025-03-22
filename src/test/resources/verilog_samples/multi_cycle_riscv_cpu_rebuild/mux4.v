@@ -1,8 +1,9 @@
-module mux3 #(parameter WIDTH = 8) (
+module mux4 #(parameter WIDTH = 8) (
 
     input wire [WIDTH-1:0] d0,  // input A (selector: 00)
     input wire [WIDTH-1:0] d1,  // input B (selector: 01)
-    input wire [WIDTH-1:0] d2,  // input C (selector: 1?)
+    input wire [WIDTH-1:0] d2,  // input C (selector: 10)
+    input wire [WIDTH-1:0] d3,  // input D (selector: 11)
     input wire [1:0] s,         // selector signal
 
     output reg [WIDTH-1:0] y    // output
@@ -11,8 +12,10 @@ module mux3 #(parameter WIDTH = 8) (
     //assign y = s[1] ? d2 : (s[0] ? d1 : d0);
 
     //always @*
-    always @(d0, d1, d2, s)
+    always @(d0, d1, d2, d3, s)
     begin
+
+        $display("[MUX4] d0: %b, d1: %b, d2: %b, d3: %b, s: %b", d0, d1, d2, d3, s);
 
         if (s == 2'b00)
         begin
@@ -26,10 +29,15 @@ module mux3 #(parameter WIDTH = 8) (
         begin
             y = d2;
         end
+        else if (s == 2'b11)
+        begin
+            y = d3;
+        end
         else
         begin
-           y = d2;
+           y = d0;
         end
+
     end
 
 endmodule

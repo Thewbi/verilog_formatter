@@ -1,6 +1,6 @@
 module extend(
     input wire [31:7] instr,
-    input wire [1:0] immsrc,
+    input wire [2:0] immsrc,
     output reg [31:0] immext
 );
 
@@ -9,28 +9,37 @@ module extend(
         case(immsrc)
 
             // I−type
-            2'b00:
+            // lui (00134313)
+            3'b000:
             begin
                 $display("[extend] I Type");
-                immext = { {20{instr[31]}}, instr[31:20] };
+                immext = { { 20{instr[31]} }, instr[31:20] };
             end
 
             // S−type (stores)
-            2'b01:
+            3'b001:
             begin
                 $display("[extend] S Type");
-                immext = { {20{instr[31]}}, instr[31:25], instr[11:7] };
+                immext = { { 20{instr[31]} }, instr[31:25], instr[11:7] };
             end
 
             // B−type (branches) (BEQ, ...)
-            2'b10:
+            3'b010:
             begin
                 $display("[extend] B Type");
-                immext = { {20{instr[31]}}, instr[7], instr[30:25], instr[11:8], 1'b0 };
+                immext = { { 20{instr[31]} }, instr[7], instr[30:25], instr[11:8], 1'b0 };
+            end
+
+            // U−type (lui)
+            // example: 000003b7
+            3'b100:
+            begin
+                $display("[extend] U Type");
+                immext = { { 12{instr[31]} }, instr[31:12] };
             end
 
             // J−type (jal)
-            2'b11:
+            3'b011:
             begin
                 immext = { {12{instr[31]}}, instr[19:12], instr[20], instr[30:21], 1'b0 };
                 $display("[extend] J Type. immext = 0x%08h", immext);

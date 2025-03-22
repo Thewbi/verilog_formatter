@@ -3,6 +3,7 @@ module top_testbench();
     reg clk;
     reg reset;
 
+    // the source code is loaded in imem.v or ram.v depending on which memory concept you want to use
     top dut(
         // clock and reset
         clk,

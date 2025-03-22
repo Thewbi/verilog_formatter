@@ -30,15 +30,26 @@ module controller (
     output  reg [2:0]   ALUControl, // tells the ALU which operation to perform
     output  reg [1:0]   ALUSrcB,    // decides which line goes into the ALU B parameter input
     output  reg [1:0]   ALUSrcA,    // decides which line goes into the ALU A parameter input
-    output  reg [1:0]   ImmSrc,     // enable sign extension of the immediate value
+    output  reg [2:0]   ImmSrc,     // enable sign extension of the immediate value
     output  reg         RegWrite   // write enable for the register file
 );
 
+    reg [2:0]   newALUControl;
+
     function [2:0] decodeAluOp (input [6:0] opcode, input [2:0] funct3, input [6:0] funct7);
     begin
-        $display("decode() op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
+        $display("decodeAluOp() op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
         case (opcode)
 
+            7'b0110111:
+            begin
+                // lui
+                // lui t2, 2441 - load the unsigned integer 2441 into t2
+                $display("[ALU_DEC] lui");
+                decodeAluOp = 3'b000; // add, addi
+            end
+
+            // I-Type (instructions containing immediate parameters encoded inside their machine code)
             7'b0010011:
             begin
 
@@ -66,20 +77,22 @@ module controller (
                     3'b100:
                     begin
                         // xori
+                        $display("[ALU_DEC] xori");
+                        decodeAluOp = 3'b011; // xor operation
                     end
 
                     3'b110:
                     begin
                         // ori
                         $display("[ALU_DEC] ori");
-                        decodeAluOp = 3'b011; // or, ori
+                        decodeAluOp = 3'b110; // ori
                     end
 
                     3'b111:
                     begin
                         // andi
                         $display("[ALU_DEC] andi");
-                        decodeAluOp = 3'b010; // and, andi
+                        decodeAluOp = 3'b010; // andi
                     end
 
                     3'b001:
@@ -180,14 +193,14 @@ module controller (
                     begin
                         // or
                         $display("[ALU_DEC] or");
-                        decodeAluOp = 3'b110; // or, ori
+                        decodeAluOp = 3'b110; // or
                     end
 
                     3'b111:
                     begin
                         // and
                         $display("[ALU_DEC] and");
-                        decodeAluOp = 3'b010; // and, andi
+                        decodeAluOp = 3'b010; // and
                     end
 
                 endcase
@@ -218,7 +231,16 @@ module controller (
     function [2:0] decodeImmSrc (input [6:0] opcode, input [2:0] funct3, input [6:0] funct7);
     begin
         $display("decodeImmSrc() op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
+
         case (opcode)
+
+            7'b0110111:
+            begin
+                // lui
+                // lui t2, 2441 - load the unsigned integer 2441 into t2
+                $display("[decodeImmSrc] lui");
+                decodeImmSrc = 3'b100; // lui
+            end
 
             7'b0010011:
             begin
@@ -228,47 +250,48 @@ module controller (
                     3'b000:
                     begin
                         // addi
-                        //$display("[ALU_DEC] addi");
-                        decodeImmSrc = 2'b00; // addi, I-Type
+                        $display("[decodeImmSrc] addi");
+                        decodeImmSrc = 3'b000; // addi, I-Type
                     end
 
                     3'b010:
                     begin
                         // slti
-                        $display("[ALU_DEC] slti");
-                        decodeImmSrc = 2'b00; // slti, I-Type
+                        $display("[decodeImmSrc] slti");
+                        decodeImmSrc = 3'b000; // slti, I-Type
                     end
 
                     3'b011:
                     begin
                         // sltiu
-                        $finish(1);
+                        //$finish(1);
                     end
 
                     3'b100:
                     begin
-                        // xori
-                        $finish(2);
+                        // xori (exampel: 00134313)
+                        $display("[decodeImmSrc] xori");
+                        decodeImmSrc = 3'b000; // I-Type [31:20] is sign extended
                     end
 
                     3'b110:
                     begin
                         // ori
-                        $display("[ALU_DEC] ori");
-                        decodeImmSrc = 2'b00; // ori, I-Type
+                        $display("[decodeImmSrc] ori");
+                        decodeImmSrc = 3'b000; // ori, I-Type
                     end
 
                     3'b111:
                     begin
                         // andi
-                        $display("[ALU_DEC] andi");
-                        decodeImmSrc = 2'b00; // I-Type
+                        $display("[decodeImmSrc] andi");
+                        decodeImmSrc = 3'b000; // I-Type
                     end
 
                     3'b001:
                     begin
                         // slli
-                        $finish(3);
+                        //$finish(3);
                     end
 
                     3'b101:
@@ -278,13 +301,15 @@ module controller (
                             7'b0000000:
                             begin
                                 // srli, I-Type
-                                decodeImmSrc = 2'b00; // I-Type
+                                $display("[decodeImmSrc] srli");
+                                decodeImmSrc = 3'b000; // I-Type
                             end
 
                             7'b0100000:
                             begin
                                 // srai, I-Type
-                                decodeImmSrc = 2'b00; // I-Type
+                                $display("[decodeImmSrc] srai");
+                                decodeImmSrc = 3'b000; // I-Type
                             end
 
                         endcase
@@ -306,15 +331,15 @@ module controller (
                             7'b0000000:
                             begin
                                 // add
-                                $display("[ALU_DEC] add");
-                                decodeImmSrc = 2'bxx; // addition, no immediate encoded within the instruction
+                                $display("[decodeImmSrc] add");
+                                decodeImmSrc = 3'bxxx; // addition, no immediate encoded within the instruction
                             end
 
                             7'b0100000:
                             begin
                                 // sub
-                                $display("[ALU_DEC] sub");
-                                decodeImmSrc = 2'bxx; // subtraction, no immediate encoded within the instruction
+                                $display("[decodeImmSrc] sub");
+                                decodeImmSrc = 3'bxxx; // subtraction, no immediate encoded within the instruction
                             end
 
                         endcase
@@ -324,26 +349,26 @@ module controller (
                     3'b001:
                     begin
                         // sll
-                        $finish(4);
+                        //$finish(4);
                     end
 
                     3'b010:
                     begin
                         // slt
-                        $display("[ALU_DEC] slt");
-                        decodeImmSrc = 2'bxx; // no immediate
+                        $display("[decodeImmSrc] slt");
+                        decodeImmSrc = 3'bxxx; // no immediate
                     end
 
                     3'b011:
                     begin
                         // sltu
-                        $finish(5);
+                        //$finish(5);
                     end
 
                     3'b100:
                     begin
                         // xor
-                        $finish(6);
+                        //$finish(6);
                     end
 
                     3'b101:
@@ -354,13 +379,13 @@ module controller (
                             7'b0000000:
                             begin
                                 // srl
-                                $finish(7);
+                                //$finish(7);
                             end
 
                             7'b0100000:
                             begin
                                 // sra
-                                $finish(8);
+                                //$finish(8);
                             end
 
                         endcase
@@ -370,15 +395,15 @@ module controller (
                     3'b110:
                     begin
                         // or
-                        $display("[ALU_DEC] or");
-                        decodeImmSrc = 2'bxx; // or R-Type has no immediate!
+                        $display("[decodeImmSrc] or");
+                        decodeImmSrc = 3'bxxx; // or R-Type has no immediate!
                     end
 
                     3'b111:
                     begin
                         // and
-                        $display("[ALU_DEC] and");
-                        decodeImmSrc = 2'bxx; // and R-Type has no immediate!
+                        $display("[decodeImmSrc] and");
+                        decodeImmSrc = 3'bxxx; // and R-Type has no immediate!
                     end
 
                 endcase
@@ -386,20 +411,20 @@ module controller (
 
             7'b1101111:
             begin
-                $display("[ALU_DEC] jal jal jal jal jal jal");
-                decodeImmSrc = 2'b11; // I-Type
+                $display("[decodeImmSrc] jal jal jal jal jal jal");
+                decodeImmSrc = 3'b011; // I-Type
             end
 
             7'b1100011:
             begin
-                $display("[ALU_DEC] beq beq beq beq beq beq");
-                decodeImmSrc = 2'b10; // B-Type
+                $display("[decodeImmSrc] beq beq beq beq beq beq");
+                decodeImmSrc = 3'b010; // B-Type
             end
 
             default:
             begin
-                $display("[ALU_DEC] default");
-                decodeImmSrc = 2'bxx;
+                $display("[decodeImmSrc] default");
+                decodeImmSrc = 3'b0xx;
             end
 
         endcase
@@ -412,20 +437,8 @@ module controller (
     end
     endfunction
 
-    // wire [6:0]  op2;
-    // assign op2 = ReadData[6:0];
-
-    // wire [1:0] ALUOp;
-
-    // //aludec ad(op[5], funct3, funct7b5, ALUOp, ALUControl);
-    // wire [2:0] ALUControlAluDec;
-    // aludec ad(op, funct3, funct7, ALUControlAluDec);
-
-    // initial
-    // begin
-    //     $monitor("[controller], rsp_word = %h, current_state = %d, cmd_busy = %d", rsp_word, current_state, cmd_busy);
-    // end
-
+    // this initial block causes the yosys compiler to fail with "cannot be legalized: initialized D latches are not supported"
+    // Enable this block for Icarus Verilog. Remove this block for yosys.
     initial
     begin
         PCWrite = 1'b0;
@@ -447,27 +460,27 @@ module controller (
     //
 
     parameter
-        ResetState          = 4'b0000,      // S0 "Reset" State
-        FetchState_1        = 4'b0001,      // S1 "FetchState_1" State
-        FetchState_2        = 4'b0010,      // S2 "FetchState_2" State
-        DecodeState         = 4'b0011,      // S3 "Decode" State
-        MemAddrState        = 4'b0100,      // S4 "MemAddr" State
-        MemReadState        = 4'b0101,      // S5 "MemRead" State
-        MemWBState          = 4'b0110,      // S6 "MemWB" State
-        MemWriteState       = 4'b0111,      // S7 "MemWrite" State
-        ExecuteRState       = 4'b1000,      // S8 "ExecuteR" State
-        ALUWriteBackState   = 4'b1001,      // S9 "ALUWriteBack"
-        ExecuteIState       = 4'b1010,      // S10 "ExecuteI" State // execute I-Type instruction
-        JALState            = 4'b1011,      // S11 "JAL" State
-        BEQState            = 4'b1100,      // S12 "BEQ" State
-        BRANCH_TAKEN_CHECK  = 4'b1101,      // S13 "BRANCH_TAKEN_CHECK" State
-                                            // S14
-        ErrorState          = 4'b1111       // S15 "ERROR" State
+        ResetState          = 5'b00000,      // S0 "Reset" State
+        FetchState_1        = 5'b00001,      // S1 "FetchState_1" State
+        FetchState_2        = 5'b00010,      // S2 "FetchState_2" State
+        DecodeState         = 5'b00011,      // S3 "Decode" State
+        MemAddrState        = 5'b00100,      // S4 "MemAddr" State
+        MemReadState        = 5'b00101,      // S5 "MemRead" State
+        MemWBState          = 5'b00110,      // S6 "MemWB" State
+        MemWriteState       = 5'b00111,      // S7 "MemWrite" State
+        ExecuteRState       = 5'b01000,      // S8 "ExecuteR" State
+        ALUWriteBackState   = 5'b01001,      // S9 "ALUWriteBack"
+        ExecuteIState       = 5'b01010,      // S10 "ExecuteI" State // execute I-Type instruction
+        JALState            = 5'b01011,      // S11 "JAL" State
+        BEQState            = 5'b01100,      // S12 "BEQ" State
+        BRANCH_TAKEN_CHECK  = 5'b01101,      // S13 "BRANCH_TAKEN_CHECK" State
+        LUI_STATE           = 5'b01110,      // S14 "LUI" State
+        ErrorState          = 5'b01111       // S15 "ERROR" State
         ;
 
     // current state and next state
-    reg [3:0] current_state;
-    reg [3:0] next_state;
+    reg [4:0] current_state;
+    reg [4:0] next_state;
 
     // sequential memory of the Moore FSM
     always @(posedge clk, posedge reset)
@@ -478,39 +491,17 @@ module controller (
             // when reset=1, reset the state of the FSM to "FetchState_1" State
             current_state = FetchState_1;
 
-            // PCWrite = 1'b0;
-            // ALUSrcA = 2'b00;
-            // ALUSrcB = 2'b00;
-            // ALUControl = 3'b000;
-            // ResultSrc = 2'b00;
-            // AdrSrc = 1'b0;
-            // RegWrite = 1'b0;
-            // MemWrite = 1'b0;
-            // ImmSrc = 2'b00;
-            // IRWrite = 1'b0;
-
             PCWrite = 1'b1;
-
             // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
             AdrSrc = 1'b0; // this connects the PC flip flop to the instruction memory
-
             MemWrite = 1'b0; // not writing into memory
-
             IRWrite = 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
-
             RegWrite = 1'b0;
-
             ImmSrc = 2'bxx; // no immediate extension required
-
             // ACTION 2 - increment PC
             ALUSrcA = 2'b00; // PC
             ALUSrcB = 2'b10; // hardcoded 4
-
             ALUControl = 3'b000; // add operation
-
-            //ALUSrcA = 2'b00;
-            //ALUSrcB = 2'b00;
-
             ResultSrc = 2'b10; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
 
         end
@@ -545,34 +536,14 @@ module controller (
 
                 // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
                 AdrSrc = 1'b0; // this connects the PC flip flop to the instruction memory
-
                 MemWrite = 1'b0; // not writing into memory
-
                 IRWrite = 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
-
                 RegWrite = 1'b0;
-
                 // ACTION 2 - increment PC
                 ALUSrcA = 2'b00; // PC
                 ALUSrcB = 2'b10; // hardcoded 4
-
-                // if (Zero == 1)
-                // begin
-                //     $display("[CTRL.OUTPUT.FETCH_STATE_1] Branch taken");
-                //     ImmSrc = 2'b10; // BEQ immediate extension required
-                //     ALUSrcB = 2'b01; // immediate sign extended
-                // end
-                // else
-                // begin
-                ImmSrc = 2'bxx; // no immediate extension required
-
-                // end
-
+                ImmSrc = 3'bxxx; // no immediate extension required
                 ALUControl = 3'b000; // add operation
-
-                //ALUSrcA = 2'b00;
-                //ALUSrcB = 2'b00;
-
                 ResultSrc = 2'b10; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
 
             end
@@ -587,13 +558,13 @@ module controller (
                 PCWrite = 1'b0;
                 ALUSrcA = 2'b01; // oldPC
                 ALUSrcB = 2'b01; // immediate sign extended (this will compute the jump target for JAL and BEQ)
-                //ALUControl = 3'b000;
-                ALUControl = decodeAluOp(op, funct3, funct7);
+                ALUControl = 3'b000;
+                //ALUControl = decodeAluOp(op, funct3, funct7);
+                newALUControl = decodeAluOp(op, funct3, funct7);
                 ResultSrc = 2'bxx;
                 AdrSrc = 1'bx;
                 RegWrite = 1'b0;
                 MemWrite = 1'b0;
-                //ImmSrc = 2'b00;
                 ImmSrc = decodeImmSrc(op, funct3, funct7);
                 IRWrite = 1'b0;
             end
@@ -618,7 +589,7 @@ module controller (
                 AdrSrc = 1'b0;
                 RegWrite = 1'b0;
                 MemWrite = 1'b0;
-                ImmSrc = 2'b01; // set the sign extender to S−type (stores)
+                ImmSrc = 3'b001; // set the sign extender to S−type (stores)
                 IRWrite = 1'b0;
             end
 
@@ -637,7 +608,7 @@ module controller (
                 AdrSrc = 1'b1; // Result bus is connected to the memory addr port
                 RegWrite = 1'b0;
                 MemWrite = 1'b0;
-                ImmSrc = 2'b00;
+                ImmSrc = 3'b000;
                 IRWrite = 1'b0;
             end
 
@@ -658,7 +629,7 @@ module controller (
                 AdrSrc = 1'bx;
                 RegWrite = 1'b1;
                 MemWrite = 1'b0;
-                ImmSrc = 2'b00;
+                ImmSrc = 3'b000;
                 IRWrite = 1'b0;
             end
 
@@ -677,7 +648,7 @@ module controller (
                 AdrSrc = 1'b1; // connect the result bus to the address line of the memory
                 RegWrite = 1'b0;
                 MemWrite = 1'b1; // enable a write to memory
-                ImmSrc = 2'b01;
+                ImmSrc = 3'b001;
                 IRWrite = 1'b0;
             end
 
@@ -690,18 +661,13 @@ module controller (
                 $display("[CTRL.OUTPUT.ExecuteRState] op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
 
                 PCWrite = 1'b0;
-
                 ALUSrcA = 2'b10; // register
                 ALUSrcB = 2'b00; // register
-
-                //ALUControl = 3'b000;
-                // ALUControl = decode(op, funct3, funct7);
-
                 ResultSrc = 2'b00;
                 AdrSrc = 1'b0;
                 RegWrite = 1'b0;
                 MemWrite = 1'b0;
-                ImmSrc = 2'b00;
+                ImmSrc = 3'b000;
                 IRWrite = 1'b0;
             end
 
@@ -720,7 +686,7 @@ module controller (
                 AdrSrc = 1'b0;
                 RegWrite = 1'b1; // enable the RegWrite feature of the register file so it stores the result bus into the destination register rd
                 MemWrite = 1'b0;
-                ImmSrc = 2'b00;
+                ImmSrc = 3'b000;
                 IRWrite = 1'b0;
             end
 
@@ -729,23 +695,42 @@ module controller (
             begin
                 $display("");
                 $display("");
-                $display("[CTRL.OUTPUT.EXECUTEI_STATE]");
+                $display("[CTRL.OUTPUT.EXECUTEI_STATE] op: %b, funct3: %b, funct7: %b, ALUControl: %d, newALUControl: %d, ALUSrcA: %d, ALUSrcB: %d", op, funct3, funct7, ALUControl, newALUControl, ALUSrcA, ALUSrcB);
 
                 PCWrite = 1'b0;
-
-                ALUSrcA = 2'b10; // register
-                ALUSrcB = 2'b01; // immediate sign extended
-
-                ALUControl = 3'b000;
-
-                ResultSrc = 2'b00;
-                AdrSrc = 1'b0;
-                RegWrite = 1'b0;
-                MemWrite = 1'b0;
-
-                ImmSrc = 2'b00; // Immediate sign extend
-
                 IRWrite = 1'b0;
+                ResultSrc = 2'b00;
+
+                // ALUSrcA = 2'bxx; // register
+
+                // if (ALUSrcA == 2'b11) begin
+                //     ALUSrcA <= 2'b11; // constant 0 (32'b0)
+                // end else begin
+                     ALUSrcA <= 2'b10; // register
+                // end
+
+                ALUSrcB <= 2'b01; // immediate sign extended
+
+                //ALUControl = 3'b000; // add
+                //ALUControl = decodeAluOp(op, funct3, funct7);
+                ALUControl <= newALUControl;
+
+                // SNIP
+
+                // If you enable any of the signals below, this will trigger
+                // the ALU a second time and the second time it computes an
+                // unwanted value!
+
+                //ResultSrc <= 2'b00;
+                // AdrSrc <= 1'b0;
+                // RegWrite <= 1'b0;
+                // MemWrite <= 1'b0;
+
+                // ImmSrc <= 3'b000; // Immediate sign extend
+
+                // IRWrite <= 1'b0;
+
+                // SNAP
             end
 
             // S11 "JAL" State // execute J Type instruction
@@ -756,17 +741,14 @@ module controller (
                 $display("[CTRL.OUTPUT.JALState]");
 
                 PCWrite = 1'b1; // Write into the PC register
-
                 AdrSrc = 1'bx; // confuse the muxer so it does not perform any action
                 MemWrite = 1'b0;
                 IRWrite = 1'b0;
                 RegWrite = 1'b0;
                 ALUSrcA = 2'b01; // oldPC
                 ALUSrcB = 2'b10; // hard coded 4
-
-                ImmSrc = 2'b11; // Immediate sign extend (J-Type)
+                ImmSrc = 3'b011; // Immediate sign extend (J-Type)
                 ALUControl = 3'b000; // add
-
                 ResultSrc = 2'b00; // ALUOut goes onto the result bus
             end
 
@@ -785,13 +767,8 @@ module controller (
                 AdrSrc = 1'b0;
                 RegWrite = 1'b0;
                 MemWrite = 1'b0;
-                ImmSrc = 2'b00;
+                ImmSrc = 3'b000;
                 IRWrite = 1'b0;
-
-                // if (Zero == 1)
-                // begin
-                //     $display("[CTRL.OUTPUT.BEQ_STATE] Branch taken");
-                // end
             end
 
             // S13 "BRANCH_TAKEN_CHECK" State
@@ -806,22 +783,44 @@ module controller (
                     $display("[CTRL.OUTPUT.BEQ_STATE] Branch taken. Zero: %d", Zero);
 
                     PCWrite = 1'b1;
-                    //ALUSrcA = 2'b10; // register
                     ALUSrcA = 2'b01; // oldPC
-                    //ALUSrcA = 2'b00; // PC
                     ALUSrcB = 2'b01; // immext
                     ALUControl = 3'b000; // add
                     ResultSrc = 2'b10;
                     AdrSrc = 1'b0;
                     RegWrite = 1'b0;
                     MemWrite = 1'b0;
-                    ImmSrc = 2'b10;
+                    ImmSrc = 3'b010;
                     IRWrite = 1'b0;
                 end
                 else
                 begin
                     $display("[CTRL.OUTPUT.BEQ_STATE] Branch NOT taken");
                 end
+            end
+
+            // S14 "LUI_STATE" State
+            LUI_STATE:
+            begin
+                $display("");
+                $display("");
+                $display("[CTRL.OUTPUT.LUI_STATE]");
+
+                PCWrite = 1'b0;
+                ALUSrcA = 2'b11; // new zero input
+                ALUSrcB = 2'b10; // sign extended immediate
+                ALUControl = 3'b000; // add
+                ResultSrc = 2'b10; // direct ALU out
+                AdrSrc = 1'b0;
+                RegWrite = 1'b0;
+                MemWrite = 1'b0;
+                ImmSrc = 3'b100; // LUI
+                IRWrite = 1'b0;
+            end
+
+            ErrorState:
+            begin
+                IRWrite = 1'b0;
             end
 
             default:
@@ -861,23 +860,10 @@ module controller (
                 next_state = DecodeState;
             end
 
-            // // S0 "Fetch_2" State
-            // FetchState_2:
-            // begin
-            //     $display("[controller] rsp_stb: %d, cmd_busy: %d", rsp_stb, cmd_busy);
-            //     //if(rsp_stb) // when the wishbone master has finished the transaction
-
-            //     if (data_available == 1)
-            //     begin
-            //         $display("[controller] goto FetchState_2 -> DecodeState");
-            //         next_state = DecodeState;
-            //         data_available = 0;
-            //     end
-            // end
-
             // S1 "Decode" State
             DecodeState:
             begin
+
                 $display("[controller DecodeState] op: %b", op);
                 if ((op == 7'b0000011) || (op == 7'b0100011)) // lw or sw
                 begin
@@ -889,7 +875,7 @@ module controller (
                     $display("[controller] goto DecodeState -> ExecuteRState");
                     next_state = ExecuteRState;
                 end
-                else if (op == 7'b0010011) // I-Type ALU
+                else if (op == 7'b0010011) // I-Type ALU (xori, addi, ...)
                 begin
                     $display("[controller] goto DecodeState -> ExecuteIState");
                     next_state = ExecuteIState;
@@ -909,6 +895,11 @@ module controller (
                     $display("[controller] goto DecodeState -> FetchState_1 for nop");
                     next_state = FetchState_1;
                 end
+                else if (op == 7'b0110111) // lui
+                begin
+                    $display("[controller] goto DecodeState -> LuiState for lui");
+                    next_state = LUI_STATE;
+                end
                 else
                 begin
                     $display("[controller] goto DecodeState -> ErrorState");
@@ -916,19 +907,9 @@ module controller (
                 end
             end
 
-            // // S3 "MemRead" State
-            // MemReadState:
-            // begin
-            //     $display("[controller] goto MemReadState -> MemWBState");
-            //     next_state = MemWBState;
-            // end
-
             // S4 "MemAddr" State
             MemAddrState:
             begin
-                // $display("[controller] goto MemAddr -> FetchState_1");
-                // next_state = FetchState_1;
-
                 if (oldOp == 7'b0000011) // lw
                 begin
                     $display("[controller] goto MemAddrState -> MemReadState");
@@ -945,24 +926,6 @@ module controller (
                     next_state = ErrorState;
                 end
             end
-            // MemAddrState:
-            // begin
-            //     if (op2 == 7'b0000011) // lw
-            //     begin
-            //         $display("[controller] goto MemAddrState -> MemReadState");
-            //         next_state = MemReadState;
-            //     end
-            //     else if (op2 == 7'b0100011) // sw
-            //     begin
-            //         $display("[controller] goto MemAddrState -> MemWriteState");
-            //         next_state = MemWriteState;
-            //     end
-            //     else
-            //     begin
-            //         $display("[controller] goto MemAddrState -> ErrorState");
-            //         next_state = ErrorState;
-            //     end
-            // end
 
             // S5 "MemRead" State
             MemReadState:
@@ -1016,17 +979,8 @@ module controller (
             // S12 "BEQ" State
             BEQState:
             begin
-                // if (Zero == 1)
-                // begin
-                    //$display("[controller] goto BEQState -> BRANCH_TAKEN_CHECK. Zero = %d", Zero);
-                    $display("[controller] goto BEQState -> BRANCH_TAKEN_CHECK.");
-                    next_state = BRANCH_TAKEN_CHECK;
-                // end
-                // else
-                // begin
-                    // $display("[controller] goto BEQState -> FetchState_1. Zero = %d", Zero);
-                    // next_state = FetchState_1;
-                // end
+                $display("[controller] goto BEQState -> BRANCH_TAKEN_CHECK.");
+                next_state = BRANCH_TAKEN_CHECK;
             end
 
             // S13 "BRANCH_TAKEN_CHECK" State
@@ -1036,12 +990,12 @@ module controller (
                 next_state = FetchState_1;
             end
 
-            // // S15 "ERROR" State
-            // ErrorState:
-            // begin
-            //     $display("[controller] goto ErrorState -> ErrorState");
-            //     next_state = ErrorState;
-            // end
+            // S14 "LUI_STATE" State
+            LUI_STATE:
+            begin
+                $display("[controller] goto LUI_STATE -> FetchState_1.");
+                next_state = ExecuteIState;
+            end
 
             default:
             begin
@@ -1052,4 +1006,5 @@ module controller (
         endcase
     end
 
-endmodule;
+
+endmodule

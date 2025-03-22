@@ -24,7 +24,7 @@ module datapath(
     input  wire [2:0]       ALUControl,     // tells the ALU which operation to perform
     input  wire [1:0]       ALUSrcB,        // decides which line goes into the ALU B parameter input
     input  wire [1:0]       ALUSrcA,        // decides which line goes into the ALU A parameter input
-    input  wire [1:0]       ImmSrc,         // enable sign extension of the immediate value
+    input  wire [2:0]       ImmSrc,         // enable sign extension of the immediate value
     input  wire             RegWrite        // write enable for the register file
 );
 
@@ -35,7 +35,7 @@ module datapath(
     wire [31:0] InstrNext;
     wire [31:0] RD1;
     wire [31:0] RD2;
-    wire [31:0] A;
+    wire [31:0] register_output_A;
     wire [31:0] WriteData;
     wire [31:0] ALUResult;
     wire [31:0] ALUOut;
@@ -46,11 +46,11 @@ module datapath(
     wire [31:0] Result;
     wire [31:0] SrcA;
 
-    initial
-        begin
-            $dumpfile("test2.vcd");
-            $dumpvars(0, PC);
-        end
+    // initial
+    //     begin
+    //         $dumpfile("test2.vcd");
+    //         $dumpvars(0, PC);
+    //     end
 
     // // sequential memory of the Moore FSM
     // always @(posedge reset)
@@ -117,7 +117,6 @@ module datapath(
         clk,                // [in] clock
         RegWrite,           // [in] write enable, register a3 is written with wd3
 
-
         Instr[19:15],       // [in] register 1 to read (no clock tick needed)
         Instr[24:20],       // [in] register 2 to read (no clock tick needed)
 
@@ -128,8 +127,8 @@ module datapath(
         RD1,                // [out] the output where the value from register a1 appears
         RD2                 // [out] the output where the value from register a2 appears
     );
-
-    flopr #(32) Data_RD1(3'b001, clk, reset, RD1, A);
+                                        //   d    q
+    flopr #(32) Data_RD1(3'b001, clk, reset, RD1, register_output_A);
     flopr #(32) Data_RD2(3'b010, clk, reset, RD2, WriteData);
 
     // sign extend module
@@ -140,7 +139,10 @@ module datapath(
 
     // ALU input muxes
     //                 Input A      Input B     Input C         SelectSignal        Output
-    mux3 #(32) srcamux(PC,          OldPC,      A,              ALUSrcA,            SrcA);
+    //mux3 #(32) srcamux(PC,          OldPC,      A,              ALUSrcA,            SrcA);
+    //                 Input A      Input B     Input C     Input D        SelectSignal        Output
+    mux4 #(32) srcamux(PC,          OldPC,      register_output_A,      32'b0,        ALUSrcA,            SrcA);
+    //                 Input A      Input B     Input C         SelectSignal        Output
     mux3 #(32) srcbmux(WriteData,   ImmExt,     32'h00000004,   ALUSrcB,            SrcB);
 
     // ALU

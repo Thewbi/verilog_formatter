@@ -13,18 +13,15 @@ module alu #(parameter WIDTH = 32) (
 );
 
     // compute the result
-    //always @*
-    always @(a_in, b_in, ALUControl)
+    always @(a_in or b_in or ALUControl)
     begin
-
-        //ALUResult = 1'b0;
 
         case (ALUControl)
 
             // add (see alu_decoder.sv)
             3'b000:
             begin
-                $display("[ALU] add. a_in=%0d, b_in=%0d", a_in, b_in);
+                //$display("[ALU] add. a_in=%0d, b_in=%0d", a_in, b_in);
                 ALUResult = a_in + b_in;
                 $display("[ALU] add. a_in=%0d, b_in=%0d, ALUResult=%0d", a_in, b_in, ALUResult);
 
@@ -54,11 +51,11 @@ module alu #(parameter WIDTH = 32) (
                 Z = (ALUResult == 0);
             end
 
-            // or, ori
-            3'b110:
+            // xor, xori
+            3'b011:
             begin
-                $display("[ALU] or, ori");
-                ALUResult = a_in | b_in;
+                ALUResult = a_in ^ b_in;
+                $display("[ALU] xor. a_in=%0d, b_in=%0d, ALUResult=%0d", a_in, b_in, ALUResult);
 
                 // compute zero
                 Z = (ALUResult == 0);
@@ -77,18 +74,26 @@ module alu #(parameter WIDTH = 32) (
                 Z = (ALUResult == 0);
             end
 
+            // or, ori
+            3'b110:
+            begin
+                $display("[ALU] or, ori");
+                ALUResult = a_in | b_in;
+
+                // compute zero
+                Z = (ALUResult == 0);
+            end
+
             default:
             begin
                 $display("[ALU] default");
-                //ALUResult = 1'b0;
+                ALUResult = 32'b01010101010101010101010101010101;
 
                 // compute zero
                 Z = (ALUResult == 0);
             end
 
         endcase
-
-
 
     end
 

@@ -4,25 +4,25 @@ module riscv_multi(
     input wire reset
 );
 
-    wire [31:0] Instr;
-    wire        ALUSrc;
-    wire        RegWrite;
-    wire        Jump;
-    wire        Zero;
-    wire [31:0] PC;
-    wire [31:0] ReadData;   // instruction memory
+    wire [31:0]     Instr;
+    wire            ALUSrc;
+    wire            RegWrite;
+    wire            Jump;
+    wire            Zero;
+    wire [31:0]     PC;
+    wire [31:0]     ReadData;   // instruction memory
     // wire [31:0] ReadDData;  // data memory
-    wire [1:0]  ResultSrc;
-    wire [1:0]  ImmSrc;
-    wire [2:0]  ALUControl;
+    wire [1:0]      ResultSrc;
+    wire [2:0]      ImmSrc;
+    wire [2:0]      ALUControl;
 
-    wire [6:0]  op;
-    wire [6:0]  oldOp;
-    wire [2:0]  funct3;
-    wire [30:0]  funct7b5;
-    wire [6:0]  funct7;
-    wire [1:0]  ALUSrcB;
-    wire [1:0]  ALUSrcA;
+    wire [6:0]      op;
+    wire [6:0]      oldOp;
+    wire [2:0]      funct3;
+    wire [30:0]     funct7b5;
+    wire [6:0]      funct7;
+    wire [1:0]      ALUSrcB;
+    wire [1:0]      ALUSrcA;
 
     controller ctr (
         // clock and reset

@@ -10,12 +10,16 @@ module flopr #(parameter WIDTH = 8) (
 );
 
     always @(posedge clk, posedge reset)
+
         if (reset)
         begin
+            $display("[FLOPR]");
             q <= 0;
         end
         else
         begin
+
+            $display("[FLOPR]");
 
             if (id == 3'b000)
             begin
@@ -39,6 +43,5 @@ module flopr #(parameter WIDTH = 8) (
 
             q <= d;
         end
-
 
 endmodule
