@@ -49,24 +49,24 @@ module ram(
         // RAM[32'd08] = 32'h00134313;
         // RAM[32'd12] = 32'h00000000;
 
-        // this application loops forever and toggles a bit in the memory cell 60d = 0x3C every 3 iterations.
-        // use godbolt (https://godbolt.org/) to compile this using a riscv 32bit gcc
-        RAM[32'd00] = 32'h00000293; // inita:        addi x5, x0, 0x0
-        RAM[32'd04] = 32'h00000313; //               addi x6, x0, 0x0
-        RAM[32'd08] = 32'h000003b7; //               lui x7, 0
-        RAM[32'd12] = 32'h00338393; //               addi x7, x7, 3
-        RAM[32'd16] = 32'h00728663; // loop_head:    beq x5, x7, 0xC     # if (x5 == x7) jump to loop_end
-        RAM[32'd20] = 32'h00128293; //               addi x5, x5, 1
-        RAM[32'd24] = 32'hff9ff06f; //               jal x0, -8          # jal loop head
-        RAM[32'd28] = 32'h03c02303; // loop_end:     lw x6, 60(x0)
-        RAM[32'd32] = 32'h00134313; //               xori x6, x6, 1
-        RAM[32'd36] = 32'h02602e23; //               sw x6, 60(x0)
-        RAM[32'd40] = 32'hfd9ff06f; //               jal x0, -36         # jal inita
-        RAM[32'd44] = 32'h00000000;
-        RAM[32'd48] = 32'h00000000;
-        RAM[32'd52] = 32'h00000000;
-        RAM[32'd56] = 32'h00000000;
-        RAM[32'd60] = 32'h00000000;
+        // // this application loops forever and toggles a bit in the memory cell 60d = 0x3C every 3 iterations.
+        // // use godbolt (https://godbolt.org/) to compile this using a riscv 32bit gcc
+        // RAM[32'd00] = 32'h00000293; // inita:        addi x5, x0, 0x0
+        // RAM[32'd04] = 32'h00000313; //               addi x6, x0, 0x0
+        // RAM[32'd08] = 32'h000003b7; //               lui x7, 0
+        // RAM[32'd12] = 32'h00338393; //               addi x7, x7, 3
+        // RAM[32'd16] = 32'h00728663; // loop_head:    beq x5, x7, 0xC     # if (x5 == x7) jump to loop_end
+        // RAM[32'd20] = 32'h00128293; //               addi x5, x5, 1
+        // RAM[32'd24] = 32'hff9ff06f; //               jal x0, -8          # jal loop head
+        // RAM[32'd28] = 32'h03c02303; // loop_end:     lw x6, 60(x0)
+        // RAM[32'd32] = 32'h00134313; //               xori x6, x6, 1
+        // RAM[32'd36] = 32'h02602e23; //               sw x6, 60(x0)
+        // RAM[32'd40] = 32'hfd9ff06f; //               jal x0, -36         # jal inita
+        // RAM[32'd44] = 32'h00000000;
+        // RAM[32'd48] = 32'h00000000;
+        // RAM[32'd52] = 32'h00000000;
+        // RAM[32'd56] = 32'h00000000;
+        // RAM[32'd60] = 32'h00000000;
 
         // // this application loops forever and toggles a bit in the memory cell 60d = 0x3C every 9999999 iterations.
         // // use godbolt (https://godbolt.org/) to compile this using a riscv 32bit gcc
@@ -114,33 +114,36 @@ module ram(
         // RAM[32'd76] = 32'h0221A023; //         sw x2, 0x20(x3)         # [100] = 25                4C          0221A023
         // RAM[32'd80] = 32'h00210063; // done:   beq x2, x2, done        # infinite loop             50          00210063
 
-        // //
-        // // Harris & Harris, modified sample
-        // //
+        //
+        // Harris & Harris, modified sample
+        //
+        // Validation: you want to see this sequence:
+        // 00500113 00c00193 FF718393 0023E233 0041F2B3 02728863 0041A233 00020463
+        //
 
-        // RAM[32'd00] = 32'h00500113;  // 0x00 // addi x2(0), x0(0), 5                      x2=5
-        // RAM[32'd04] = 32'h00c00193;  // 0x04 // addi x3(0), x0(0), 12                     x2=5,x3=12
-        // RAM[32'd08] = 32'hFF718393;  // 0x08 // addi x7(0), x3(12), -9                     x2=5,x3=12,x7=3
-        // RAM[32'd12] = 32'h0023E233;  // 0x0c // or x4(0), x7(3), x2(5)                       x2=5,x3=12,x4=7,x7=3
-        // RAM[32'd16] = 32'h0041F2B3;  // 0x10 // and x5, x3(12), x4(7)                      x2=5,x3=12,x4=7,x5=4,x7=3
-        // RAM[32'd20] = 32'h004282B3;  // 0x14 // add x5, x5(4), x4(7)                      x2=5,x3=12,x4=7,x5=11,x7=3
-        // RAM[32'd24] = 32'h02728863;  // 0x18 // beq x5(11), x7(3), end      # should NOT be taken (11 - 3 = 8)
-        // RAM[32'd28] = 32'h0041A233;  // 0x1c // slt x4, x3(12), x4(7)        # Set Less Than. rd ← rs1 < rs2 ? 1 : 0
-        // RAM[32'd32] = 32'h00020463;  // 0x20 // beq x4(0), x0(0), around          # should be taken
-        // RAM[32'd36] = 32'h00000293;  // 0x24 // addi x5, x0, 0
-        // RAM[32'd40] = 32'h0023A233;  // 0x28 // slt x4, x7, x2
-        // RAM[32'd44] = 32'h005203B3;  // 0x2C // add x7, x4, x5
-        // RAM[32'd48] = 32'h402383B3;  // 0x30 // sub x7, x7, x2
-        // RAM[32'd52] = 32'h00000033;  // 0x34 // add x0, x0, x0
-        // RAM[32'd56] = 32'h00000033;  // 0x38 // add x0, x0, x0
-        // RAM[32'd60] = 32'h005104B3;  // 0x3C // add x9, x2, x5
-        // RAM[32'd64] = 32'h00000033;  // 0x40 // add x0, x0, x0
-        // RAM[32'd68] = 32'h00100113;  // 0x44 // addi x2, x0, 1
-        // RAM[32'd72] = 32'h00910133;  // 0x48 // add x2, x2, x9
-        // RAM[32'd76] = 32'h00000033;  // 0x4C // add x0, x0, x0
-        // RAM[32'd80] = 32'h00210063;  // 0x50 // beq x2, x2, done
-        // RAM[32'd84] = 32'h00000000;
-        // RAM[32'd88] = 32'h00000000;
+        RAM[32'd00] = 32'h00500113;  // 0x00 // addi x2(0), x0(0), 5            # x2=5
+        RAM[32'd04] = 32'h00c00193;  // 0x04 // addi x3(0), x0(0), 12           # x2=5,x3=12
+        RAM[32'd08] = 32'hFF718393;  // 0x08 // addi x7(0), x3(12), -9          # x2=5,x3=12,x7=3
+        RAM[32'd12] = 32'h0023E233;  // 0x0c // or x4(0), x7(3), x2(5)          # x2=5,x3=12,x4=7,x7=3
+        RAM[32'd16] = 32'h0041F2B3;  // 0x10 // and x5, x3(12), x4(7)           # x2=5,x3=12,x4=7,x5=4,x7=3
+        RAM[32'd20] = 32'h004282B3;  // 0x14 // add x5, x5(4), x4(7)            # x2=5,x3=12,x4=7,x5=11,x7=3
+        RAM[32'd24] = 32'h02728863;  // 0x18 // beq x5(11), x7(3), end          # should NOT be taken (11 - 3 = 8)
+        RAM[32'd28] = 32'h0041A233;  // 0x1c // slt x4, x3(12), x4(7)           # Set Less Than. rd ← rs1 < rs2 ? 1 : 0
+        RAM[32'd32] = 32'h00020463;  // 0x20 // beq x4(0), x0(0), around        # should be taken. x4 is 0, x0 is 0
+        RAM[32'd36] = 32'h00000293;  // 0x24 // addi x5, x0, 0
+        RAM[32'd40] = 32'h0023A233;  // 0x28 // around: slt x4, x7, x2
+        RAM[32'd44] = 32'h005203B3;  // 0x2C // add x7, x4, x5
+        RAM[32'd48] = 32'h402383B3;  // 0x30 // sub x7, x7, x2
+        RAM[32'd52] = 32'h00000033;  // 0x34 // add x0, x0, x0
+        RAM[32'd56] = 32'h00000033;  // 0x38 // add x0, x0, x0
+        RAM[32'd60] = 32'h005104B3;  // 0x3C // add x9, x2, x5
+        RAM[32'd64] = 32'h00000033;  // 0x40 // add x0, x0, x0
+        RAM[32'd68] = 32'h00100113;  // 0x44 // addi x2, x0, 1
+        RAM[32'd72] = 32'h00910133;  // 0x48 // add x2, x2, x9
+        RAM[32'd76] = 32'h00000033;  // 0x4C // add x0, x0, x0
+        RAM[32'd80] = 32'h00210063;  // 0x50 // beq x2, x2, done
+        RAM[32'd84] = 32'h00000000;
+        RAM[32'd88] = 32'h00000000;
 
         // //
         // // test
