@@ -34,7 +34,7 @@ module controller (
     output  reg         RegWrite   // write enable for the register file
 );
 
-    reg [2:0]   newALUControl;
+    //reg [2:0]   newALUControl;
 
     function [2:0] decodeAluOp (input [6:0] opcode, input [2:0] funct3, input [6:0] funct7);
     begin
@@ -558,9 +558,9 @@ module controller (
                 PCWrite = 1'b0;
                 ALUSrcA = 2'b01; // oldPC
                 ALUSrcB = 2'b01; // immediate sign extended (this will compute the jump target for JAL and BEQ)
-                ALUControl = 3'b000;
-                //ALUControl = decodeAluOp(op, funct3, funct7);
-                newALUControl = decodeAluOp(op, funct3, funct7);
+                //ALUControl = 3'b000;
+                ALUControl = decodeAluOp(op, funct3, funct7);
+                //newALUControl = decodeAluOp(op, funct3, funct7);
                 ResultSrc = 2'bxx;
                 AdrSrc = 1'bx;
                 RegWrite = 1'b0;
@@ -695,25 +695,26 @@ module controller (
             begin
                 $display("");
                 $display("");
-                $display("[CTRL.OUTPUT.EXECUTEI_STATE] op: %b, funct3: %b, funct7: %b, ALUControl: %d, newALUControl: %d, ALUSrcA: %d, ALUSrcB: %d", op, funct3, funct7, ALUControl, newALUControl, ALUSrcA, ALUSrcB);
+                //$display("[CTRL.OUTPUT.EXECUTEI_STATE] op: %b, funct3: %b, funct7: %b, ALUControl: %d, newALUControl: %d, ALUSrcA: %d, ALUSrcB: %d", op, funct3, funct7, ALUControl, newALUControl, ALUSrcA, ALUSrcB);
+                $display("[CTRL.OUTPUT.EXECUTEI_STATE]");
 
                 PCWrite = 1'b0;
-                IRWrite = 1'b0;
-                ResultSrc = 2'b00;
+                //IRWrite = 1'b0;
+                //ResultSrc = 2'b00;
 
                 // ALUSrcA = 2'bxx; // register
 
-                // if (ALUSrcA == 2'b11) begin
-                //     ALUSrcA <= 2'b11; // constant 0 (32'b0)
-                // end else begin
-                     ALUSrcA <= 2'b10; // register
-                // end
+                if (ALUSrcA == 2'b11) begin
+                    ALUSrcA = 2'b11; // constant 0 (32'b0)
+                end else begin
+                     ALUSrcA = 2'b10; // register
+                end
 
                 ALUSrcB <= 2'b01; // immediate sign extended
 
                 //ALUControl = 3'b000; // add
                 //ALUControl = decodeAluOp(op, funct3, funct7);
-                ALUControl <= newALUControl;
+                //ALUControl <= newALUControl;
 
                 // SNIP
 
@@ -721,14 +722,14 @@ module controller (
                 // the ALU a second time and the second time it computes an
                 // unwanted value!
 
-                //ResultSrc <= 2'b00;
-                // AdrSrc <= 1'b0;
-                // RegWrite <= 1'b0;
-                // MemWrite <= 1'b0;
+                ResultSrc = 2'b00;
+                AdrSrc = 1'b0;
+                RegWrite = 1'b0;
+                MemWrite = 1'b0;
 
-                // ImmSrc <= 3'b000; // Immediate sign extend
+                //ImmSrc = 3'b000; // Immediate sign extend
 
-                // IRWrite <= 1'b0;
+                IRWrite = 1'b0;
 
                 // SNAP
             end
@@ -810,7 +811,7 @@ module controller (
                 ALUSrcA = 2'b11; // new zero input
                 ALUSrcB = 2'b10; // sign extended immediate
                 ALUControl = 3'b000; // add
-                ResultSrc = 2'b10; // direct ALU out
+                ResultSrc = 2'b00; // saved ALU out
                 AdrSrc = 1'b0;
                 RegWrite = 1'b0;
                 MemWrite = 1'b0;
@@ -993,7 +994,7 @@ module controller (
             // S14 "LUI_STATE" State
             LUI_STATE:
             begin
-                $display("[controller] goto LUI_STATE -> FetchState_1.");
+                $display("[controller] goto LUI_STATE -> ExecuteIState.");
                 next_state = ExecuteIState;
             end
 

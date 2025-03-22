@@ -38,7 +38,7 @@ module ram(
         //$readmemh("progmem.txt", RAM);
 
         // // lui test
-        // RAM[32'd00] = 32'h009893b7; //               lui x15, 2441
+        // RAM[32'd00] = 32'h009893b7; //               lui x7, 2441
         // RAM[32'd04] = 32'h00000000;
         // RAM[32'd08] = 32'h00000000;
         // RAM[32'd12] = 32'h00000000;
@@ -51,6 +51,8 @@ module ram(
 
         // // this application loops forever and toggles a bit in the memory cell 60d = 0x3C every 3 iterations.
         // // use godbolt (https://godbolt.org/) to compile this using a riscv 32bit gcc
+        // //
+        // // Validation: Register x6 (index 6) is constantly toggled between 0 and 1
         // RAM[32'd00] = 32'h00000293; // inita:        addi x5, x0, 0x0
         // RAM[32'd04] = 32'h00000313; //               addi x6, x0, 0x0
         // RAM[32'd08] = 32'h000003b7; //               lui x7, 0
@@ -118,7 +120,10 @@ module ram(
         // Harris & Harris, modified sample
         //
         // Validation: you want to see this sequence:
-        // 00500113 00c00193 FF718393 0023E233 0041F2B3 02728863 0041A233 00020463
+        // h00500113 h00c00193 hFF718393 h0023E233 h0041F2B3 h004282B3 h02728863 h0041A233 h00020463
+        // then instruction h00000293 is skipped by the beq and not executed
+        // h0023A233 h005203B3 h402383B3 h00000033 h00000033 h005104B3 h00000033 h00100113 h00910133 h00000033 h00210063
+        // then there is an endless loop of h00210063
         //
 
         RAM[32'd00] = 32'h00500113;  // 0x00 // addi x2(0), x0(0), 5            # x2=5
@@ -130,9 +135,9 @@ module ram(
         RAM[32'd24] = 32'h02728863;  // 0x18 // beq x5(11), x7(3), end          # should NOT be taken (11 - 3 = 8)
         RAM[32'd28] = 32'h0041A233;  // 0x1c // slt x4, x3(12), x4(7)           # Set Less Than. rd ← rs1 < rs2 ? 1 : 0
         RAM[32'd32] = 32'h00020463;  // 0x20 // beq x4(0), x0(0), around        # should be taken. x4 is 0, x0 is 0
-        RAM[32'd36] = 32'h00000293;  // 0x24 // addi x5, x0, 0
-        RAM[32'd40] = 32'h0023A233;  // 0x28 // around: slt x4, x7, x2
-        RAM[32'd44] = 32'h005203B3;  // 0x2C // add x7, x4, x5
+        RAM[32'd36] = 32'h00000293;  // 0x24 // addi x5, x0, 0                  # not executed
+        RAM[32'd40] = 32'h0023A233;  // 0x28 // around: slt x4, x7(3), x2(5)    # Set Less Than. rd ← rs1 < rs2 ? 1 : 0
+        RAM[32'd44] = 32'h005203B3;  // 0x2C // add x7, x4(1), x5(11)           # x7 = x4 + x5 = 1 + 11 = 12
         RAM[32'd48] = 32'h402383B3;  // 0x30 // sub x7, x7, x2
         RAM[32'd52] = 32'h00000033;  // 0x34 // add x0, x0, x0
         RAM[32'd56] = 32'h00000033;  // 0x38 // add x0, x0, x0
@@ -141,7 +146,7 @@ module ram(
         RAM[32'd68] = 32'h00100113;  // 0x44 // addi x2, x0, 1
         RAM[32'd72] = 32'h00910133;  // 0x48 // add x2, x2, x9
         RAM[32'd76] = 32'h00000033;  // 0x4C // add x0, x0, x0
-        RAM[32'd80] = 32'h00210063;  // 0x50 // beq x2, x2, done
+        RAM[32'd80] = 32'h00210063;  // 0x50 // done: beq x2, x2, done
         RAM[32'd84] = 32'h00000000;
         RAM[32'd88] = 32'h00000000;
 

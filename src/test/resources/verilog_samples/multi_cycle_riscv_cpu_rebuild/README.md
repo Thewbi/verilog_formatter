@@ -33,3 +33,8 @@ nextpnr-ice40 --hx1k --package tq144 --json build/aout.json --asc build/aout.asc
 icepack build/aout.asc build/aout.bin
 iceprog -d i:0x0403:0x6010:0 build/aout.bin
 ```
+
+# Lessons Learned
+
+* Do not ever use initialized memory (RAM for instructions or data)! You will hunt non-existent bugs in your CPU for hours!
+* Check modules using testbenches. Go bottom up. Check the lower modules first befor you use them in larger modules!
