@@ -31,3 +31,4 @@ build/preprocessed.sv
 src/test/resources/verilog_samples/multi_cycle_riscv_cpu/riscv.vvp
 src/test/resources/verilog_samples/multi_cycle_riscv_cpu_rebuild/riscv.vvp
 src/test/resources/verilog_samples/multi_cycle_riscv_cpu_rebuild/test.vcd
+src/test/resources/verilog_samples/multi_cycle_riscv_cpu_rebuild/build
