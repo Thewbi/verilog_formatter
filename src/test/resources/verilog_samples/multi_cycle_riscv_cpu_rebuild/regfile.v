@@ -63,7 +63,7 @@ module regfile(
     begin
         if (we3)
         begin
-            $display("[regfile] WriteBack. a3=%d, wd3=%h", a3, wd3);
+            $display("[regfile] WriteBack. a3=%d, wd3=0x%h", a3, wd3);
             rf[a3] = wd3;
         end
     end

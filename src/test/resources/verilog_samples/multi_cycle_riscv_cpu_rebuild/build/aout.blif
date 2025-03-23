@@ -216,7 +216,7 @@
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
 .gate $print EN=$false
-.attr src "controller.v:797.21-797.74"
+.attr src "controller.v:843.21-843.74"
 .param ARGS_WIDTH 00000000000000000000000000000000
 .param FORMAT "[CTRL.OUTPUT.BEQ_STATE] Branch NOT taken\012"
 .param PRIORITY 11111111111111111111111110111010
@@ -232,74 +232,10 @@
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
 .gate $print EN=$false
-.attr src "controller.v:869.21-869.79"
+.attr src "controller.v:918.21-918.79"
 .param ARGS_WIDTH 00000000000000000000000000000000
 .param FORMAT "[controller] goto DecodeState -> MemAddrState\012"
-.param PRIORITY 11111111111111111111111111111011
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=$false
-.attr src "controller.v:874.21-874.80"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto DecodeState -> ExecuteRState\012"
-.param PRIORITY 11111111111111111111111111111010
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=$false
-.attr src "controller.v:884.21-884.75"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto DecodeState -> JALState\012"
-.param PRIORITY 11111111111111111111111111111000
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=$false
-.attr src "controller.v:889.21-889.75"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto DecodeState -> BEQState\012"
-.param PRIORITY 11111111111111111111111111110111
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=$false
-.attr src "controller.v:894.21-894.87"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto DecodeState -> FetchState_1 for nop\012"
-.param PRIORITY 11111111111111111111111111110110
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=$false
-.attr src "controller.v:899.21-899.83"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto DecodeState -> LuiState for lui\012"
-.param PRIORITY 11111111111111111111111111110101
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=$false
-.attr src "controller.v:904.21-904.77"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto DecodeState -> ErrorState\012"
-.param PRIORITY 11111111111111111111111111110100
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=$false
-.attr src "controller.v:914.21-914.80"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto MemAddrState -> MemReadState\012"
-.param PRIORITY 11111111111111111111111111110011
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=$false
-.attr src "controller.v:919.21-919.81"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto MemAddrState -> MemWriteState\012"
-.param PRIORITY 11111111111111111111111111110010
+.param PRIORITY 11111111111111111111111111111101
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
@@ -311,8 +247,72 @@
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=$false
+.attr src "controller.v:923.21-923.80"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto DecodeState -> ExecuteRState\012"
+.param PRIORITY 11111111111111111111111111111100
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=$false
+.attr src "controller.v:933.21-933.75"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto DecodeState -> JALState\012"
+.param PRIORITY 11111111111111111111111111111010
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=$false
+.attr src "controller.v:938.21-938.75"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto DecodeState -> BEQState\012"
+.param PRIORITY 11111111111111111111111111111001
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=$false
+.attr src "controller.v:943.21-943.87"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto DecodeState -> FetchState_1 for nop\012"
+.param PRIORITY 11111111111111111111111111111000
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=$false
+.attr src "controller.v:948.21-948.83"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto DecodeState -> LuiState for lui\012"
+.param PRIORITY 11111111111111111111111111110111
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=$false
+.attr src "controller.v:953.21-953.77"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto DecodeState -> ErrorState\012"
+.param PRIORITY 11111111111111111111111111110110
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=$false
+.attr src "controller.v:963.21-963.80"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto MemAddrState -> MemReadState\012"
+.param PRIORITY 11111111111111111111111111110101
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=$false
+.attr src "controller.v:968.21-968.81"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto MemAddrState -> MemWriteState\012"
+.param PRIORITY 11111111111111111111111111110100
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
 .gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$false ARGS[33]=$false ARGS[34]=$false ARGS[35]=$false ARGS[36]=$false ARGS[37]=$false ARGS[38]=$false ARGS[39]=$false ARGS[40]=$false ARGS[41]=$false ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false ARGS[64]=$false ARGS[65]=$false ARGS[66]=$false ARGS[67]=$false ARGS[68]=$false ARGS[69]=$false ARGS[70]=$false ARGS[71]=$false ARGS[72]=$false ARGS[73]=$false ARGS[74]=$false ARGS[75]=$false ARGS[76]=$false ARGS[77]=$false ARGS[78]=$false ARGS[79]=$false ARGS[80]=$false ARGS[81]=$false ARGS[82]=$false ARGS[83]=$false ARGS[84]=$false ARGS[85]=$false ARGS[86]=$false ARGS[87]=$false ARGS[88]=$false ARGS[89]=$false ARGS[90]=$false ARGS[91]=$false ARGS[92]=$false ARGS[93]=$false ARGS[94]=$false ARGS[95]=$false EN=$true TRG=$false
-.attr src "datapath.v:69.9-69.119"
+.attr src "datapath.v:56.9-56.119"
 .param ARGS_WIDTH 00000000000000000000000001100000
 .param FORMAT "[datapath] MemWrite! ALUResult: 0x{32:>08h-u}, Result: 0x{32:>08h-u}, WriteData: 0x{32:>08h-u}\012"
 .param PRIORITY 11111111111111111111111111111111
@@ -383,7 +383,7 @@
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=$undef
+.gate $print EN=$true
 .attr src "extend.v:15.17-15.45"
 .param ARGS_WIDTH 00000000000000000000000000000000
 .param FORMAT "[extend] I Type\012"
@@ -391,7 +391,7 @@
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=$undef
+.gate $print EN=$false
 .attr src "extend.v:22.17-22.45"
 .param ARGS_WIDTH 00000000000000000000000000000000
 .param FORMAT "[extend] S Type\012"
@@ -399,7 +399,7 @@
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=$undef
+.gate $print EN=$false
 .attr src "extend.v:29.17-29.45"
 .param ARGS_WIDTH 00000000000000000000000000000000
 .param FORMAT "[extend] B Type\012"
@@ -415,19 +415,27 @@
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false EN=$undef
-.attr src "extend.v:45.17-45.70"
+.gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false EN=$false
+.attr src "extend.v:46.17-46.70"
 .param ARGS_WIDTH 00000000000000000000000000100000
 .param FORMAT "[extend] J Type. immext = 0x{32:=08h-u}\012"
 .param PRIORITY 11111111111111111111111111111011
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=$undef
-.attr src "extend.v:50.17-50.46"
+.gate $print EN=$false
+.attr src "extend.v:51.17-51.46"
 .param ARGS_WIDTH 00000000000000000000000000000000
 .param FORMAT "[extend] default\012"
 .param PRIORITY 11111111111111111111111111111010
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false EN=$false
+.attr src "extend.v:52.17-52.75"
+.param ARGS_WIDTH 00000000000000000000000000011100
+.param FORMAT "[extend] instr: {25:>07h-u}, immsrc: {3:> 1d-u}\012"
+.param PRIORITY 11111111111111111111111111111001
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
@@ -439,16 +447,16 @@
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print ARGS[0]=rvmulti.dp.DataFF.q[0] ARGS[1]=$false ARGS[2]=rvmulti.dp.DataFF.q[0] ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$false ARGS[33]=$false ARGS[34]=$false ARGS[35]=$false ARGS[36]=$false EN=$false TRG=clk
-.attr src "regfile.v:66.13-66.69"
+.gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$false ARGS[33]=$false ARGS[34]=$false ARGS[35]=$false ARGS[36]=$false EN=$false TRG=clk
+.attr src "regfile.v:66.13-66.71"
 .param ARGS_WIDTH 00000000000000000000000000100101
-.param FORMAT "[regfile] WriteBack. a3={5:> 2d-u}, wd3={32:>08h-u}\012"
+.param FORMAT "[regfile] WriteBack. a3={5:> 2d-u}, wd3=0x{32:>08h-u}\012"
 .param PRIORITY 11111111111111111111111111111111
 .param TRG_ENABLE 00000000000000000000000000000001
 .param TRG_POLARITY 1
 .param TRG_WIDTH 00000000000000000000000000000001
 .gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$false ARGS[33]=$false ARGS[34]=$false ARGS[35]=$false ARGS[36]=$false ARGS[37]=$false ARGS[38]=$false ARGS[39]=$false ARGS[40]=$false ARGS[41]=$false ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false ARGS[64]=$false ARGS[65]=$true ARGS[66]=$true ARGS[67]=$false ARGS[68]=$false ARGS[69]=$true ARGS[70]=$false ARGS[71]=$false ARGS[72]=$true ARGS[73]=$false ARGS[74]=$true ARGS[75]=$false ARGS[76]=$false ARGS[77]=$false ARGS[78]=$false ARGS[79]=$false ARGS[80]=$false ARGS[81]=$false ARGS[82]=$false ARGS[83]=$false ARGS[84]=$false ARGS[85]=$false ARGS[86]=$false ARGS[87]=$false ARGS[88]=$false ARGS[89]=$false ARGS[90]=$false ARGS[91]=$false ARGS[92]=$false ARGS[93]=$false ARGS[94]=$false ARGS[95]=$false ARGS[96]=$false EN=$true TRG=clk
-.attr src "ram.v:157.9-157.112"
+.attr src "ram.v:204.9-204.112"
 .param ARGS_WIDTH 00000000000000000000000001100001
 .param FORMAT "[RAM] WriteEnable: {1:> 1d-u}, Address: 0x{32:=08h-u}, WriteData: 0x{32:=08h-u}, ReadData: 0x{32:=08h-u}\012"
 .param PRIORITY 11111111111111111111111111111111
@@ -456,21 +464,21 @@
 .param TRG_POLARITY 1
 .param TRG_WIDTH 00000000000000000000000000000001
 .gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$false ARGS[33]=$false ARGS[34]=$false ARGS[35]=$false ARGS[36]=$false ARGS[37]=$false ARGS[38]=$false ARGS[39]=$false ARGS[40]=$false ARGS[41]=$false ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$false TRG=clk
-.attr src "ram.v:146.13-146.78"
+.attr src "ram.v:193.13-193.78"
 .param ARGS_WIDTH 00000000000000000000000001000000
 .param FORMAT "[RAM] Writing wd: 0x{32:=0h-u}, address: 0x{32:=0h-u}\012"
 .param PRIORITY 11111111111111111111111111111111
 .param TRG_ENABLE 00000000000000000000000000000001
 .param TRG_POLARITY 1
 .param TRG_WIDTH 00000000000000000000000000000001
-.gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$false ARGS[33]=$false ARGS[34]=$false ARGS[35]=$false ARGS[36]=$false ARGS[37]=$false ARGS[38]=$false ARGS[39]=$false ARGS[40]=$false ARGS[41]=$false ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$false TRG[0]=clk TRG[1]=resetn
-.attr src "flopenr.v:33.17-33.72"
-.param ARGS_WIDTH 00000000000000000000000001000000
-.param FORMAT "[flopenr OldPC] q:0x{32:=08h-u} <- d:0x{32:=08h-u}\012"
-.param PRIORITY 11111111111111111111111111111101
+.gate $print EN=resetn TRG=clk
+.attr src "controller.v:517.13-517.49"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] next state\012"
+.param PRIORITY 11111111111111111111111111111111
 .param TRG_ENABLE 00000000000000000000000000000001
-.param TRG_POLARITY 01
-.param TRG_WIDTH 00000000000000000000000000000010
+.param TRG_POLARITY 1
+.param TRG_WIDTH 00000000000000000000000000000001
 .gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false EN=$false TRG[0]=clk TRG[1]=resetn
 .attr src "flopenr.v:20.13-20.48"
 .param ARGS_WIDTH 00000000000000000000000000000011
@@ -479,11 +487,11 @@
 .param TRG_ENABLE 00000000000000000000000000000001
 .param TRG_POLARITY 01
 .param TRG_WIDTH 00000000000000000000000000000010
-.gate $print ARGS[0]=$false ARGS[1]=$true ARGS[2]=$false EN=$false TRG[0]=clk TRG[1]=resetn
-.attr src "flopenr.v:20.13-20.48"
-.param ARGS_WIDTH 00000000000000000000000000000011
-.param FORMAT "[flopenr {3:> 1d-u}] reset\012"
-.param PRIORITY 11111111111111111111111111111111
+.gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$false ARGS[33]=$false ARGS[34]=$false ARGS[35]=$false ARGS[36]=$false ARGS[37]=$false ARGS[38]=$false ARGS[39]=$false ARGS[40]=$false ARGS[41]=$false ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$true TRG[0]=clk TRG[1]=resetn
+.attr src "flopr.v:41.17-41.71"
+.param ARGS_WIDTH 00000000000000000000000001000000
+.param FORMAT "[FLOPR ALUOut] q:0x{32:=08h-u} <- d:0x{32:=08h-u}\012"
+.param PRIORITY 11111111111111111111111111111010
 .param TRG_ENABLE 00000000000000000000000000000001
 .param TRG_POLARITY 01
 .param TRG_WIDTH 00000000000000000000000000000010
@@ -528,46 +536,6 @@
 .param TRG_POLARITY 01
 .param TRG_WIDTH 00000000000000000000000000000010
 .gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$false ARGS[33]=$false ARGS[34]=$false ARGS[35]=$false ARGS[36]=$false ARGS[37]=$false ARGS[38]=$false ARGS[39]=$false ARGS[40]=$false ARGS[41]=$false ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$false TRG[0]=clk TRG[1]=resetn
-.attr src "flopr.v:26.17-26.69"
-.param ARGS_WIDTH 00000000000000000000000001000000
-.param FORMAT "[FLOPR data] q:0x{32:=08h-u} <- d:0x{32:=08h-u}\012"
-.param PRIORITY 11111111111111111111111111111101
-.param TRG_ENABLE 00000000000000000000000000000001
-.param TRG_POLARITY 01
-.param TRG_WIDTH 00000000000000000000000000000010
-.gate $print ARGS[0]=rvmulti.dp.DataFF.q[0] ARGS[1]=rvmulti.dp.DataFF.q[0] ARGS[2]=$false ARGS[3]=$false ARGS[4]=rvmulti.dp.DataFF.q[0] ARGS[5]=$false ARGS[6]=$false ARGS[7]=rvmulti.dp.DataFF.q[0] ARGS[8]=$false ARGS[9]=rvmulti.dp.DataFF.q[0] ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$true ARGS[33]=$true ARGS[34]=$false ARGS[35]=$false ARGS[36]=$true ARGS[37]=$false ARGS[38]=$false ARGS[39]=$true ARGS[40]=$false ARGS[41]=$true ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$false TRG[0]=clk TRG[1]=resetn
-.attr src "flopr.v:41.17-41.71"
-.param ARGS_WIDTH 00000000000000000000000001000000
-.param FORMAT "[FLOPR ALUOut] q:0x{32:=08h-u} <- d:0x{32:=08h-u}\012"
-.param PRIORITY 11111111111111111111111111111010
-.param TRG_ENABLE 00000000000000000000000000000001
-.param TRG_POLARITY 01
-.param TRG_WIDTH 00000000000000000000000000000010
-.gate $print ARGS[0]=rvmulti.dp.DataFF.q[0] ARGS[1]=rvmulti.dp.DataFF.q[0] ARGS[2]=$false ARGS[3]=$false ARGS[4]=rvmulti.dp.DataFF.q[0] ARGS[5]=$false ARGS[6]=$false ARGS[7]=rvmulti.dp.DataFF.q[0] ARGS[8]=$false ARGS[9]=rvmulti.dp.DataFF.q[0] ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$true ARGS[33]=$true ARGS[34]=$false ARGS[35]=$false ARGS[36]=$true ARGS[37]=$false ARGS[38]=$false ARGS[39]=$true ARGS[40]=$false ARGS[41]=$true ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$false TRG[0]=clk TRG[1]=resetn
-.attr src "flopr.v:36.17-36.68"
-.param ARGS_WIDTH 00000000000000000000000001000000
-.param FORMAT "[FLOPR RD2] q:0x{32:=08h-u} <- d:0x{32:=08h-u}\012"
-.param PRIORITY 11111111111111111111111111111011
-.param TRG_ENABLE 00000000000000000000000000000001
-.param TRG_POLARITY 01
-.param TRG_WIDTH 00000000000000000000000000000010
-.gate $print ARGS[0]=rvmulti.dp.DataFF.q[0] ARGS[1]=rvmulti.dp.DataFF.q[0] ARGS[2]=$false ARGS[3]=$false ARGS[4]=rvmulti.dp.DataFF.q[0] ARGS[5]=$false ARGS[6]=$false ARGS[7]=rvmulti.dp.DataFF.q[0] ARGS[8]=$false ARGS[9]=rvmulti.dp.DataFF.q[0] ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$true ARGS[33]=$true ARGS[34]=$false ARGS[35]=$false ARGS[36]=$true ARGS[37]=$false ARGS[38]=$false ARGS[39]=$true ARGS[40]=$false ARGS[41]=$true ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$false TRG[0]=clk TRG[1]=resetn
-.attr src "flopr.v:31.17-31.68"
-.param ARGS_WIDTH 00000000000000000000000001000000
-.param FORMAT "[FLOPR RD1] q:0x{32:=08h-u} <- d:0x{32:=08h-u}\012"
-.param PRIORITY 11111111111111111111111111111100
-.param TRG_ENABLE 00000000000000000000000000000001
-.param TRG_POLARITY 01
-.param TRG_WIDTH 00000000000000000000000000000010
-.gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$false ARGS[33]=$false ARGS[34]=$false ARGS[35]=$false ARGS[36]=$false ARGS[37]=$false ARGS[38]=$false ARGS[39]=$false ARGS[40]=$false ARGS[41]=$false ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$true TRG[0]=clk TRG[1]=resetn
-.attr src "flopr.v:41.17-41.71"
-.param ARGS_WIDTH 00000000000000000000000001000000
-.param FORMAT "[FLOPR ALUOut] q:0x{32:=08h-u} <- d:0x{32:=08h-u}\012"
-.param PRIORITY 11111111111111111111111111111010
-.param TRG_ENABLE 00000000000000000000000000000001
-.param TRG_POLARITY 01
-.param TRG_WIDTH 00000000000000000000000000000010
-.gate $print ARGS[0]=rvmulti.dp.DataFF.q[0] ARGS[1]=rvmulti.dp.DataFF.q[0] ARGS[2]=$false ARGS[3]=$false ARGS[4]=rvmulti.dp.DataFF.q[0] ARGS[5]=$false ARGS[6]=$false ARGS[7]=rvmulti.dp.DataFF.q[0] ARGS[8]=$false ARGS[9]=rvmulti.dp.DataFF.q[0] ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$true ARGS[33]=$true ARGS[34]=$false ARGS[35]=$false ARGS[36]=$true ARGS[37]=$false ARGS[38]=$false ARGS[39]=$true ARGS[40]=$false ARGS[41]=$true ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$true TRG[0]=clk TRG[1]=resetn
 .attr src "flopr.v:26.17-26.69"
 .param ARGS_WIDTH 00000000000000000000000001000000
 .param FORMAT "[FLOPR data] q:0x{32:=08h-u} <- d:0x{32:=08h-u}\012"
@@ -591,22 +559,6 @@
 .param TRG_ENABLE 00000000000000000000000000000001
 .param TRG_POLARITY 01
 .param TRG_WIDTH 00000000000000000000000000000010
-.gate $print EN=$true TRG[0]=clk TRG[1]=resetn
-.attr src "controller.v:508.13-508.49"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] next state\012"
-.param PRIORITY 11111111111111111111111111111110
-.param TRG_ENABLE 00000000000000000000000000000001
-.param TRG_POLARITY 01
-.param TRG_WIDTH 00000000000000000000000000000010
-.gate $print EN=$false TRG[0]=clk TRG[1]=resetn
-.attr src "controller.v:488.13-488.45"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] resetn\012"
-.param PRIORITY 11111111111111111111111111111111
-.param TRG_ENABLE 00000000000000000000000000000001
-.param TRG_POLARITY 01
-.param TRG_WIDTH 00000000000000000000000000000010
 .gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$false ARGS[33]=$false ARGS[34]=$false ARGS[35]=$false ARGS[36]=$false ARGS[37]=$false ARGS[38]=$false ARGS[39]=$false ARGS[40]=$false ARGS[41]=$false ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$false TRG[0]=clk TRG[1]=resetn
 .attr src "flopenr.v:38.17-38.72"
 .param ARGS_WIDTH 00000000000000000000000001000000
@@ -615,7 +567,7 @@
 .param TRG_ENABLE 00000000000000000000000000000001
 .param TRG_POLARITY 01
 .param TRG_WIDTH 00000000000000000000000000000010
-.gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$false ARGS[33]=$false ARGS[34]=$false ARGS[35]=$false ARGS[36]=$false ARGS[37]=$false ARGS[38]=$false ARGS[39]=$false ARGS[40]=$false ARGS[41]=$false ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$true TRG[0]=clk TRG[1]=resetn
+.gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$false ARGS[33]=$false ARGS[34]=$false ARGS[35]=$false ARGS[36]=$false ARGS[37]=$false ARGS[38]=$false ARGS[39]=$false ARGS[40]=$false ARGS[41]=$false ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$false TRG[0]=clk TRG[1]=resetn
 .attr src "flopenr.v:33.17-33.72"
 .param ARGS_WIDTH 00000000000000000000000001000000
 .param FORMAT "[flopenr OldPC] q:0x{32:=08h-u} <- d:0x{32:=08h-u}\012"
@@ -639,7 +591,7 @@
 .param TRG_ENABLE 00000000000000000000000000000001
 .param TRG_POLARITY 01
 .param TRG_WIDTH 00000000000000000000000000000010
-.gate $print ARGS[0]=rvmulti.dp.DataFF.q[0] ARGS[1]=rvmulti.dp.DataFF.q[0] ARGS[2]=$false ARGS[3]=$false ARGS[4]=rvmulti.dp.DataFF.q[0] ARGS[5]=$false ARGS[6]=$false ARGS[7]=rvmulti.dp.DataFF.q[0] ARGS[8]=$false ARGS[9]=rvmulti.dp.DataFF.q[0] ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$true ARGS[33]=$true ARGS[34]=$false ARGS[35]=$false ARGS[36]=$true ARGS[37]=$false ARGS[38]=$false ARGS[39]=$true ARGS[40]=$false ARGS[41]=$true ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$true TRG[0]=clk TRG[1]=resetn
+.gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$true ARGS[33]=$true ARGS[34]=$false ARGS[35]=$false ARGS[36]=$true ARGS[37]=$false ARGS[38]=$false ARGS[39]=$true ARGS[40]=$false ARGS[41]=$true ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$false TRG[0]=clk TRG[1]=resetn
 .attr src "flopenr.v:38.17-38.72"
 .param ARGS_WIDTH 00000000000000000000000001000000
 .param FORMAT "[flopenr Instr] q:0x{32:=08h-u} <- d:0x{32:=08h-u}\012"
@@ -647,7 +599,7 @@
 .param TRG_ENABLE 00000000000000000000000000000001
 .param TRG_POLARITY 01
 .param TRG_WIDTH 00000000000000000000000000000010
-.gate $print ARGS[0]=rvmulti.dp.DataFF.q[0] ARGS[1]=rvmulti.dp.DataFF.q[0] ARGS[2]=$false ARGS[3]=$false ARGS[4]=rvmulti.dp.DataFF.q[0] ARGS[5]=$false ARGS[6]=$false ARGS[7]=rvmulti.dp.DataFF.q[0] ARGS[8]=$false ARGS[9]=rvmulti.dp.DataFF.q[0] ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$true ARGS[33]=$true ARGS[34]=$false ARGS[35]=$false ARGS[36]=$true ARGS[37]=$false ARGS[38]=$false ARGS[39]=$true ARGS[40]=$false ARGS[41]=$true ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$false TRG[0]=clk TRG[1]=resetn
+.gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$true ARGS[33]=$true ARGS[34]=$false ARGS[35]=$false ARGS[36]=$true ARGS[37]=$false ARGS[38]=$false ARGS[39]=$true ARGS[40]=$false ARGS[41]=$true ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$false TRG[0]=clk TRG[1]=resetn
 .attr src "flopenr.v:33.17-33.72"
 .param ARGS_WIDTH 00000000000000000000000001000000
 .param FORMAT "[flopenr OldPC] q:0x{32:=08h-u} <- d:0x{32:=08h-u}\012"
@@ -655,11 +607,19 @@
 .param TRG_ENABLE 00000000000000000000000000000001
 .param TRG_POLARITY 01
 .param TRG_WIDTH 00000000000000000000000000000010
-.gate $print ARGS[0]=rvmulti.dp.DataFF.q[0] ARGS[1]=rvmulti.dp.DataFF.q[0] ARGS[2]=$false ARGS[3]=$false ARGS[4]=rvmulti.dp.DataFF.q[0] ARGS[5]=$false ARGS[6]=$false ARGS[7]=rvmulti.dp.DataFF.q[0] ARGS[8]=$false ARGS[9]=rvmulti.dp.DataFF.q[0] ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$true ARGS[33]=$true ARGS[34]=$false ARGS[35]=$false ARGS[36]=$true ARGS[37]=$false ARGS[38]=$false ARGS[39]=$true ARGS[40]=$false ARGS[41]=$true ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$false TRG[0]=clk TRG[1]=resetn
+.gate $print ARGS[0]=$false ARGS[1]=$false ARGS[2]=$false ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$true ARGS[33]=$true ARGS[34]=$false ARGS[35]=$false ARGS[36]=$true ARGS[37]=$false ARGS[38]=$false ARGS[39]=$true ARGS[40]=$false ARGS[41]=$true ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$false TRG[0]=clk TRG[1]=resetn
 .attr src "flopenr.v:28.17-28.73"
 .param ARGS_WIDTH 00000000000000000000000001000000
 .param FORMAT "[flopenr CurrPC] q:0x{32:=08h-u} <- d:0x{32:=08h-u}\012"
 .param PRIORITY 11111111111111111111111111111110
+.param TRG_ENABLE 00000000000000000000000000000001
+.param TRG_POLARITY 01
+.param TRG_WIDTH 00000000000000000000000000000010
+.gate $print ARGS[0]=$false ARGS[1]=$true ARGS[2]=$false EN=$false TRG[0]=clk TRG[1]=resetn
+.attr src "flopenr.v:20.13-20.48"
+.param ARGS_WIDTH 00000000000000000000000000000011
+.param FORMAT "[flopenr {3:> 1d-u}] reset\012"
+.param PRIORITY 11111111111111111111111111111111
 .param TRG_ENABLE 00000000000000000000000000000001
 .param TRG_POLARITY 01
 .param TRG_WIDTH 00000000000000000000000000000010
@@ -669,455 +629,347 @@
 .param LUT_INIT 1000000000000000
 .gate SB_DFF C=clk D=rststate_SB_DFF_Q_D Q=rststate[3]
 .attr module_not_derived 00000000000000000000000000000001
-.attr src "top.v:28.5-31.8|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:2.51-2.90"
+.attr src "top.v:18.5-21.8|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:2.51-2.90"
 .gate SB_DFF C=clk D=rststate_SB_DFF_Q_1_D Q=rststate[2]
 .attr module_not_derived 00000000000000000000000000000001
-.attr src "top.v:28.5-31.8|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:2.51-2.90"
+.attr src "top.v:18.5-21.8|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:2.51-2.90"
 .gate SB_LUT4 I0=$false I1=$false I2=rststate[2] I3=rststate_SB_DFF_Q_1_D_SB_LUT4_O_I3 O=rststate_SB_DFF_Q_1_D
 .attr module_not_derived 00000000000000000000000000000001
-.attr src "top.v:30.21-30.39|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/arith_map.v:62.5-70.4|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.attr src "top.v:20.21-20.39|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/arith_map.v:62.5-70.4|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
 .param LUT_INIT 0110100110010110
 .gate SB_CARRY CI=rststate_SB_DFF_Q_2_D_SB_LUT4_O_I3 CO=rststate_SB_DFF_Q_1_D_SB_LUT4_O_I3 I0=$false I1=rststate[1]
-.attr src "top.v:30.21-30.39|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/arith_map.v:62.5-70.4"
+.attr src "top.v:20.21-20.39|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/arith_map.v:62.5-70.4"
 .gate SB_DFF C=clk D=rststate_SB_DFF_Q_2_D Q=rststate[1]
 .attr module_not_derived 00000000000000000000000000000001
-.attr src "top.v:28.5-31.8|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:2.51-2.90"
+.attr src "top.v:18.5-21.8|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:2.51-2.90"
 .gate SB_LUT4 I0=$false I1=$false I2=rststate[1] I3=rststate_SB_DFF_Q_2_D_SB_LUT4_O_I3 O=rststate_SB_DFF_Q_2_D
 .attr module_not_derived 00000000000000000000000000000001
-.attr src "top.v:30.21-30.39|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/arith_map.v:62.5-70.4|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.attr src "top.v:20.21-20.39|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/arith_map.v:62.5-70.4|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
 .param LUT_INIT 0110100110010110
 .gate SB_CARRY CI=$false CO=rststate_SB_DFF_Q_2_D_SB_LUT4_O_I3 I0=rvmulti.dp.DataFF.q_SB_DFFR_Q_R I1=rststate[0]
-.attr src "top.v:30.21-30.39|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/arith_map.v:62.5-70.4"
+.attr src "top.v:20.21-20.39|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/arith_map.v:62.5-70.4"
 .gate SB_DFF C=clk D=rststate_SB_DFF_Q_3_D Q=rststate[0]
 .attr module_not_derived 00000000000000000000000000000001
-.attr src "top.v:28.5-31.8|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:2.51-2.90"
+.attr src "top.v:18.5-21.8|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:2.51-2.90"
 .gate SB_LUT4 I0=$false I1=rvmulti.dp.DataFF.q_SB_DFFR_Q_R I2=rststate[0] I3=$false O=rststate_SB_DFF_Q_3_D
 .attr module_not_derived 00000000000000000000000000000001
-.attr src "top.v:30.21-30.39|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/arith_map.v:62.5-70.4|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.attr src "top.v:20.21-20.39|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/arith_map.v:62.5-70.4|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
 .param LUT_INIT 0110100110010110
 .gate SB_LUT4 I0=$false I1=$false I2=rststate[3] I3=rststate_SB_DFF_Q_D_SB_LUT4_O_I3 O=rststate_SB_DFF_Q_D
 .attr module_not_derived 00000000000000000000000000000001
-.attr src "top.v:30.21-30.39|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/arith_map.v:62.5-70.4|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.attr src "top.v:20.21-20.39|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/arith_map.v:62.5-70.4|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
 .param LUT_INIT 0110100110010110
 .gate SB_CARRY CI=rststate_SB_DFF_Q_1_D_SB_LUT4_O_I3 CO=rststate_SB_DFF_Q_D_SB_LUT4_O_I3 I0=$false I1=rststate[2]
-.attr src "top.v:30.21-30.39|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/arith_map.v:62.5-70.4"
-.gate SB_DFFR C=clk D=rvmulti.ctr.next_state[3] Q=rvmulti.ctr.current_state[3] R=rvmulti.dp.DataFF.q_SB_DFFR_Q_R
+.attr src "top.v:20.21-20.39|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/arith_map.v:62.5-70.4"
+.gate $print ARGS[0]=rvmulti.ctr.current_state[0] ARGS[1]=rvmulti.ctr.current_state[1] ARGS[2]=rvmulti.ctr.current_state[2] ARGS[3]=rvmulti.ctr.current_state[3] ARGS[4]=$false EN=rvmulti.ctr.current_state_SB_LUT4_I1_O
+.attr src "controller.v:873.17-873.114"
+.param ARGS_WIDTH 00000000000000000000000000000101
+.param FORMAT "[CTRL.OUTPUT.?] No case in always @(current_state) current_state = {5:> 2d-u}\012"
+.param PRIORITY 11111111111111111111111110110110
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate SB_DFFSR C=clk D=rvmulti.ctr.current_state_SB_DFFSR_Q_D Q=rvmulti.ctr.current_state[3] R=rvmulti.dp.DataFF.q_SB_DFFR_Q_R
 .attr module_not_derived 00000000000000000000000000000001
-.attr src "controller.v:484.5-512.8|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:9.57-9.103"
-.gate SB_DFFR C=clk D=rvmulti.ctr.next_state[2] Q=rvmulti.ctr.current_state[2] R=rvmulti.dp.DataFF.q_SB_DFFR_Q_R
+.attr src "controller.v:486.5-540.8|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:19.59-19.105"
+.gate SB_DFFSR C=clk D=rvmulti.ctr.current_state_SB_DFFSR_Q_1_D Q=rvmulti.ctr.current_state[2] R=rvmulti.dp.DataFF.q_SB_DFFR_Q_R
 .attr module_not_derived 00000000000000000000000000000001
-.attr src "controller.v:484.5-512.8|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:9.57-9.103"
-.gate SB_DFFR C=clk D=rvmulti.ctr.next_state[1] Q=rvmulti.ctr.current_state[1] R=rvmulti.dp.DataFF.q_SB_DFFR_Q_R
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "controller.v:484.5-512.8|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:9.57-9.103"
-.gate SB_DFFR C=clk D=rvmulti.ctr.next_state[0] Q=rvmulti.ctr.current_state[0] R=rvmulti.dp.DataFF.q_SB_DFFR_Q_R
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "controller.v:484.5-512.8|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:9.57-9.103"
-.gate SB_LUT4 I0=rvmulti.ctr.current_state[0] I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.ctr.current_state_SB_LUT4_I0_O
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 0100000000000000
-.gate SB_LUT4 I0=rvmulti.ctr.current_state[0] I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.ctr.current_state_SB_LUT4_I0_1_O
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 0010000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_1_O
-.attr src "controller.v:988.17-988.83"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto BRANCH_TAKEN_CHECK -> FetchState_1.\012"
-.param PRIORITY 11111111111111111111111111101000
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print ARGS=$true EN=rvmulti.ctr.current_state_SB_LUT4_I0_1_O
-.attr src "controller.v:782.21-782.86"
-.param ARGS_WIDTH 00000000000000000000000000000001
-.param FORMAT "[CTRL.OUTPUT.BEQ_STATE] Branch taken. Zero: {1:> 1d-u}\012"
-.param PRIORITY 11111111111111111111111110111011
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_1_O
-.attr src "controller.v:778.17-778.62"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[CTRL.OUTPUT.BRANCH_TAKEN_CHECK]\012"
-.param PRIORITY 11111111111111111111111110111100
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_1_O
-.attr src "controller.v:777.17-777.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111110111101
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_1_O
-.attr src "controller.v:776.17-776.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111110111110
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate SB_LUT4 I0=rvmulti.ctr.current_state[0] I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.ctr.current_state_SB_LUT4_I0_2_O
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 0000100000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_2_O
-.attr src "controller.v:974.17-974.77"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto JALState -> ALUWriteBackState\012"
-.param PRIORITY 11111111111111111111111111101010
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_2_O
-.attr src "controller.v:740.17-740.52"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[CTRL.OUTPUT.JALState]\012"
-.param PRIORITY 11111111111111111111111111000010
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_2_O
-.attr src "controller.v:739.17-739.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111000011
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_2_O
-.attr src "controller.v:738.17-738.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111000100
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate SB_LUT4 I0=rvmulti.ctr.current_state[0] I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.ctr.current_state_SB_LUT4_I0_3_O
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 0000010000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_3_O
-.attr src "controller.v:967.17-967.82"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto ExecuteIState -> ALUWriteBackState\012"
-.param PRIORITY 11111111111111111111111111101011
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_3_O
-.attr src "controller.v:697.17-697.58"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[CTRL.OUTPUT.EXECUTEI_STATE]\012"
-.param PRIORITY 11111111111111111111111111000101
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_3_O
-.attr src "controller.v:695.17-695.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111000110
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_3_O
-.attr src "controller.v:694.17-694.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111000111
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate SB_LUT4 I0=rvmulti.ctr.current_state[0] I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.ctr.current_state_SB_LUT4_I0_4_O
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 0000001000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_4_O
-.attr src "controller.v:960.17-960.81"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto ALUWriteBackState -> FetchState_1\012"
-.param PRIORITY 11111111111111111111111111101100
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_4_O
-.attr src "controller.v:677.17-677.55"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[CTRL.OUTPUT.ALUWB_STATE]\012"
-.param PRIORITY 11111111111111111111111111001000
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_4_O
-.attr src "controller.v:676.17-676.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111001001
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_4_O
-.attr src "controller.v:675.17-675.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111001010
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate SB_LUT4 I0=rvmulti.ctr.current_state[0] I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.ctr.current_state_SB_LUT4_I0_5_O
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 0000000100000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_5_O
-.attr src "controller.v:953.17-953.82"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto ExecuteRState -> ALUWriteBackState\012"
-.param PRIORITY 11111111111111111111111111101101
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false EN=rvmulti.ctr.current_state_SB_LUT4_I0_5_O
-.attr src "controller.v:659.17-659.108"
-.param ARGS_WIDTH 00000000000000000000000000010001
-.param FORMAT "[CTRL.OUTPUT.ExecuteRState] op: {7:>07b-u}, funct3: {3:>03b-u}, funct7: {7:>07b-u}\012"
-.param PRIORITY 11111111111111111111111111001011
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_5_O
-.attr src "controller.v:658.17-658.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111001100
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_5_O
-.attr src "controller.v:657.17-657.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111001101
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate SB_LUT4 I0=rvmulti.ctr.current_state[0] I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.ctr.current_state_SB_LUT4_I0_6_O
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 1000000000000100
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_6_O
-.attr src "controller.v:1001.17-1001.77"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] default goto default -> ErrorState\012"
-.param PRIORITY 11111111111111111111111111100110
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_O
-.attr src "controller.v:995.17-995.75"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto LUI_STATE -> ExecuteIState.\012"
-.param PRIORITY 11111111111111111111111111100111
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_O
-.attr src "controller.v:806.17-806.53"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[CTRL.OUTPUT.LUI_STATE]\012"
-.param PRIORITY 11111111111111111111111110110111
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_O
-.attr src "controller.v:805.17-805.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111110111000
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_O
-.attr src "controller.v:804.17-804.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111110111001
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate SB_LUT4 I0=$false I1=rvmulti.ctr.next_state[3] I2=rvmulti.ctr.next_state_SB_LUT4_O_I2[1] I3=rvmulti.ctr.next_state_SB_LUT4_O_I2[2] O=rvmulti.ctr.next_state[3]
+.attr src "controller.v:486.5-540.8|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:19.59-19.105"
+.gate SB_LUT4 I0=$false I1=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[18] I2=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[11] I3=rvmulti.ctr.current_state_SB_DFFSS_Q_S_SB_LUT4_O_I2[2] O=rvmulti.ctr.current_state_SB_DFFSR_Q_1_D
 .attr module_not_derived 00000000000000000000000000000001
 .attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:22.34-23.52"
-.param LUT_INIT 1111110011110000
-.gate SB_LUT4 I0=$false I1=rvmulti.ctr.next_state[2] I2=rvmulti.ctr.next_state_SB_LUT4_O_1_I2[1] I3=rvmulti.ctr.next_state_SB_LUT4_O_I2[2] O=rvmulti.ctr.next_state[2]
+.param LUT_INIT 1111111111111100
+.gate SB_DFFSR C=clk D=rvmulti.ctr.current_state_SB_DFFSR_Q_2_D[0] Q=rvmulti.ctr.current_state[1] R=rvmulti.dp.DataFF.q_SB_DFFR_Q_R
+.attr module_not_derived 00000000000000000000000000000001
+.attr src "controller.v:486.5-540.8|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:19.59-19.105"
+.gate SB_LUT4 I0=$false I1=rvmulti.ctr.current_state[3] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[1] O=rvmulti.ctr.current_state_SB_DFFSR_Q_2_D[0]
 .attr module_not_derived 00000000000000000000000000000001
 .attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:22.34-23.52"
-.param LUT_INIT 1100111100001111
-.gate SB_LUT4 I0=rvmulti.ctr.current_state[0] I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.ctr.next_state_SB_LUT4_O_1_I2[1]
+.param LUT_INIT 1100001100110011
+.gate SB_LUT4 I0=rvmulti.ctr.current_state[3] I1=rvmulti.ctr.current_state[2] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_DFFSR_Q_D
 .attr module_not_derived 00000000000000000000000000000001
 .attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 0110111111001011
-.gate SB_LUT4 I0=rvmulti.ctr.next_state[1] I1=rvmulti.ctr.next_state_SB_LUT4_O_2_I1[2] I2=rvmulti.ctr.next_state_SB_LUT4_O_2_I2[2] I3=rvmulti.ctr.next_state_SB_LUT4_O_I2[2] O=rvmulti.ctr.next_state[1]
+.param LUT_INIT 1011000010111111
+.gate SB_DFFSS C=clk D=rvmulti.ctr.current_state_SB_DFFSS_Q_D Q=rvmulti.ctr.current_state[0] S=rvmulti.ctr.current_state_SB_DFFSS_Q_S
 .attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 1011111100111111
-.gate SB_LUT4 I0=rvmulti.ctr.current_state[0] I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.ctr.next_state_SB_LUT4_O_2_I1[2]
+.attr src "controller.v:486.5-540.8|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:20.59-20.105"
+.gate SB_LUT4 I0=$false I1=$false I2=rvmulti.ctr.current_state_SB_DFFSR_Q_2_D[0] I3=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[21] O=rvmulti.ctr.current_state_SB_DFFSS_Q_D
 .attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 1011111111010101
-.gate SB_LUT4 I0=$false I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.ctr.next_state_SB_LUT4_O_2_I2[2]
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:22.34-23.52"
-.param LUT_INIT 0011111111000011
-.gate SB_LUT4 I0=rvmulti.ctr.next_state[0] I1=rvmulti.ctr.next_state_SB_LUT4_O_3_I1[21] I2=rvmulti.ctr.next_state_SB_LUT4_O_2_I1[2] I3=rvmulti.ctr.next_state_SB_LUT4_O_I2[2] O=rvmulti.ctr.next_state[0]
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 1010100011111100
-.gate $print EN=rvmulti.ctr.next_state_SB_LUT4_O_3_I1[11]
-.attr src "controller.v:981.17-981.79"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto BEQState -> BRANCH_TAKEN_CHECK.\012"
-.param PRIORITY 11111111111111111111111111101001
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.next_state_SB_LUT4_O_3_I1[18]
-.attr src "controller.v:932.17-932.74"
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:17.34-18.52"
+.param LUT_INIT 1111111100001111
+.gate $print EN=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[18]
+.attr src "controller.v:981.17-981.74"
 .param ARGS_WIDTH 00000000000000000000000000000000
 .param FORMAT "[controller] goto MemReadState -> MemWBState\012"
-.param PRIORITY 11111111111111111111111111110000
+.param PRIORITY 11111111111111111111111111110010
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.next_state_SB_LUT4_O_3_I1[21]
-.attr src "controller.v:530.17-530.30"
+.gate $print EN=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[21]
+.attr src "controller.v:905.17-905.75"
 .param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111111110
+.param FORMAT "[controller] goto FetchState_1 -> DecodeState\012"
+.param PRIORITY 11111111111111111111111111111111
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.next_state_SB_LUT4_O_3_I1[21]
-.attr src "controller.v:529.17-529.30"
+.gate $print EN=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[21]
+.attr src "controller.v:574.17-574.30"
 .param ARGS_WIDTH 00000000000000000000000000000000
 .param FORMAT "\012"
 .param PRIORITY 11111111111111111111111111111111
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.next_state_SB_LUT4_O_3_I1[21]
-.attr src "controller.v:858.17-858.75"
+.gate $print EN=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[11]
+.attr src "controller.v:1030.17-1030.79"
 .param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto FetchState_1 -> DecodeState\012"
-.param PRIORITY 11111111111111111111111111111101
+.param FORMAT "[controller] goto BEQState -> BRANCH_TAKEN_CHECK.\012"
+.param PRIORITY 11111111111111111111111111101011
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.next_state_SB_LUT4_O_3_I1[11]
-.attr src "controller.v:759.17-759.53"
+.gate $print EN=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[11]
+.attr src "controller.v:805.17-805.53"
 .param ARGS_WIDTH 00000000000000000000000000000000
 .param FORMAT "[CTRL.OUTPUT.BEQ_STATE]\012"
 .param PRIORITY 11111111111111111111111110111111
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.next_state_SB_LUT4_O_3_I1[11]
-.attr src "controller.v:758.17-758.30"
+.gate $print EN=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[11]
+.attr src "controller.v:804.17-804.30"
 .param ARGS_WIDTH 00000000000000000000000000000000
 .param FORMAT "\012"
 .param PRIORITY 11111111111111111111111111000000
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.next_state_SB_LUT4_O_3_I1[11]
-.attr src "controller.v:757.17-757.30"
+.gate $print EN=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[11]
+.attr src "controller.v:803.17-803.30"
 .param ARGS_WIDTH 00000000000000000000000000000000
 .param FORMAT "\012"
 .param PRIORITY 11111111111111111111111111000001
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=rvmulti.dp.DataFF.q[0] ARGS[8]=rvmulti.dp.DataFF.q[0] ARGS[9]=$false ARGS[10]=$false ARGS[11]=rvmulti.dp.DataFF.q[0] ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false EN=rvmulti.ctr.next_state_SB_LUT4_O_3_I1[18]
-.attr src "controller.v:599.17-599.125"
+.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false EN=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[18]
+.attr src "controller.v:645.17-645.125"
 .param ARGS_WIDTH 00000000000000000000000000011000
 .param FORMAT "[CTRL.OUTPUT.MemReadState] op: {7:>07b-u}, oldOp: {7:>07b-u}, funct3: {3:>03b-u}, funct7: {7:>07b-u}\012"
 .param PRIORITY 11111111111111111111111111010100
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.next_state_SB_LUT4_O_3_I1[18]
-.attr src "controller.v:598.17-598.30"
+.gate $print EN=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[18]
+.attr src "controller.v:644.17-644.30"
 .param ARGS_WIDTH 00000000000000000000000000000000
 .param FORMAT "\012"
 .param PRIORITY 11111111111111111111111111010101
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.next_state_SB_LUT4_O_3_I1[18]
-.attr src "controller.v:597.17-597.30"
+.gate $print EN=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[18]
+.attr src "controller.v:643.17-643.30"
 .param ARGS_WIDTH 00000000000000000000000000000000
 .param FORMAT "\012"
 .param PRIORITY 11111111111111111111111111010110
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=rvmulti.dp.DataFF.q[0] ARGS[8]=rvmulti.dp.DataFF.q[0] ARGS[9]=$false ARGS[10]=$false ARGS[11]=rvmulti.dp.DataFF.q[0] ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false EN=rvmulti.ctr.next_state_SB_LUT4_O_3_I1[21]
-.attr src "controller.v:531.17-531.126"
+.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false EN=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[21]
+.attr src "controller.v:576.17-576.126"
 .param ARGS_WIDTH 00000000000000000000000000011000
 .param FORMAT "[CTRL.OUTPUT.FETCH_STATE_1] op: {7:>07b-u}, oldOp: {7:>07b-u}, funct3: {3:>03b-u}, funct7: {7:>07b-u}\012"
 .param PRIORITY 11111111111111111111111111111101
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate SB_LUT4 I0=rvmulti.ctr.current_state[0] I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.ctr.next_state_SB_LUT4_O_3_I1[18]
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 0000000000100000
-.gate SB_LUT4 I0=rvmulti.ctr.current_state[0] I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.ctr.next_state_SB_LUT4_O_3_I1[21]
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 0000000000000010
-.gate SB_LUT4 I0=rvmulti.ctr.current_state[0] I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.ctr.next_state_SB_LUT4_O_3_I1[11]
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 0001000000000000
-.gate SB_LUT4 I0=rvmulti.ctr.current_state[0] I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.ctr.next_state_SB_LUT4_O_I2[1]
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 1101110100011100
-.gate SB_LUT4 I0=rvmulti.dp.DataFF.q_SB_DFFR_Q_R I1=rvmulti.ctr.current_state[0] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3[3] O=rvmulti.ctr.next_state_SB_LUT4_O_I2[2]
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 0000001000000000
-.gate SB_LUT4 I0=$false I1=$false I2=rvmulti.ctr.current_state[0] I3=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3[3] O=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3_SB_LUT4_I3_O
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:17.34-18.52"
-.param LUT_INIT 0000111100000000
-.gate SB_LUT4 I0=$false I1=rvmulti.ctr.current_state[0] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3[3] O=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3_SB_LUT4_I3_1_O
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:22.34-23.52"
-.param LUT_INIT 1100000000000000
-.gate $print EN=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3_SB_LUT4_I3_1_O
-.attr src "controller.v:879.21-879.80"
+.gate $print EN=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[21]
+.attr src "controller.v:575.17-575.30"
 .param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto DecodeState -> ExecuteIState\012"
-.param PRIORITY 11111111111111111111111111111001
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111111111110
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false EN=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3_SB_LUT4_I3_1_O
-.attr src "controller.v:866.17-866.65"
+.gate SB_LUT4 I0=rvmulti.ctr.current_state[3] I1=rvmulti.ctr.current_state[2] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[18]
+.attr module_not_derived 00000000000000000000000000000001
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.param LUT_INIT 0000010000000000
+.gate SB_LUT4 I0=rvmulti.ctr.current_state[3] I1=rvmulti.ctr.current_state[2] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[21]
+.attr module_not_derived 00000000000000000000000000000001
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.param LUT_INIT 0000000100000000
+.gate SB_LUT4 I0=rvmulti.ctr.current_state[3] I1=rvmulti.ctr.current_state[2] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[11]
+.attr module_not_derived 00000000000000000000000000000001
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.param LUT_INIT 0000000000001000
+.gate SB_LUT4 I0=$false I1=$false I2=rvmulti.ctr.current_state_SB_DFFSS_Q_S_SB_LUT4_O_I2[2] I3=rvmulti.dp.DataFF.q_SB_DFFR_Q_R O=rvmulti.ctr.current_state_SB_DFFSS_Q_S
+.attr module_not_derived 00000000000000000000000000000001
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:17.34-18.52"
+.param LUT_INIT 1111111111110000
+.gate SB_LUT4 I0=rvmulti.ctr.current_state[3] I1=rvmulti.ctr.current_state[2] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_DFFSS_Q_S_SB_LUT4_O_I2[2]
+.attr module_not_derived 00000000000000000000000000000001
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.param LUT_INIT 1000000000010101
+.gate SB_LUT4 I0=rvmulti.ctr.current_state[3] I1=rvmulti.ctr.current_state[2] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_LUT4_I0_O
+.attr module_not_derived 00000000000000000000000000000001
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.param LUT_INIT 1000000000010001
+.gate SB_LUT4 I0=rvmulti.ctr.current_state[3] I1=rvmulti.ctr.current_state[2] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_LUT4_I0_1_O
+.attr module_not_derived 00000000000000000000000000000001
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.param LUT_INIT 0000000001000000
+.gate SB_LUT4 I0=rvmulti.ctr.current_state[3] I1=rvmulti.ctr.current_state[2] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_LUT4_I0_10_O
+.attr module_not_derived 00000000000000000000000000000001
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.param LUT_INIT 0100000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_10_O
+.attr src "controller.v:995.17-995.77"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto MemWriteState -> FetchState_1\012"
+.param PRIORITY 11111111111111111111111111110000
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false EN=rvmulti.ctr.current_state_SB_LUT4_I0_10_O
+.attr src "controller.v:685.17-685.126"
+.param ARGS_WIDTH 00000000000000000000000000011000
+.param FORMAT "[CTRL.OUTPUT.MemWriteState] op: {7:>07b-u}, oldOp: {7:>07b-u}, funct3: {3:>03b-u}, funct7: {7:>07b-u}\012"
+.param PRIORITY 11111111111111111111111111001110
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_10_O
+.attr src "controller.v:684.17-684.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111111001111
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_10_O
+.attr src "controller.v:683.17-683.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111111010000
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_1_O
+.attr src "controller.v:988.17-988.74"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto MemWBState -> FetchState_1\012"
+.param PRIORITY 11111111111111111111111111110001
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false EN=rvmulti.ctr.current_state_SB_LUT4_I0_1_O
+.attr src "controller.v:664.17-664.123"
+.param ARGS_WIDTH 00000000000000000000000000011000
+.param FORMAT "[CTRL.OUTPUT.MemWBState] op: {7:>07b-u}, oldOp: {7:>07b-u}, funct3: {3:>03b-u}, funct7: {7:>07b-u}\012"
+.param PRIORITY 11111111111111111111111111010001
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_1_O
+.attr src "controller.v:663.17-663.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111111010010
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_1_O
+.attr src "controller.v:662.17-662.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111111010011
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate SB_LUT4 I0=rvmulti.ctr.current_state[3] I1=rvmulti.ctr.current_state[2] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_LUT4_I0_2_O
+.attr module_not_derived 00000000000000000000000000000001
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.param LUT_INIT 0000000000000100
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_2_O
+.attr src "controller.v:973.21-973.78"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto MemAddrState -> ErrorState\012"
+.param PRIORITY 11111111111111111111111111110011
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false EN=rvmulti.ctr.current_state_SB_LUT4_I0_2_O
+.attr src "controller.v:624.17-624.125"
+.param ARGS_WIDTH 00000000000000000000000000011000
+.param FORMAT "[CTRL.OUTPUT.MemAddrState] op: {7:>07b-u}, oldOp: {7:>07b-u}, funct3: {3:>03b-u}, funct7: {7:>07b-u}\012"
+.param PRIORITY 11111111111111111111111111010111
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_2_O
+.attr src "controller.v:623.17-623.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111111011000
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_2_O
+.attr src "controller.v:622.17-622.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111111011001
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate SB_LUT4 I0=rvmulti.ctr.current_state[3] I1=rvmulti.ctr.current_state[2] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_LUT4_I0_3_O
+.attr module_not_derived 00000000000000000000000000000001
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.param LUT_INIT 0001000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_3_O
+.attr src "controller.v:928.21-928.80"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto DecodeState -> ExecuteIState\012"
+.param PRIORITY 11111111111111111111111111111011
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false EN=rvmulti.ctr.current_state_SB_LUT4_I0_3_O
+.attr src "controller.v:915.17-915.65"
 .param ARGS_WIDTH 00000000000000000000000000000111
 .param FORMAT "[controller DecodeState] op: {7:>07b-u}\012"
+.param PRIORITY 11111111111111111111111111111110
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false EN=rvmulti.ctr.current_state_SB_LUT4_I0_3_O
+.attr src "controller.v:600.17-600.107"
+.param ARGS_WIDTH 00000000000000000000000000010001
+.param FORMAT "[CTRL.OUTPUT.DECODE_STATE] op: {7:>07b-u}, funct3: {3:>03b-u}, funct7: {7:>07b-u}\012"
+.param PRIORITY 11111111111111111111111111111010
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_3_O
+.attr src "controller.v:599.17-599.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111111111011
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_3_O
+.attr src "controller.v:598.17-598.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
 .param PRIORITY 11111111111111111111111111111100
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3_SB_LUT4_I3_1_O
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_3_O
 .attr src "controller.v:59.25-59.52"
 .param ARGS_WIDTH 00000000000000000000000000000000
 .param FORMAT "[ALU_DEC] addi\012"
@@ -1125,31 +977,7 @@
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false EN=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3_SB_LUT4_I3_1_O
-.attr src "controller.v:554.17-554.107"
-.param ARGS_WIDTH 00000000000000000000000000010001
-.param FORMAT "[CTRL.OUTPUT.DECODE_STATE] op: {7:>07b-u}, funct3: {3:>03b-u}, funct7: {7:>07b-u}\012"
-.param PRIORITY 11111111111111111111111111111010
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3_SB_LUT4_I3_1_O
-.attr src "controller.v:553.17-553.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111111011
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3_SB_LUT4_I3_1_O
-.attr src "controller.v:552.17-552.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111111100
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false EN=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3_SB_LUT4_I3_1_O
+.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false EN=rvmulti.ctr.current_state_SB_LUT4_I0_3_O
 .attr src "controller.v:39.9-39.86"
 .param ARGS_WIDTH 00000000000000000000000000010001
 .param FORMAT "decodeAluOp() op: {7:>07b-u}, funct3: {3:>03b-u}, funct7: {7:>07b-u}\012"
@@ -1157,7 +985,7 @@
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3_SB_LUT4_I3_1_O
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_3_O
 .attr src "controller.v:251.25-251.57"
 .param ARGS_WIDTH 00000000000000000000000000000000
 .param FORMAT "[decodeImmSrc] addi\012"
@@ -1165,7 +993,7 @@
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false EN=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3_SB_LUT4_I3_1_O
+.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false EN=rvmulti.ctr.current_state_SB_LUT4_I0_3_O
 .attr src "controller.v:231.9-231.87"
 .param ARGS_WIDTH 00000000000000000000000000010001
 .param FORMAT "decodeImmSrc() op: {7:>07b-u}, funct3: {3:>03b-u}, funct7: {7:>07b-u}\012"
@@ -1173,228 +1001,332 @@
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print ARGS[0]=rvmulti.ctr.current_state[0] ARGS[1]=rvmulti.ctr.current_state[1] ARGS[2]=rvmulti.ctr.current_state[2] ARGS[3]=rvmulti.ctr.current_state[3] ARGS[4]=$false EN=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3_SB_LUT4_I3_O
-.attr src "controller.v:827.17-827.114"
-.param ARGS_WIDTH 00000000000000000000000000000101
-.param FORMAT "[CTRL.OUTPUT.?] No case in always @(current_state) current_state = {5:> 2d-u}\012"
-.param PRIORITY 11111111111111111111111110110110
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate SB_LUT4 I0=$false I1=$false I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3[3]
+.gate SB_LUT4 I0=rvmulti.ctr.current_state[3] I1=rvmulti.ctr.current_state[2] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_LUT4_I0_4_O
 .attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:17.34-18.52"
-.param LUT_INIT 0000000000001111
-.gate $print ARGS[0]=rvmulti.dp.DataFF.q[0] ARGS[1]=$false ARGS[2]=rvmulti.dp.DataFF.q[0] ARGS[3]=$false ARGS[4]=$false ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$undef ARGS[26]=$undef ARGS[27]=$false EN=$undef
-.attr src "extend.v:51.17-51.75"
-.param ARGS_WIDTH 00000000000000000000000000011100
-.param FORMAT "[extend] instr: {25:>07h-u}, immsrc: {3:> 1d-u}\012"
-.param PRIORITY 11111111111111111111111111111001
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=rvmulti.dp.DataFF.q[0] ARGS[8]=rvmulti.dp.DataFF.q[0] ARGS[9]=$false ARGS[10]=$false ARGS[11]=rvmulti.dp.DataFF.q[0] ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false EN=rvmulti.dp.DataFF.q_$print_ARGS_1_EN
-.attr src "controller.v:639.17-639.126"
-.param ARGS_WIDTH 00000000000000000000000000011000
-.param FORMAT "[CTRL.OUTPUT.MemWriteState] op: {7:>07b-u}, oldOp: {7:>07b-u}, funct3: {3:>03b-u}, funct7: {7:>07b-u}\012"
-.param PRIORITY 11111111111111111111111111001110
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.dp.DataFF.q_$print_ARGS_1_EN
-.attr src "controller.v:946.17-946.77"
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.param LUT_INIT 0000000010000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_4_O
+.attr src "controller.v:852.17-852.53"
 .param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto MemWriteState -> FetchState_1\012"
+.param FORMAT "[CTRL.OUTPUT.LUI_STATE]\012"
+.param PRIORITY 11111111111111111111111110110111
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_4_O
+.attr src "controller.v:851.17-851.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111110111000
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_4_O
+.attr src "controller.v:850.17-850.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111110111001
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_4_O
+.attr src "controller.v:1044.17-1044.75"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto LUI_STATE -> ExecuteIState.\012"
+.param PRIORITY 11111111111111111111111111101001
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate SB_LUT4 I0=rvmulti.ctr.current_state[3] I1=rvmulti.ctr.current_state[2] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_LUT4_I0_5_O
+.attr module_not_derived 00000000000000000000000000000001
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.param LUT_INIT 0000100000000000
+.gate $print ARGS=$true EN=rvmulti.ctr.current_state_SB_LUT4_I0_5_O
+.attr src "controller.v:828.21-828.86"
+.param ARGS_WIDTH 00000000000000000000000000000001
+.param FORMAT "[CTRL.OUTPUT.BEQ_STATE] Branch taken. Zero: {1:> 1d-u}\012"
+.param PRIORITY 11111111111111111111111110111011
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_5_O
+.attr src "controller.v:824.17-824.62"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[CTRL.OUTPUT.BRANCH_TAKEN_CHECK]\012"
+.param PRIORITY 11111111111111111111111110111100
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_5_O
+.attr src "controller.v:823.17-823.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111110111101
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_5_O
+.attr src "controller.v:822.17-822.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111110111110
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_5_O
+.attr src "controller.v:1037.17-1037.83"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto BRANCH_TAKEN_CHECK -> FetchState_1.\012"
+.param PRIORITY 11111111111111111111111111101010
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate SB_LUT4 I0=rvmulti.ctr.current_state[3] I1=rvmulti.ctr.current_state[2] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_LUT4_I0_6_O
+.attr module_not_derived 00000000000000000000000000000001
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.param LUT_INIT 0010000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_6_O
+.attr src "controller.v:786.17-786.52"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[CTRL.OUTPUT.JALState]\012"
+.param PRIORITY 11111111111111111111111111000010
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_6_O
+.attr src "controller.v:785.17-785.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111111000011
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_6_O
+.attr src "controller.v:784.17-784.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111111000100
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_6_O
+.attr src "controller.v:1023.17-1023.77"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto JALState -> ALUWriteBackState\012"
+.param PRIORITY 11111111111111111111111111101100
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate SB_LUT4 I0=rvmulti.ctr.current_state[3] I1=rvmulti.ctr.current_state[2] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_LUT4_I0_7_O
+.attr module_not_derived 00000000000000000000000000000001
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.param LUT_INIT 0000000000100000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_7_O
+.attr src "controller.v:743.17-743.58"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[CTRL.OUTPUT.EXECUTEI_STATE]\012"
+.param PRIORITY 11111111111111111111111111000101
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_7_O
+.attr src "controller.v:741.17-741.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111111000110
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_7_O
+.attr src "controller.v:740.17-740.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111111000111
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_7_O
+.attr src "controller.v:1016.17-1016.82"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto ExecuteIState -> ALUWriteBackState\012"
+.param PRIORITY 11111111111111111111111111101101
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate SB_LUT4 I0=rvmulti.ctr.current_state[3] I1=rvmulti.ctr.current_state[2] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_LUT4_I0_8_O
+.attr module_not_derived 00000000000000000000000000000001
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
+.param LUT_INIT 0000001000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_8_O
+.attr src "controller.v:723.17-723.55"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[CTRL.OUTPUT.ALUWB_STATE]\012"
+.param PRIORITY 11111111111111111111111111001000
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_8_O
+.attr src "controller.v:722.17-722.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111111001001
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_8_O
+.attr src "controller.v:721.17-721.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111111001010
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_8_O
+.attr src "controller.v:1009.17-1009.81"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto ALUWriteBackState -> FetchState_1\012"
 .param PRIORITY 11111111111111111111111111101110
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.dp.DataFF.q_$print_ARGS_1_EN
-.attr src "controller.v:638.17-638.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111001111
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.dp.DataFF.q_$print_ARGS_1_EN
-.attr src "controller.v:637.17-637.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111010000
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate SB_LUT4 I0=rvmulti.ctr.current_state[0] I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.dp.DataFF.q_$print_ARGS_1_EN
+.gate SB_LUT4 I0=rvmulti.ctr.current_state[3] I1=rvmulti.ctr.current_state[2] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_LUT4_I0_9_O
 .attr module_not_derived 00000000000000000000000000000001
 .attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 0000000010000000
-.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=rvmulti.dp.DataFF.q[0] ARGS[8]=rvmulti.dp.DataFF.q[0] ARGS[9]=$false ARGS[10]=$false ARGS[11]=rvmulti.dp.DataFF.q[0] ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false EN=rvmulti.dp.DataFF.q_$print_ARGS_2_EN
-.attr src "controller.v:618.17-618.123"
-.param ARGS_WIDTH 00000000000000000000000000011000
-.param FORMAT "[CTRL.OUTPUT.MemWBState] op: {7:>07b-u}, oldOp: {7:>07b-u}, funct3: {3:>03b-u}, funct7: {7:>07b-u}\012"
-.param PRIORITY 11111111111111111111111111010001
+.param LUT_INIT 0000000000000010
+.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=$false ARGS[8]=$false ARGS[9]=$false ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false EN=rvmulti.ctr.current_state_SB_LUT4_I0_9_O
+.attr src "controller.v:705.17-705.108"
+.param ARGS_WIDTH 00000000000000000000000000010001
+.param FORMAT "[CTRL.OUTPUT.ExecuteRState] op: {7:>07b-u}, funct3: {3:>03b-u}, funct7: {7:>07b-u}\012"
+.param PRIORITY 11111111111111111111111111001011
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.dp.DataFF.q_$print_ARGS_2_EN
-.attr src "controller.v:939.17-939.74"
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_9_O
+.attr src "controller.v:704.17-704.30"
 .param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto MemWBState -> FetchState_1\012"
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111111001100
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_9_O
+.attr src "controller.v:703.17-703.30"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "\012"
+.param PRIORITY 11111111111111111111111111001101
+.param TRG_ENABLE 00000000000000000000000000000000
+.param TRG_POLARITY 
+.param TRG_WIDTH 00000000000000000000000000000000
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_9_O
+.attr src "controller.v:1002.17-1002.82"
+.param ARGS_WIDTH 00000000000000000000000000000000
+.param FORMAT "[controller] goto ExecuteRState -> ALUWriteBackState\012"
 .param PRIORITY 11111111111111111111111111101111
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.dp.DataFF.q_$print_ARGS_2_EN
-.attr src "controller.v:617.17-617.30"
+.gate $print EN=rvmulti.ctr.current_state_SB_LUT4_I0_O
+.attr src "controller.v:1050.17-1050.77"
 .param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111010010
+.param FORMAT "[controller] default goto default -> ErrorState\012"
+.param PRIORITY 11111111111111111111111111101000
 .param TRG_ENABLE 00000000000000000000000000000000
 .param TRG_POLARITY 
 .param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.dp.DataFF.q_$print_ARGS_2_EN
-.attr src "controller.v:616.17-616.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111010011
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate SB_LUT4 I0=rvmulti.ctr.current_state[0] I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.dp.DataFF.q_$print_ARGS_2_EN
+.gate SB_LUT4 I0=$false I1=rvmulti.ctr.current_state[3] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[0] O=rvmulti.ctr.current_state_SB_LUT4_I1_O
 .attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 0000000001000000
-.gate $print ARGS[0]=$true ARGS[1]=$true ARGS[2]=$false ARGS[3]=$false ARGS[4]=$true ARGS[5]=$false ARGS[6]=$false ARGS[7]=rvmulti.dp.DataFF.q[0] ARGS[8]=rvmulti.dp.DataFF.q[0] ARGS[9]=$false ARGS[10]=$false ARGS[11]=rvmulti.dp.DataFF.q[0] ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false EN=rvmulti.dp.DataFF.q_$print_ARGS_3_EN
-.attr src "controller.v:578.17-578.125"
-.param ARGS_WIDTH 00000000000000000000000000011000
-.param FORMAT "[CTRL.OUTPUT.MemAddrState] op: {7:>07b-u}, oldOp: {7:>07b-u}, funct3: {3:>03b-u}, funct7: {7:>07b-u}\012"
-.param PRIORITY 11111111111111111111111111010111
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.dp.DataFF.q_$print_ARGS_3_EN
-.attr src "controller.v:924.21-924.78"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto MemAddrState -> ErrorState\012"
-.param PRIORITY 11111111111111111111111111110001
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.dp.DataFF.q_$print_ARGS_3_EN
-.attr src "controller.v:577.17-577.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111011000
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate $print EN=rvmulti.dp.DataFF.q_$print_ARGS_3_EN
-.attr src "controller.v:576.17-576.30"
-.param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "\012"
-.param PRIORITY 11111111111111111111111111011001
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate SB_LUT4 I0=rvmulti.ctr.current_state[0] I1=rvmulti.ctr.current_state[1] I2=rvmulti.ctr.current_state[2] I3=rvmulti.ctr.current_state[3] O=rvmulti.dp.DataFF.q_$print_ARGS_3_EN
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
-.param LUT_INIT 0000000000010000
+.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:22.34-23.52"
+.param LUT_INIT 0000000000000011
+.gate $print ARGS[0]=rvmulti.dp.DataFF.q[0] ARGS[1]=rvmulti.dp.DataFF.q[0] ARGS[2]=$false ARGS[3]=$false ARGS[4]=rvmulti.dp.DataFF.q[0] ARGS[5]=$false ARGS[6]=$false ARGS[7]=rvmulti.dp.DataFF.q[0] ARGS[8]=$false ARGS[9]=rvmulti.dp.DataFF.q[0] ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$true ARGS[33]=$true ARGS[34]=$false ARGS[35]=$false ARGS[36]=$true ARGS[37]=$false ARGS[38]=$false ARGS[39]=$true ARGS[40]=$false ARGS[41]=$true ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$false TRG[0]=clk TRG[1]=resetn
+.attr src "flopr.v:41.17-41.71"
+.param ARGS_WIDTH 00000000000000000000000001000000
+.param FORMAT "[FLOPR ALUOut] q:0x{32:=08h-u} <- d:0x{32:=08h-u}\012"
+.param PRIORITY 11111111111111111111111111111010
+.param TRG_ENABLE 00000000000000000000000000000001
+.param TRG_POLARITY 01
+.param TRG_WIDTH 00000000000000000000000000000010
+.gate $print ARGS[0]=rvmulti.dp.DataFF.q[0] ARGS[1]=rvmulti.dp.DataFF.q[0] ARGS[2]=$false ARGS[3]=$false ARGS[4]=rvmulti.dp.DataFF.q[0] ARGS[5]=$false ARGS[6]=$false ARGS[7]=rvmulti.dp.DataFF.q[0] ARGS[8]=$false ARGS[9]=rvmulti.dp.DataFF.q[0] ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$true ARGS[33]=$true ARGS[34]=$false ARGS[35]=$false ARGS[36]=$true ARGS[37]=$false ARGS[38]=$false ARGS[39]=$true ARGS[40]=$false ARGS[41]=$true ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$false TRG[0]=clk TRG[1]=resetn
+.attr src "flopr.v:36.17-36.68"
+.param ARGS_WIDTH 00000000000000000000000001000000
+.param FORMAT "[FLOPR RD2] q:0x{32:=08h-u} <- d:0x{32:=08h-u}\012"
+.param PRIORITY 11111111111111111111111111111011
+.param TRG_ENABLE 00000000000000000000000000000001
+.param TRG_POLARITY 01
+.param TRG_WIDTH 00000000000000000000000000000010
+.gate $print ARGS[0]=rvmulti.dp.DataFF.q[0] ARGS[1]=rvmulti.dp.DataFF.q[0] ARGS[2]=$false ARGS[3]=$false ARGS[4]=rvmulti.dp.DataFF.q[0] ARGS[5]=$false ARGS[6]=$false ARGS[7]=rvmulti.dp.DataFF.q[0] ARGS[8]=$false ARGS[9]=rvmulti.dp.DataFF.q[0] ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$true ARGS[33]=$true ARGS[34]=$false ARGS[35]=$false ARGS[36]=$true ARGS[37]=$false ARGS[38]=$false ARGS[39]=$true ARGS[40]=$false ARGS[41]=$true ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$false TRG[0]=clk TRG[1]=resetn
+.attr src "flopr.v:31.17-31.68"
+.param ARGS_WIDTH 00000000000000000000000001000000
+.param FORMAT "[FLOPR RD1] q:0x{32:=08h-u} <- d:0x{32:=08h-u}\012"
+.param PRIORITY 11111111111111111111111111111100
+.param TRG_ENABLE 00000000000000000000000000000001
+.param TRG_POLARITY 01
+.param TRG_WIDTH 00000000000000000000000000000010
+.gate $print ARGS[0]=rvmulti.dp.DataFF.q[0] ARGS[1]=rvmulti.dp.DataFF.q[0] ARGS[2]=$false ARGS[3]=$false ARGS[4]=rvmulti.dp.DataFF.q[0] ARGS[5]=$false ARGS[6]=$false ARGS[7]=rvmulti.dp.DataFF.q[0] ARGS[8]=$false ARGS[9]=rvmulti.dp.DataFF.q[0] ARGS[10]=$false ARGS[11]=$false ARGS[12]=$false ARGS[13]=$false ARGS[14]=$false ARGS[15]=$false ARGS[16]=$false ARGS[17]=$false ARGS[18]=$false ARGS[19]=$false ARGS[20]=$false ARGS[21]=$false ARGS[22]=$false ARGS[23]=$false ARGS[24]=$false ARGS[25]=$false ARGS[26]=$false ARGS[27]=$false ARGS[28]=$false ARGS[29]=$false ARGS[30]=$false ARGS[31]=$false ARGS[32]=$true ARGS[33]=$true ARGS[34]=$false ARGS[35]=$false ARGS[36]=$true ARGS[37]=$false ARGS[38]=$false ARGS[39]=$true ARGS[40]=$false ARGS[41]=$true ARGS[42]=$false ARGS[43]=$false ARGS[44]=$false ARGS[45]=$false ARGS[46]=$false ARGS[47]=$false ARGS[48]=$false ARGS[49]=$false ARGS[50]=$false ARGS[51]=$false ARGS[52]=$false ARGS[53]=$false ARGS[54]=$false ARGS[55]=$false ARGS[56]=$false ARGS[57]=$false ARGS[58]=$false ARGS[59]=$false ARGS[60]=$false ARGS[61]=$false ARGS[62]=$false ARGS[63]=$false EN=$true TRG[0]=clk TRG[1]=resetn
+.attr src "flopr.v:26.17-26.69"
+.param ARGS_WIDTH 00000000000000000000000001000000
+.param FORMAT "[FLOPR data] q:0x{32:=08h-u} <- d:0x{32:=08h-u}\012"
+.param PRIORITY 11111111111111111111111111111101
+.param TRG_ENABLE 00000000000000000000000000000001
+.param TRG_POLARITY 01
+.param TRG_WIDTH 00000000000000000000000000000010
 .gate SB_DFFR C=clk D=$true Q=rvmulti.dp.DataFF.q[0] R=rvmulti.dp.DataFF.q_SB_DFFR_Q_R
 .attr module_not_derived 00000000000000000000000000000001
 .attr src "flopr.v:12.5-45.12|C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/ff_map.v:9.57-9.103"
-.gate SB_LUT4 I0=$false I1=$false I2=rvmulti.dp.DataFF.q_SB_DFFR_Q_R I3=rvmulti.dp.DataFF.q_SB_DFFR_Q_R_SB_LUT4_I2_I3[1] O=rvmulti.dp.DataFF.q_SB_DFFR_Q_R_SB_LUT4_I2_O
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:17.34-18.52"
-.param LUT_INIT 0000111100000000
-.gate $print ARGS=resetn EN=rvmulti.dp.DataFF.q_SB_DFFR_Q_R_SB_LUT4_I2_I3[1]
-.attr src "controller.v:847.17-847.48"
-.param ARGS_WIDTH 00000000000000000000000000000001
-.param FORMAT "resetn: {1:> 1d-u}\012"
-.param PRIORITY 11111111111111111111111111111111
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
-.gate SB_LUT4 I0=$false I1=rvmulti.ctr.current_state[0] I2=rvmulti.ctr.current_state[1] I3=rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3[3] O=rvmulti.dp.DataFF.q_SB_DFFR_Q_R_SB_LUT4_I2_I3[1]
-.attr module_not_derived 00000000000000000000000000000001
-.attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:22.34-23.52"
-.param LUT_INIT 0000001100000000
-.gate $print EN=rvmulti.dp.DataFF.q_SB_DFFR_Q_R_SB_LUT4_I2_O
-.attr src "controller.v:850.21-850.78"
+.gate $print EN=rvmulti.dp.DataFF.q_SB_DFFR_Q_R TRG=clk
+.attr src "controller.v:522.13-522.49"
 .param ARGS_WIDTH 00000000000000000000000000000000
-.param FORMAT "[controller] goto ResetState -> FetchState_1\012"
+.param FORMAT "[controller] Resetting.\012"
 .param PRIORITY 11111111111111111111111111111110
-.param TRG_ENABLE 00000000000000000000000000000000
-.param TRG_POLARITY 
-.param TRG_WIDTH 00000000000000000000000000000000
+.param TRG_ENABLE 00000000000000000000000000000001
+.param TRG_POLARITY 1
+.param TRG_WIDTH 00000000000000000000000000000001
 .gate SB_LUT4 I0=rststate[3] I1=rststate[2] I2=rststate[1] I3=rststate[0] O=rvmulti.dp.DataFF.q_SB_DFFR_Q_R
 .attr module_not_derived 00000000000000000000000000000001
 .attr src "C:\\Users\\wolfg\\DOWNLO~1\\OSS-CA~1\\bin\\../share/yosys/ice40/cells_map.v:26.33-27.52"
 .param LUT_INIT 0111111111111111
-.names rvmulti.ctr.next_state[1] rvmulti.ctr.next_state_SB_LUT4_O_2_I2[0]
+.names rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[21] rvmulti.ctr.current_state_SB_DFFSR_Q_2_D[1]
 1 1
-.names rvmulti.ctr.next_state_SB_LUT4_O_2_I1[2] rvmulti.ctr.next_state_SB_LUT4_O_2_I2[1]
+.names rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[18] rvmulti.ctr.current_state_SB_DFFSS_Q_S_SB_LUT4_O_I2[0]
 1 1
-.names rvmulti.ctr.next_state_SB_LUT4_O_I2[2] rvmulti.ctr.next_state_SB_LUT4_O_2_I2[3]
+.names rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[11] rvmulti.ctr.current_state_SB_DFFSS_Q_S_SB_LUT4_O_I2[1]
 1 1
-.names rvmulti.ctr.next_state[3] rvmulti.ctr.next_state_SB_LUT4_O_I2[0]
+.names $false rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[0]
 1 1
-.names rvmulti.dp.DataFF.q_SB_DFFR_Q_R rvmulti.dp.DataFF.q_SB_DFFR_Q_R_SB_LUT4_I2_I3[0]
+.names rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[3] rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[1]
 1 1
-.names rvmulti.ctr.next_state[2] rvmulti.ctr.next_state_SB_LUT4_O_1_I2[0]
+.names $false rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[2]
 1 1
-.names rvmulti.ctr.next_state_SB_LUT4_O_I2[2] rvmulti.ctr.next_state_SB_LUT4_O_1_I2[2]
+.names $false rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[5]
 1 1
-.names rvmulti.dp.DataFF.q_SB_DFFR_Q_R rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3[0]
+.names $false rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[6]
 1 1
-.names rvmulti.ctr.current_state[0] rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3[1]
+.names $false rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[7]
 1 1
-.names rvmulti.ctr.current_state[1] rvmulti.ctr.next_state_SB_LUT4_O_I2_SB_LUT4_O_1_I3[2]
+.names rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[11] rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[8]
 1 1
-.names rvmulti.ctr.next_state[0] rvmulti.ctr.next_state_SB_LUT4_O_2_I1[0]
+.names $false rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[9]
 1 1
-.names rvmulti.ctr.next_state_SB_LUT4_O_3_I1[21] rvmulti.ctr.next_state_SB_LUT4_O_2_I1[1]
+.names rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[11] rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[10]
 1 1
-.names rvmulti.ctr.next_state_SB_LUT4_O_I2[2] rvmulti.ctr.next_state_SB_LUT4_O_2_I1[3]
+.names rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[15] rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[12]
 1 1
-.names $false rvmulti.ctr.next_state_SB_LUT4_O_3_I1[0]
+.names $false rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[13]
 1 1
-.names rvmulti.ctr.next_state_SB_LUT4_O_3_I1[3] rvmulti.ctr.next_state_SB_LUT4_O_3_I1[1]
+.names $false rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[14]
 1 1
-.names $false rvmulti.ctr.next_state_SB_LUT4_O_3_I1[2]
+.names $false rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[16]
 1 1
-.names $false rvmulti.ctr.next_state_SB_LUT4_O_3_I1[5]
+.names rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[18] rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[17]
 1 1
-.names $false rvmulti.ctr.next_state_SB_LUT4_O_3_I1[6]
+.names $false rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[19]
 1 1
-.names $false rvmulti.ctr.next_state_SB_LUT4_O_3_I1[7]
+.names rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[21] rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[20]
 1 1
-.names rvmulti.ctr.next_state_SB_LUT4_O_3_I1[11] rvmulti.ctr.next_state_SB_LUT4_O_3_I1[8]
+.names $false rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[22]
 1 1
-.names $false rvmulti.ctr.next_state_SB_LUT4_O_3_I1[9]
+.names $false rvmulti.ctr.current_state_SB_DFFSS_Q_D_SB_LUT4_O_I3[23]
 1 1
-.names rvmulti.ctr.next_state_SB_LUT4_O_3_I1[11] rvmulti.ctr.next_state_SB_LUT4_O_3_I1[10]
-1 1
-.names rvmulti.ctr.next_state_SB_LUT4_O_3_I1[15] rvmulti.ctr.next_state_SB_LUT4_O_3_I1[12]
-1 1
-.names $false rvmulti.ctr.next_state_SB_LUT4_O_3_I1[13]
-1 1
-.names $false rvmulti.ctr.next_state_SB_LUT4_O_3_I1[14]
-1 1
-.names $false rvmulti.ctr.next_state_SB_LUT4_O_3_I1[16]
-1 1
-.names rvmulti.ctr.next_state_SB_LUT4_O_3_I1[18] rvmulti.ctr.next_state_SB_LUT4_O_3_I1[17]
-1 1
-.names $false rvmulti.ctr.next_state_SB_LUT4_O_3_I1[19]
-1 1
-.names rvmulti.ctr.next_state_SB_LUT4_O_3_I1[21] rvmulti.ctr.next_state_SB_LUT4_O_3_I1[20]
-1 1
-.names $false rvmulti.ctr.next_state_SB_LUT4_O_3_I1[22]
-1 1
-.names $false rvmulti.ctr.next_state_SB_LUT4_O_3_I1[23]
-1 1
-.names $undef led_green
+.names $false led_green
 1 1
 .names $false rvmulti.ALUControl[0]
 1 1
@@ -1412,11 +1344,11 @@
 1 1
 .names $false rvmulti.AdrSrc
 1 1
-.names $true rvmulti.IRWrite
+.names $false rvmulti.IRWrite
 1 1
-.names $undef rvmulti.ImmSrc[0]
+.names $false rvmulti.ImmSrc[0]
 1 1
-.names $undef rvmulti.ImmSrc[1]
+.names $false rvmulti.ImmSrc[1]
 1 1
 .names $false rvmulti.ImmSrc[2]
 1 1
@@ -1578,11 +1510,11 @@
 1 1
 .names $false rvmulti.ctr.AdrSrc
 1 1
-.names $true rvmulti.ctr.IRWrite
+.names $false rvmulti.ctr.IRWrite
 1 1
-.names $undef rvmulti.ctr.ImmSrc[0]
+.names $false rvmulti.ctr.ImmSrc[0]
 1 1
-.names $undef rvmulti.ctr.ImmSrc[1]
+.names $false rvmulti.ctr.ImmSrc[1]
 1 1
 .names $false rvmulti.ctr.ImmSrc[2]
 1 1
@@ -1730,73 +1662,73 @@
 1 1
 .names $false rvmulti.ctr.current_state[4]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.funct3[0]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.funct3[0]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.funct3[1]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.funct3[1]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.funct3[2]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.funct3[2]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.funct7[0]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.funct7[0]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.funct7[1]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.funct7[1]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.funct7[2]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.funct7[2]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.funct7[3]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.funct7[3]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.funct7[4]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.funct7[4]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.funct7[5]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.funct7[5]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.funct7[6]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.funct7[6]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.opcode[0]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.opcode[0]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.opcode[1]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.opcode[1]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.opcode[2]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.opcode[2]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.opcode[3]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.opcode[3]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.opcode[4]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.opcode[4]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.opcode[5]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.opcode[5]
 1 1
-.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:560$388.opcode[6]
+.names $undef rvmulti.ctr.decodeAluOp$func$controller.v:606$389.opcode[6]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.funct3[0]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.funct3[0]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.funct3[1]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.funct3[1]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.funct3[2]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.funct3[2]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.funct7[0]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.funct7[0]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.funct7[1]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.funct7[1]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.funct7[2]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.funct7[2]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.funct7[3]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.funct7[3]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.funct7[4]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.funct7[4]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.funct7[5]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.funct7[5]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.funct7[6]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.funct7[6]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.opcode[0]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.opcode[0]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.opcode[1]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.opcode[1]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.opcode[2]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.opcode[2]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.opcode[3]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.opcode[3]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.opcode[4]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.opcode[4]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.opcode[5]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.opcode[5]
 1 1
-.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:566$389.opcode[6]
+.names $undef rvmulti.ctr.decodeImmSrc$func$controller.v:612$390.opcode[6]
 1 1
 .names $false rvmulti.ctr.funct3[0]
 1 1
@@ -1880,17 +1812,19 @@
 1 1
 .names $false rvmulti.ctr.funct7b5[30]
 1 1
+.names $undef rvmulti.ctr.next_state[0]
+1 1
 .names $false rvmulti.ctr.next_state[4]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.ctr.oldOp[0]
+.names $false rvmulti.ctr.oldOp[0]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.ctr.oldOp[1]
+.names $false rvmulti.ctr.oldOp[1]
 1 1
 .names $false rvmulti.ctr.oldOp[2]
 1 1
 .names $false rvmulti.ctr.oldOp[3]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.ctr.oldOp[4]
+.names $false rvmulti.ctr.oldOp[4]
 1 1
 .names $false rvmulti.ctr.oldOp[5]
 1 1
@@ -2468,33 +2402,33 @@
 1 1
 .names resetn rvmulti.dp.Data_RD2.resetn
 1 1
-.names $true rvmulti.dp.IRWrite
+.names $false rvmulti.dp.IRWrite
 1 1
-.names $undef rvmulti.dp.ImmSrc[0]
+.names $false rvmulti.dp.ImmSrc[0]
 1 1
-.names $undef rvmulti.dp.ImmSrc[1]
+.names $false rvmulti.dp.ImmSrc[1]
 1 1
 .names $false rvmulti.dp.ImmSrc[2]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.Instr[0]
+.names $false rvmulti.dp.Instr[0]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.Instr[1]
+.names $false rvmulti.dp.Instr[1]
 1 1
 .names $false rvmulti.dp.Instr[2]
 1 1
 .names $false rvmulti.dp.Instr[3]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.Instr[4]
+.names $false rvmulti.dp.Instr[4]
 1 1
 .names $false rvmulti.dp.Instr[5]
 1 1
 .names $false rvmulti.dp.Instr[6]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.Instr[7]
+.names $false rvmulti.dp.Instr[7]
 1 1
 .names $false rvmulti.dp.Instr[8]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.Instr[9]
+.names $false rvmulti.dp.Instr[9]
 1 1
 .names $false rvmulti.dp.Instr[10]
 1 1
@@ -2606,7 +2540,7 @@
 1 1
 .names $false rvmulti.dp.InstrFF.d[31]
 1 1
-.names $true rvmulti.dp.InstrFF.en
+.names $false rvmulti.dp.InstrFF.en
 1 1
 .names $false rvmulti.dp.InstrFF.id[0]
 1 1
@@ -2614,25 +2548,25 @@
 1 1
 .names $false rvmulti.dp.InstrFF.id[2]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.InstrFF.q[0]
+.names $false rvmulti.dp.InstrFF.q[0]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.InstrFF.q[1]
+.names $false rvmulti.dp.InstrFF.q[1]
 1 1
 .names $false rvmulti.dp.InstrFF.q[2]
 1 1
 .names $false rvmulti.dp.InstrFF.q[3]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.InstrFF.q[4]
+.names $false rvmulti.dp.InstrFF.q[4]
 1 1
 .names $false rvmulti.dp.InstrFF.q[5]
 1 1
 .names $false rvmulti.dp.InstrFF.q[6]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.InstrFF.q[7]
+.names $false rvmulti.dp.InstrFF.q[7]
 1 1
 .names $false rvmulti.dp.InstrFF.q[8]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.InstrFF.q[9]
+.names $false rvmulti.dp.InstrFF.q[9]
 1 1
 .names $false rvmulti.dp.InstrFF.q[10]
 1 1
@@ -2812,7 +2746,7 @@
 1 1
 .names $false rvmulti.dp.OldPCFF.d[31]
 1 1
-.names $true rvmulti.dp.OldPCFF.en
+.names $false rvmulti.dp.OldPCFF.en
 1 1
 .names $true rvmulti.dp.OldPCFF.id[0]
 1 1
@@ -4070,17 +4004,17 @@
 1 1
 .names $false rvmulti.dp.data[31]
 1 1
-.names $undef rvmulti.dp.ext.immsrc[0]
+.names $false rvmulti.dp.ext.immsrc[0]
 1 1
-.names $undef rvmulti.dp.ext.immsrc[1]
+.names $false rvmulti.dp.ext.immsrc[1]
 1 1
 .names $false rvmulti.dp.ext.immsrc[2]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.ext.instr[7]
+.names $false rvmulti.dp.ext.instr[7]
 1 1
 .names $false rvmulti.dp.ext.instr[8]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.ext.instr[9]
+.names $false rvmulti.dp.ext.instr[9]
 1 1
 .names $false rvmulti.dp.ext.instr[10]
 1 1
@@ -4208,15 +4142,15 @@
 1 1
 .names $false rvmulti.dp.funct7b5[30]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.oldOp[0]
+.names $false rvmulti.dp.oldOp[0]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.oldOp[1]
+.names $false rvmulti.dp.oldOp[1]
 1 1
 .names $false rvmulti.dp.oldOp[2]
 1 1
 .names $false rvmulti.dp.oldOp[3]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.oldOp[4]
+.names $false rvmulti.dp.oldOp[4]
 1 1
 .names $false rvmulti.dp.oldOp[5]
 1 1
@@ -12700,6 +12634,70 @@
 1 1
 .names resetn rvmulti.dp.ram.resetn
 1 1
+.names $false rvmulti.dp.ram.toggle_value[0]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[1]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[2]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[3]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[4]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[5]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[6]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[7]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[8]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[9]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[10]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[11]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[12]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[13]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[14]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[15]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[16]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[17]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[18]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[19]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[20]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[21]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[22]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[23]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[24]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[25]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[26]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[27]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[28]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[29]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[30]
+1 1
+.names $false rvmulti.dp.ram.toggle_value[31]
+1 1
 .names $false rvmulti.dp.ram.wd[0]
 1 1
 .names $false rvmulti.dp.ram.wd[1]
@@ -13112,11 +13110,11 @@
 1 1
 .names $false rvmulti.dp.rf.a2[4]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.rf.a3[0]
+.names $false rvmulti.dp.rf.a3[0]
 1 1
 .names $false rvmulti.dp.rf.a3[1]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.dp.rf.a3[2]
+.names $false rvmulti.dp.rf.a3[2]
 1 1
 .names $false rvmulti.dp.rf.a3[3]
 1 1
@@ -13838,6 +13836,70 @@
 1 1
 .names $false rvmulti.dp.srcbmux.y[31]
 1 1
+.names $false rvmulti.dp.toggle_value[0]
+1 1
+.names $false rvmulti.dp.toggle_value[1]
+1 1
+.names $false rvmulti.dp.toggle_value[2]
+1 1
+.names $false rvmulti.dp.toggle_value[3]
+1 1
+.names $false rvmulti.dp.toggle_value[4]
+1 1
+.names $false rvmulti.dp.toggle_value[5]
+1 1
+.names $false rvmulti.dp.toggle_value[6]
+1 1
+.names $false rvmulti.dp.toggle_value[7]
+1 1
+.names $false rvmulti.dp.toggle_value[8]
+1 1
+.names $false rvmulti.dp.toggle_value[9]
+1 1
+.names $false rvmulti.dp.toggle_value[10]
+1 1
+.names $false rvmulti.dp.toggle_value[11]
+1 1
+.names $false rvmulti.dp.toggle_value[12]
+1 1
+.names $false rvmulti.dp.toggle_value[13]
+1 1
+.names $false rvmulti.dp.toggle_value[14]
+1 1
+.names $false rvmulti.dp.toggle_value[15]
+1 1
+.names $false rvmulti.dp.toggle_value[16]
+1 1
+.names $false rvmulti.dp.toggle_value[17]
+1 1
+.names $false rvmulti.dp.toggle_value[18]
+1 1
+.names $false rvmulti.dp.toggle_value[19]
+1 1
+.names $false rvmulti.dp.toggle_value[20]
+1 1
+.names $false rvmulti.dp.toggle_value[21]
+1 1
+.names $false rvmulti.dp.toggle_value[22]
+1 1
+.names $false rvmulti.dp.toggle_value[23]
+1 1
+.names $false rvmulti.dp.toggle_value[24]
+1 1
+.names $false rvmulti.dp.toggle_value[25]
+1 1
+.names $false rvmulti.dp.toggle_value[26]
+1 1
+.names $false rvmulti.dp.toggle_value[27]
+1 1
+.names $false rvmulti.dp.toggle_value[28]
+1 1
+.names $false rvmulti.dp.toggle_value[29]
+1 1
+.names $false rvmulti.dp.toggle_value[30]
+1 1
+.names $false rvmulti.dp.toggle_value[31]
+1 1
 .names $false rvmulti.funct3[0]
 1 1
 .names $false rvmulti.funct3[1]
@@ -13920,15 +13982,15 @@
 1 1
 .names $false rvmulti.funct7b5[30]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.oldOp[0]
+.names $false rvmulti.oldOp[0]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.oldOp[1]
+.names $false rvmulti.oldOp[1]
 1 1
 .names $false rvmulti.oldOp[2]
 1 1
 .names $false rvmulti.oldOp[3]
 1 1
-.names rvmulti.dp.DataFF.q[0] rvmulti.oldOp[4]
+.names $false rvmulti.oldOp[4]
 1 1
 .names $false rvmulti.oldOp[5]
 1 1
@@ -13949,5 +14011,133 @@
 .names $false rvmulti.op[6]
 1 1
 .names resetn rvmulti.resetn
+1 1
+.names $false rvmulti.toggle_value[0]
+1 1
+.names $false rvmulti.toggle_value[1]
+1 1
+.names $false rvmulti.toggle_value[2]
+1 1
+.names $false rvmulti.toggle_value[3]
+1 1
+.names $false rvmulti.toggle_value[4]
+1 1
+.names $false rvmulti.toggle_value[5]
+1 1
+.names $false rvmulti.toggle_value[6]
+1 1
+.names $false rvmulti.toggle_value[7]
+1 1
+.names $false rvmulti.toggle_value[8]
+1 1
+.names $false rvmulti.toggle_value[9]
+1 1
+.names $false rvmulti.toggle_value[10]
+1 1
+.names $false rvmulti.toggle_value[11]
+1 1
+.names $false rvmulti.toggle_value[12]
+1 1
+.names $false rvmulti.toggle_value[13]
+1 1
+.names $false rvmulti.toggle_value[14]
+1 1
+.names $false rvmulti.toggle_value[15]
+1 1
+.names $false rvmulti.toggle_value[16]
+1 1
+.names $false rvmulti.toggle_value[17]
+1 1
+.names $false rvmulti.toggle_value[18]
+1 1
+.names $false rvmulti.toggle_value[19]
+1 1
+.names $false rvmulti.toggle_value[20]
+1 1
+.names $false rvmulti.toggle_value[21]
+1 1
+.names $false rvmulti.toggle_value[22]
+1 1
+.names $false rvmulti.toggle_value[23]
+1 1
+.names $false rvmulti.toggle_value[24]
+1 1
+.names $false rvmulti.toggle_value[25]
+1 1
+.names $false rvmulti.toggle_value[26]
+1 1
+.names $false rvmulti.toggle_value[27]
+1 1
+.names $false rvmulti.toggle_value[28]
+1 1
+.names $false rvmulti.toggle_value[29]
+1 1
+.names $false rvmulti.toggle_value[30]
+1 1
+.names $false rvmulti.toggle_value[31]
+1 1
+.names $false toggle_value[0]
+1 1
+.names $false toggle_value[1]
+1 1
+.names $false toggle_value[2]
+1 1
+.names $false toggle_value[3]
+1 1
+.names $false toggle_value[4]
+1 1
+.names $false toggle_value[5]
+1 1
+.names $false toggle_value[6]
+1 1
+.names $false toggle_value[7]
+1 1
+.names $false toggle_value[8]
+1 1
+.names $false toggle_value[9]
+1 1
+.names $false toggle_value[10]
+1 1
+.names $false toggle_value[11]
+1 1
+.names $false toggle_value[12]
+1 1
+.names $false toggle_value[13]
+1 1
+.names $false toggle_value[14]
+1 1
+.names $false toggle_value[15]
+1 1
+.names $false toggle_value[16]
+1 1
+.names $false toggle_value[17]
+1 1
+.names $false toggle_value[18]
+1 1
+.names $false toggle_value[19]
+1 1
+.names $false toggle_value[20]
+1 1
+.names $false toggle_value[21]
+1 1
+.names $false toggle_value[22]
+1 1
+.names $false toggle_value[23]
+1 1
+.names $false toggle_value[24]
+1 1
+.names $false toggle_value[25]
+1 1
+.names $false toggle_value[26]
+1 1
+.names $false toggle_value[27]
+1 1
+.names $false toggle_value[28]
+1 1
+.names $false toggle_value[29]
+1 1
+.names $false toggle_value[30]
+1 1
+.names $false toggle_value[31]
 1 1
 .end

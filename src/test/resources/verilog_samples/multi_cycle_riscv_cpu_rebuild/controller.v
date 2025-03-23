@@ -476,38 +476,66 @@ module controller (
         ErrorState          = 5'b01111       // S15 "ERROR" State
         ;
 
+    // wire resetn2 = 0;
+
     // current state and next state
-    reg [4:0] current_state;
+    reg [4:0] current_state = ResetState;
     reg [4:0] next_state;
 
     // sequential memory of the Moore FSM
-    always @(posedge clk, negedge resetn)
+    always @(posedge clk)
     begin
-        if (resetn == 0)
+        // if (resetn == 0)
+        // begin
+        //     //$display("[controller] resetn");
+        //     // when resetn=0, reset the state of the FSM to "FetchState_1" State
+        //     // current_state = FetchState_1;
+        //     //current_state = ResetState;
+
+        //     // PCWrite = 1'b0;
+        //     // // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
+        //     // AdrSrc = 1'b0; // this connects the PC flip flop to the instruction memory
+        //     // MemWrite = 1'b0; // not writing into memory
+        //     // IRWrite = 1'b0; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
+        //     // RegWrite = 1'b0;
+        //     // ImmSrc = 2'b00; // no immediate extension required
+        //     // // ACTION 2 - increment PC
+        //     // ALUSrcA = 2'b00; // PC
+        //     // ALUSrcB = 2'b00; // hardcoded 4
+        //     // ALUControl = 3'b000; // add operation
+        //     // ResultSrc = 2'b00; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
+        // end
+        // else
+        // begin
+        //     //$display("[controller] next state");
+        //     // otherwise, next state
+        //     current_state = next_state;
+        // end
+
+        if (resetn == 1)
         begin
-            $display("[controller] resetn");
-            // when resetn=0, reset the state of the FSM to "FetchState_1" State
-            //current_state = FetchState_1;
-            current_state = ResetState;
+            $display("[controller] next state");
+            current_state = next_state;
+        end
+        else
+        begin
+            $display("[controller] Resetting.");
+
+            current_state = FetchState_1;
 
             PCWrite = 1'b0;
             // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
             AdrSrc = 1'b0; // this connects the PC flip flop to the instruction memory
             MemWrite = 1'b0; // not writing into memory
-            IRWrite = 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
+            IRWrite = 1'b0; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
             RegWrite = 1'b0;
-            ImmSrc = 2'bxx; // no immediate extension required
+            ImmSrc = 2'b00; // no immediate extension required
             // ACTION 2 - increment PC
             ALUSrcA = 2'b00; // PC
             ALUSrcB = 2'b00; // hardcoded 4
             ALUControl = 3'b000; // add operation
             ResultSrc = 2'b00; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
-        end
-        else
-        begin
-            $display("[controller] next state");
-            // otherwise, next state
-            current_state = next_state;
+
         end
     end
 
@@ -523,7 +551,24 @@ module controller (
     begin
         case(current_state)
 
-            // S0 "Fetch_1" State
+            // // S0 "Reset" State
+            // ResetState:
+            // begin
+            //     PCWrite = 1'b0;
+            //     // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
+            //     AdrSrc = 1'b0; // this connects the PC flip flop to the instruction memory
+            //     MemWrite = 1'b0; // not writing into memory
+            //     IRWrite = 1'b0; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
+            //     RegWrite = 1'b0;
+            //     ImmSrc = 2'b00; // no immediate extension required
+            //     // ACTION 2 - increment PC
+            //     ALUSrcA = 2'b00; // PC
+            //     ALUSrcB = 2'b00; // hardcoded 4
+            //     ALUControl = 3'b000; // add operation
+            //     ResultSrc = 2'b00; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
+            // end
+
+            // S1 "Fetch_1" State
             FetchState_1:
             begin
                 $display("");
@@ -543,10 +588,11 @@ module controller (
                 ImmSrc = 3'bxxx; // no immediate extension required
                 ALUControl = 3'b000; // add operation
                 ResultSrc = 2'b10; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
-
             end
 
-            // S1 "Decode" State
+            // S2 "Fetch_2" State
+
+            // S3 "Decode" State
             DecodeState:
             begin
                 $display("");
@@ -563,7 +609,7 @@ module controller (
                 AdrSrc = 1'bx;
                 RegWrite = 1'b0;
                 MemWrite = 1'b0;
-                ImmSrc = decodeImmSrc(op, funct3, funct7);
+                ImmSrc = decodeImmSrc(op, funct3, funct7); // tell the sign extender how to correctly read the bits for the immediate value encoded in the instruction.
                 IRWrite = 1'b0;
             end
 
@@ -841,16 +887,17 @@ module controller (
 
         case(current_state)
 
-            // S0 "Reset" State
-            ResetState:
-            begin
-                $display("resetn: %d", resetn);
-                if (resetn == 1)
-                begin
-                    $display("[controller] goto ResetState -> FetchState_1");
-                    next_state = FetchState_1;
-                end
-            end
+            // This causes a combinational loop
+            // // S0 "Reset" State
+            // ResetState:
+            // begin
+            //     //$display("resetn: %d", resetn);
+            //     if (resetn == 1)
+            //     begin
+            //         $display("[controller] goto ResetState -> FetchState_1");
+            //         next_state = FetchState_1;
+            //     end
+            // end
 
             // S1 "Fetch_1" State
             FetchState_1:
@@ -859,7 +906,9 @@ module controller (
                 next_state = DecodeState;
             end
 
-            // S1 "Decode" State
+            // S2 "Fetch_2" State
+
+            // S3 "Decode" State
             DecodeState:
             begin
 

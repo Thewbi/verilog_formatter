@@ -48,8 +48,13 @@ iceprog -d i:0x0403:0x6010:0 build/aout.bin
 
 * Do not ever use uninitialized memory (RAM for instructions or data)! You will hunt non-existent bugs in your CPU for hours! Instead, initialize all cells to zero.
 * Prevent out of bounds memory. It is possible to access a memory cell that has not been defined/reserved! You design will read undefined (x) values and it will break.
+* Every if needs an else. Every switch needs a case for all possibilities. The value space has to be covered!
 * Check modules using testbenches. Go bottom up. Check the lower modules first before you use them in larger modules!
 * Simulation with Icarus Verilog and the synthesized design using yosys may differ from each other! It is possible to generate a design that performs correctly in simulation and fails on the hardware after flashing the bitstream! This is a huge problem!
 * When writing combinational logic like this think about what are the inputs and outputs of the block. If it's an output you should only write to it if it's an input only read from it. Anything you want to read and write should be some internal signal to that block (i.e. not accessed anywhere else) and must be written first (otherwise you end up with this kind of situation with some kind of latching behaviour).
 * Verilog is capable of all kinds of weird and wonderful behaviours due to it's many event regions and scheduling semantics. Don't play tricks with them it's likely to end badly as they're poorly specified and each synthesis tool will have it's own spin on how to deal with odd cases. Generally people follow a strict style guide to keep things simple and avoid issues like this and many of the possible race conditions that exist.
 * yosys has horrible error output or output in general. It will output so much to the console that you can almost not see any errors or warnings! Better use Icarus Verilog first for linting. Icarus Verilog will abort when undefined signals are used for example. Such errors are completely buried by the pages of output that yosys produces.
+
+# Errors
+
+If nextpnr detects combinational loops, check if a value to the same register variable is set by to processes that have the same signal in their sensitivity list. (Example a reset signal is used in two different processes that set the same variable to different values)

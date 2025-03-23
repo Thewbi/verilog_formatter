@@ -10,7 +10,7 @@ module ram(
 
     // output
     output reg [31:0] rd, // data read from memory
-    output wire [31:0] toggle_value
+    output reg [31:0] toggle_value
 );
 
     // initial
@@ -24,6 +24,7 @@ module ram(
     begin
         if (resetn == 0)
         begin
+
             // RAM[32'd00] = 32'h00000000;
             // RAM[32'd04] = 32'h00000000;
             // RAM[32'd08] = 32'h00000000;
@@ -63,12 +64,58 @@ module ram(
             // RAM[32'd120] = 32'h00000000;
             // RAM[32'd124] = 32'h00000000;
 
+
+
+
+            // lui test - load teh value 0x0098967e == 9.999.998
+
+            // RAM[32'd00] = 32'h009893b7; // lui x7, 2441 (0x989). 2441 is sign extended to 20 bits, then shifted left by 12. 0x989 << 12 = 0x989000. [regfile] WriteBack. a3= 7, wd3=0x00989000
+            // RAM[32'd04] = 32'h67e38393; // addi x7, x7, 1662 (0x67E) --> writeback: [regfile] WriteBack. a3= 7, wd3=0x0098967e
+            // RAM[32'd08] = 32'h00000000;
+            // RAM[32'd12] = 32'h00000000;
+            // RAM[32'd16] = 32'h00000000;
+
+            // RAM[32'd20] = 32'h00000000;
+            // RAM[32'd24] = 32'h00000000;
+            // RAM[32'd28] = 32'h00000000;
+            // RAM[32'd32] = 32'h00000000;
+            // RAM[32'd36] = 32'h00000000;
+
+            // RAM[32'd40] = 32'h00000000;
+            // RAM[32'd44] = 32'h00000000;
+            // RAM[32'd48] = 32'h00000000;
+            // RAM[32'd52] = 32'h00000000;
+            // RAM[32'd56] = 32'h00000000;
+
+            // RAM[32'd60] = 32'h00000000;
+            // RAM[32'd64] = 32'h00000000;
+            // RAM[32'd68] = 32'h00000000;
+            // RAM[32'd72] = 32'h00000000;
+            // RAM[32'd76] = 32'h00000000;
+
+            // RAM[32'd80] = 32'h00000000;
+            // RAM[32'd84] = 32'h00000000;
+            // RAM[32'd88] = 32'h00000000;
+            // RAM[32'd92] = 32'h00000000;
+            // RAM[32'd96] = 32'h00000000;
+
+            // RAM[32'd100] = 32'h00000000;
+            // RAM[32'd104] = 32'h00000000;
+            // RAM[32'd108] = 32'h00000000;
+            // RAM[32'd112] = 32'h00000000;
+            // RAM[32'd116] = 32'h00000000;
+
+            // RAM[32'd120] = 32'h00000000;
+            // RAM[32'd124] = 32'h00000000;
+
+
+
+
+
             // this application loops forever and toggles a bit in the memory cell 60d = 0x3C every 9999999 iterations.
             // use godbolt (https://godbolt.org/) to compile this using a riscv 32bit gcc
 
-
-
-            // // 9.999.999
+            // // 9.999.998
             // RAM[32'd00] = 32'h00000293; // inita:        addi x5, x0, 0x0
             // RAM[32'd04] = 32'h00000313; //               addi x6, x0, 0x0
             // RAM[32'd08] = 32'h009893b7; //               lui x15, 2441
@@ -98,19 +145,19 @@ module ram(
             // 02602e23
             // fd9ff06f
 
-            RAM[32'd00] = 32'h 00000293; // inita:        addi x5, x0, 0x0
-            RAM[32'd04] = 32'h 00000313; //               addi x6, x0, 0x0
-            RAM[32'd08] = 32'h 000f43b7; //               lui x15, 2441
-            RAM[32'd12] = 32'h 23f38393; //               addi x15, x15, 1662
-            RAM[32'd16] = 32'h 00728663; // loop_head:    beq x5, x7, 0xC     # if (x5 == x7) jump to loop_end
+            RAM[32'd00] = 32'h00000293; // inita:        addi x5, x0, 0x0
+            RAM[32'd04] = 32'h00000313; //               addi x6, x0, 0x0
+            RAM[32'd08] = 32'h000f43b7; //               lui x7, 244/0xf4
+            RAM[32'd12] = 32'h23f38393; //               addi x7, x7, 575/0x23f
+            RAM[32'd16] = 32'h00728663; // loop_head:    beq x5, x7, 0xC     # if (x5 == x7) jump to loop_end
 
-            RAM[32'd20] = 32'h 00128293; //               addi x5, x5, 1
-            RAM[32'd24] = 32'h ff9ff06f; //               jal x0, -8          # jal loop head
-            RAM[32'd28] = 32'h 03c02303; // loop_end:     lw x6, 60(x0)
-            RAM[32'd32] = 32'h 00134313; //               xori x6, x6, 1
-            RAM[32'd36] = 32'h 02602e23; //               sw x6, 60(x0)
+            RAM[32'd20] = 32'h00128293; //               addi x5, x5, 1
+            RAM[32'd24] = 32'hff9ff06f; //               jal x0, -8          # jal loop head
+            RAM[32'd28] = 32'h03c02303; // loop_end:     lw x6, 60(x0)
+            RAM[32'd32] = 32'h00134313; //               xori x6, x6, 1
+            RAM[32'd36] = 32'h02602e23; //               sw x6, 60(x0)
 
-            RAM[32'd40] = 32'h fd9ff06f; //               jal x0, -36         # jal inita
+            RAM[32'd40] = 32'hfd9ff06f; //               jal x0, -36         # jal inita
             RAM[32'd44] = 32'h00000000;
             RAM[32'd48] = 32'h00000000;
             RAM[32'd52] = 32'h00000000;
@@ -153,7 +200,7 @@ module ram(
     always @(posedge clk)
     begin
         rd = RAM[a[31:0]];
-
+        toggle_value = RAM[32'd60]; // memory mapped I/O for the green LED
         $display("[RAM] WriteEnable: %d, Address: 0x%08h, WriteData: 0x%08h, ReadData: 0x%08h", we, a, wd, rd);
     end
 

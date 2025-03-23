@@ -35,7 +35,8 @@ module extend(
             3'b100:
             begin
                 $display("[extend] U Type");
-                immext = { { 12{instr[31]} }, instr[31:12] };
+                //immext = { { 12{instr[31]} }, instr[31:12] };
+                immext = { instr[31:12], 12'b000000000000 };
             end
 
             // J−type (jal)

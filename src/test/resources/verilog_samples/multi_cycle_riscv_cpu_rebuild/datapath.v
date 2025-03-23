@@ -49,20 +49,7 @@ module datapath(
     wire [31:0] Result;
     wire [31:0] SrcA;
 
-    // initial
-    //     begin
-    //         $dumpfile("test2.vcd");
-    //         $dumpvars(0, PC);
-    //     end
-
-    // // sequential memory of the Moore FSM
-    // always @(posedge reset)
-    // begin
-    //     if (reset == 1)
-    //     begin
-    //         PC = 0;
-    //     end
-    // end
+    // wire [31:0]      toggle_value;
 
     always @(posedge MemWrite)
     begin
@@ -70,7 +57,8 @@ module datapath(
     end
 
     //      clk    resetn,    write enable    addr        data to write           output read data
-    ram ram(clk,   resetn,    MemWrite,       adr,        WriteData,              ReadData, toggle_value);
+    ram ram(clk,   resetn,    MemWrite,       adr,        WriteData,              ReadData, toggle_value
+    );
 
     //          clk     write enable    addr        data            output read data
     //dmem dmem(  clk,    MemWrite,       Result,     WriteData,      ReadDData);
@@ -159,3 +147,21 @@ module datapath(
     mux3 #(32) resultmux(   ALUOut,          data,              ALUResult,          ResultSrc,          Result);
 
 endmodule
+
+
+
+
+// initial
+    //     begin
+    //         $dumpfile("test2.vcd");
+    //         $dumpvars(0, PC);
+    //     end
+
+    // // sequential memory of the Moore FSM
+    // always @(posedge reset)
+    // begin
+    //     if (reset == 1)
+    //     begin
+    //         PC = 0;
+    //     end
+    // end

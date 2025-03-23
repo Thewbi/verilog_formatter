@@ -26,7 +26,9 @@ module riscv_multi(
     wire [1:0]      ALUSrcB;
     wire [1:0]      ALUSrcA;
 
+    // wire [31:0]      toggle_value;
 
+    // wire resetn2 = 0;
 
     controller ctr (
         // clock and reset

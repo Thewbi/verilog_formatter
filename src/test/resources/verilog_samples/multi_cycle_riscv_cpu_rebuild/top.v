@@ -4,7 +4,7 @@ module top(
     output reg led_green
 );
 
-    wire [31:0]      toggle_value;
+    wire [31:0] toggle_value;
 
     always @(posedge clk)
     begin
@@ -14,11 +14,14 @@ module top(
     // https://stackoverflow.com/questions/38030768/icestick-yosys-using-the-global-set-reset-gsr
     wire resetn;
     reg [3:0] rststate = 0;
-    assign resetn = &rststate; // and all bits of rststate together which yields a 1 only after rststate reached 0x0F.
+
     always @(posedge clk)
     begin
         rststate <= rststate + !resetn; // once resetn turns to 1, rststate is not incremented any more
     end
+
+    //assign resetn = 0;
+    assign resetn = &rststate; // and all bits of rststate together which yields a 1 only after rststate reached 0x0F.
 
     riscv_multi rvmulti(
         // clock and reset
