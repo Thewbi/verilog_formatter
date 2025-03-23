@@ -1,5 +1,3 @@
-
-
 // control unit or control logic for the multicycle CPU
 //
 // This module implements a state machine that produces
@@ -31,7 +29,11 @@ module controller (
     output  reg [1:0]   ALUSrcB,    // decides which line goes into the ALU B parameter input
     output  reg [1:0]   ALUSrcA,    // decides which line goes into the ALU A parameter input
     output  reg [2:0]   ImmSrc,     // enable sign extension of the immediate value
-    output  reg         RegWrite   // write enable for the register file
+    output  reg         RegWrite,   // write enable for the register file
+
+    // DEBUG UART
+    output reg [7:0]   tx_Data,
+    output reg         tx_DataValid
 );
 
     function [2:0] decodeAluOp (input [6:0] opcode, input [2:0] funct3, input [6:0] funct7);
@@ -476,8 +478,6 @@ module controller (
         ErrorState          = 5'b01111       // S15 "ERROR" State
         ;
 
-    // wire resetn2 = 0;
-
     // current state and next state
     reg [4:0] current_state = ResetState;
     reg [4:0] next_state;
@@ -537,6 +537,109 @@ module controller (
             ResultSrc = 2'b00; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
 
         end
+    end
+
+    always @(posedge clk)
+    begin
+        case(current_state)
+
+            ResetState:
+            begin
+                tx_Data = 8'h41;
+                tx_DataValid = 1'b1;
+            end
+
+            FetchState_1:
+            begin
+                tx_Data = 8'h42;
+                tx_DataValid = 1'b1;
+            end
+
+            FetchState_2:
+            begin
+                tx_Data = 8'h43;
+                tx_DataValid = 1'b1;
+            end
+
+            DecodeState:
+            begin
+                tx_Data = 8'h44;
+                tx_DataValid = 1'b1;
+            end
+
+            MemAddrState:
+            begin
+                tx_Data = 8'h45;
+                tx_DataValid = 1'b1;
+            end
+
+            MemReadState:
+            begin
+                tx_Data = 8'h46;
+                tx_DataValid = 1'b1;
+            end
+
+            MemWBState:
+            begin
+                tx_Data = 8'h47;
+                tx_DataValid = 1'b1;
+            end
+
+            MemWriteState:
+            begin
+                tx_Data = 8'h48;
+                tx_DataValid = 1'b1;
+            end
+
+            ExecuteRState:
+            begin
+                tx_Data = 8'h49;
+                tx_DataValid = 1'b1;
+            end
+
+            ALUWriteBackState:
+            begin
+                tx_Data = 8'h50;
+                tx_DataValid = 1'b1;
+            end
+
+            ExecuteIState:
+            begin
+                tx_Data = 8'h51;
+                tx_DataValid = 1'b1;
+            end
+
+            JALState:
+            begin
+                tx_Data = 8'h52;
+                tx_DataValid = 1'b1;
+            end
+
+            BEQState:
+            begin
+                tx_Data = 8'h53;
+                tx_DataValid = 1'b1;
+            end
+
+            BRANCH_TAKEN_CHECK:
+            begin
+                tx_Data = 8'h54;
+                tx_DataValid = 1'b1;
+            end
+
+            LUI_STATE:
+            begin
+                tx_Data = 8'h55;
+                tx_DataValid = 1'b1;
+            end
+
+            ErrorState:
+            begin
+                tx_Data = 8'h56;
+                tx_DataValid = 1'b1;
+            end
+
+        endcase
     end
 
     //

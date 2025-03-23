@@ -12,6 +12,13 @@ module top(
 );
 
     //
+    // clock
+    //
+
+    wire clk_divided;
+    clock_divider clk_div(clk, clk_divided);
+
+    //
     // memory mapped I/O
     //
 
@@ -30,7 +37,7 @@ module top(
     wire resetn;
     reg [3:0] rststate = 0;
 
-    always @(posedge clk)
+    always @(posedge clk_divided)
     begin
         rststate <= rststate + !resetn; // once resetn turns to 1, rststate is not incremented any more
     end
@@ -42,8 +49,15 @@ module top(
     // UART
     //
 
-    reg [7:0] tx_byte = 8'h41; //= 8'h00;
-    reg tx_DataValid = 1'b0;
+    // use this for a test within this file
+    //reg [7:0] tx_Data = 8'h00;
+    // reg [7:0] tx_Data = 8'h41;
+    //reg tx_DataValid = 1'b0;
+
+    // use this for signals that go through several modules
+    wire [7:0] tx_Data;
+    wire tx_DataValid;
+
     wire tx_Active;
     wire tx_Done;
     reg tx_Done_reg = 1'b0;
@@ -60,7 +74,7 @@ module top(
     uart_tx #(.CLKS_PER_BIT(104)) utx(
         .i_Clock(clk),
         .i_Tx_DV(tx_DataValid),
-        .i_Tx_Byte(tx_byte),
+        .i_Tx_Byte(tx_Data),
         .o_Tx_Active(tx_Active),
         .o_Tx_Serial(ftdi_tx),
         .o_Tx_Done(tx_Done)
@@ -96,23 +110,31 @@ module top(
     assign slow_clock = slow_clock_counter[24]; // slow
 
     // count up
-    always @(posedge clk) begin
-
+    always @(posedge clk)
+    begin
         slow_clock_counter = slow_clock_counter + 1;
-        uart_tx_counter = uart_tx_counter + 1;
-
-        if (tx_Done == 1'b1)
-        begin
-            tx_DataValid = 1'b0;
-        end
-
-        if (uart_tx_counter == 32'd9999999)
-        begin
-            tx_DataValid = 1'b1;
-            uart_tx_counter = 0;
-        end
-
     end
+
+    // UART local file test
+    // // count up
+    // always @(posedge clk)
+    // begin
+
+    //     uart_tx_counter = uart_tx_counter + 1;
+
+    //     if (tx_Done == 1'b1)
+    //     begin
+    //         tx_DataValid = 1'b0;
+    //     end
+
+    //     // DEBUG send by clock tick
+    //     if (uart_tx_counter == 32'd9999999)
+    //     begin
+    //         tx_DataValid = 1'b1;
+    //         uart_tx_counter = 0;
+    //     end
+
+    // end
 
     always @(posedge slow_clock)
     begin
@@ -128,9 +150,13 @@ module top(
 
     riscv_multi rvmulti(
         // clock and reset
-        clk,
+        clk_divided,
         resetn, // the system should reset, when resetn is 0. The system should keep running, when resetn is 1.
-        toggle_value
+        toggle_value,
+
+        // DEBUG UART
+        tx_Data,
+        tx_DataValid
     );
 
 endmodule

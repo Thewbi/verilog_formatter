@@ -1,9 +1,12 @@
 module riscv_multi(
     // clock and reset
-    input wire clk,
-    input wire resetn,
+    input wire              clk,
+    input wire              resetn,
 
-    output wire [31:0]      toggle_value
+    output wire [31:0]      toggle_value,
+
+    output reg [7:0]       tx_Data,
+    output reg             tx_DataValid
 );
 
     wire [31:0]     Instr;
@@ -14,10 +17,10 @@ module riscv_multi(
     wire [31:0]     PC;
     wire [31:0]     ReadData;   // instruction memory
 
-    wire PCWrite;
-    wire AdrSrc;
-    wire MemWrite;
-    wire IRWrite;
+    wire            PCWrite;
+    wire            AdrSrc;
+    wire            MemWrite;
+    wire            IRWrite;
 
     // wire [31:0] ReadDData;  // data memory
     wire [1:0]      ResultSrc;
@@ -31,10 +34,6 @@ module riscv_multi(
     wire [6:0]      funct7;
     wire [1:0]      ALUSrcB;
     wire [1:0]      ALUSrcA;
-
-    // wire [31:0]      toggle_value;
-
-    // wire resetn2 = 0;
 
     controller ctr (
         // clock and reset
@@ -50,7 +49,6 @@ module riscv_multi(
         Zero,           // ALU result is zero
         PC,             // current programm counter
         ReadData,
-        // ReadDData,
 
         // output
         PCWrite,
@@ -62,12 +60,15 @@ module riscv_multi(
         ALUSrcB,        // decides which line goes into the ALU B parameter input
         ALUSrcA,        // decides which line goes into the ALU A parameter input
         ImmSrc,         // enable sign extension of the immediate value
-        RegWrite       // write enable for the register file
+        RegWrite,       // write enable for the register file
+
+        // UART
+        tx_Data,
+        tx_DataValid
     );
 
-    //aludec alu_decoder(opb5, funct3, funct7b5, ALUOp, ALUControl);
-
     datapath dp (
+
         // clock and reset
         clk,
         resetn,
@@ -81,7 +82,6 @@ module riscv_multi(
         Zero,
         PC,
         ReadData,       // instruction memory
-        // ReadDData,      // data memory
 
         // input
         PCWrite,
@@ -93,7 +93,7 @@ module riscv_multi(
         ALUSrcB,        // decides which line goes into the ALU B parameter input
         ALUSrcA,        // decides which line goes into the ALU A parameter input
         ImmSrc,         // enable sign extension of the immediate value
-        RegWrite,        // write enable for the register file
+        RegWrite,       // write enable for the register file
 
         toggle_value
     );

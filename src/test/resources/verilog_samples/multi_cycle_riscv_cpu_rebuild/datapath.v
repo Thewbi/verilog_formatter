@@ -101,6 +101,15 @@ module datapath(
     //     funct7b5 <= Instr[30:0];
     // end
 
+    // always @(negedge resetn)
+    always @(posedge clk)
+    begin
+        if (resetn == 0)
+        begin
+            PC = 32'b0; // initialize PC to zero
+        end
+    end
+
     // register file logic
     regfile rf (
 
