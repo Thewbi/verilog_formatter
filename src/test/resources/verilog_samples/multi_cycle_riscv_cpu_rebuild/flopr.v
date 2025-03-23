@@ -4,14 +4,14 @@
 module flopr #(parameter WIDTH = 8) (
     input wire [2:0] id,
     input wire clk,             // clock input
-    input wire reset,           // reset input
+    input wire resetn,          // resetn input
     input wire [WIDTH-1:0] d,   // [in] d as in data. This is the input data
     output reg [WIDTH-1:0] q    // [out] this is the value stores in the flip flop
 );
 
-    always @(posedge clk, posedge reset)
+    always @(posedge clk, negedge resetn)
 
-        if (reset)
+        if (resetn == 0)
         begin
             $display("[FLOPR]");
             q <= 0;

@@ -6,9 +6,9 @@
 // controll signals based on the operation processed currently
 module controller (
 
-    // clk and reset
+    // clk and resetn
     input   wire        clk,
-    input   wire        reset,
+    input   wire        resetn, // reset when resetn is 0. Run when resetn is 1.
 
     // input
     input   wire [6:0]  op,         // operation code from within the instruction
@@ -33,8 +33,6 @@ module controller (
     output  reg [2:0]   ImmSrc,     // enable sign extension of the immediate value
     output  reg         RegWrite   // write enable for the register file
 );
-
-    //reg [2:0]   newALUControl;
 
     function [2:0] decodeAluOp (input [6:0] opcode, input [2:0] funct3, input [6:0] funct7);
     begin
@@ -437,21 +435,21 @@ module controller (
     end
     endfunction
 
-    // this initial block causes the yosys compiler to fail with "cannot be legalized: initialized D latches are not supported"
-    // Enable this block for Icarus Verilog. Remove this block for yosys.
-    initial
-    begin
-        PCWrite = 1'b0;
-        ALUSrcA = 2'b00;
-        ALUSrcB = 2'b00;
-        ALUControl = 3'b000;
-        ResultSrc = 2'b00;
-        AdrSrc = 1'b0;
-        RegWrite = 1'b0;
-        MemWrite = 1'b0;
-        ImmSrc = 2'b00;
-        IRWrite = 1'b0;
-    end
+    // // this initial block causes the yosys compiler to fail with "cannot be legalized: initialized D latches are not supported"
+    // // Enable this block for Icarus Verilog. Remove this block for yosys.
+    // initial
+    // begin
+    //     PCWrite = 1'b0;
+    //     ALUSrcA = 2'b00;
+    //     ALUSrcB = 2'b00;
+    //     ALUControl = 3'b000;
+    //     ResultSrc = 2'b00;
+    //     AdrSrc = 1'b0;
+    //     RegWrite = 1'b0;
+    //     MemWrite = 1'b0;
+    //     ImmSrc = 2'b00;
+    //     IRWrite = 1'b0;
+    // end
 
     //
     // All states of the Moore state machine (= output only depends on the current state)
@@ -483,15 +481,16 @@ module controller (
     reg [4:0] next_state;
 
     // sequential memory of the Moore FSM
-    always @(posedge clk, posedge reset)
+    always @(posedge clk, negedge resetn)
     begin
-        if (reset == 1)
+        if (resetn == 0)
         begin
-            $display("[controller] reset");
-            // when reset=1, reset the state of the FSM to "FetchState_1" State
-            current_state = FetchState_1;
+            $display("[controller] resetn");
+            // when resetn=0, reset the state of the FSM to "FetchState_1" State
+            //current_state = FetchState_1;
+            current_state = ResetState;
 
-            PCWrite = 1'b1;
+            PCWrite = 1'b0;
             // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
             AdrSrc = 1'b0; // this connects the PC flip flop to the instruction memory
             MemWrite = 1'b0; // not writing into memory
@@ -500,10 +499,9 @@ module controller (
             ImmSrc = 2'bxx; // no immediate extension required
             // ACTION 2 - increment PC
             ALUSrcA = 2'b00; // PC
-            ALUSrcB = 2'b10; // hardcoded 4
+            ALUSrcB = 2'b00; // hardcoded 4
             ALUControl = 3'b000; // add operation
-            ResultSrc = 2'b10; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
-
+            ResultSrc = 2'b00; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
         end
         else
         begin
@@ -838,7 +836,7 @@ module controller (
     // to determine next state
     //
 
-    always @(current_state, reset)
+    always @(current_state, resetn)
     begin
 
         case(current_state)
@@ -846,8 +844,8 @@ module controller (
             // S0 "Reset" State
             ResetState:
             begin
-                $display("reset: %d", reset);
-                if (reset == 0)
+                $display("resetn: %d", resetn);
+                if (resetn == 1)
                 begin
                     $display("[controller] goto ResetState -> FetchState_1");
                     next_state = FetchState_1;

@@ -5,7 +5,7 @@ module flopenr #(parameter WIDTH = 8) (
 
     // clock and reset
     input wire clk,
-    input wire reset,
+    input wire resetn,
     input wire en,
     input wire [WIDTH-1:0] d,
 
@@ -13,9 +13,9 @@ module flopenr #(parameter WIDTH = 8) (
     output reg [WIDTH-1:0] q
 );
 
-    always @(posedge clk, posedge reset)
+    always @(posedge clk, negedge resetn)
     begin
-        if (reset)
+        if (resetn == 0)
         begin
             $display("[flopenr %d] reset", id);
             q = 0;

@@ -1,7 +1,9 @@
 module riscv_multi(
     // clock and reset
     input wire clk,
-    input wire reset
+    input wire resetn,
+
+    output wire [31:0]      toggle_value
 );
 
     wire [31:0]     Instr;
@@ -24,10 +26,12 @@ module riscv_multi(
     wire [1:0]      ALUSrcB;
     wire [1:0]      ALUSrcA;
 
+
+
     controller ctr (
         // clock and reset
         clk,
-        reset,
+        resetn,
 
         // input
         op,             // operation code from within the instruction
@@ -58,7 +62,7 @@ module riscv_multi(
     datapath dp (
         // clock and reset
         clk,
-        reset,
+        resetn,
 
         // output
         op,
@@ -81,7 +85,9 @@ module riscv_multi(
         ALUSrcB,        // decides which line goes into the ALU B parameter input
         ALUSrcA,        // decides which line goes into the ALU A parameter input
         ImmSrc,         // enable sign extension of the immediate value
-        RegWrite        // write enable for the register file
+        RegWrite,        // write enable for the register file
+
+        toggle_value
     );
 
 endmodule

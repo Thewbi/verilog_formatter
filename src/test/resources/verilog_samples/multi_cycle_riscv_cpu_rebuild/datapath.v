@@ -1,8 +1,8 @@
 module datapath(
 
-    // clock and reset
+    // clock and resetn
     input   wire            clk,
-    input   wire            reset,
+    input   wire            resetn,
 
     // output
     output  wire [6:0]      op,             // operation code from within the instruction
@@ -25,7 +25,10 @@ module datapath(
     input  wire [1:0]       ALUSrcB,        // decides which line goes into the ALU B parameter input
     input  wire [1:0]       ALUSrcA,        // decides which line goes into the ALU A parameter input
     input  wire [2:0]       ImmSrc,         // enable sign extension of the immediate value
-    input  wire             RegWrite        // write enable for the register file
+    input  wire             RegWrite,       // write enable for the register file
+
+    // output
+    output wire [31:0]      toggle_value    // RAM toggle signal
 );
 
     wire [31:0] OldPC;
@@ -66,19 +69,19 @@ module datapath(
         $display("[datapath] MemWrite! ALUResult: 0x%h, Result: 0x%h, WriteData: 0x%h", ALUResult, Result, WriteData);
     end
 
-    //          clk     write enable    addr        data to write           output read data
-    ram ram(  clk,    MemWrite,       adr,     WriteData,                ReadData);
+    //      clk    resetn,    write enable    addr        data to write           output read data
+    ram ram(clk,   resetn,    MemWrite,       adr,        WriteData,              ReadData, toggle_value);
 
     //          clk     write enable    addr        data            output read data
     //dmem dmem(  clk,    MemWrite,       Result,     WriteData,      ReadDData);
 
     //                     id     clock     reset,      enable,     input       output
-    flopenr #(32) OldPCFF(3'b001, clk,      reset,      IRWrite,    PC,         OldPC);
+    flopenr #(32) OldPCFF(3'b001, clk,      resetn,      IRWrite,    PC,         OldPC);
 
     // next PC logic (PCNext is the input which is stored in posedge clock.)
     // The flip flop will output the stored data onto PC
     //                    id        clock       reset,      enable,     input       output
-    flopenr #(32) pcreg(3'b000,     clk,        reset,      PCWrite,    Result,     PC);
+    flopenr #(32) pcreg(3'b000,     clk,        resetn,      PCWrite,    Result,     PC);
 
     //                  input A     input B     selector    muxed output
     mux2 #(32) addrmux( PC,         Result,     AdrSrc,     adr);
@@ -87,11 +90,11 @@ module datapath(
     //imem imem(PC, ReadData);
 
     //                     id     clock     reset,      enable,     input       output
-    //flopenr #(32) OldPCFF(3'b001, clk,      reset,      IRWrite,    PC,         OldPC);
-    flopenr #(32) InstrFF(3'b010, clk,      reset,      IRWrite,    ReadData,    Instr);
+    //flopenr #(32) OldPCFF(3'b001, clk,      resetn,      IRWrite,    PC,         OldPC);
+    flopenr #(32) InstrFF(3'b010, clk,      resetn,      IRWrite,    ReadData,    Instr);
 
     //                          clock    reset   data-in     data-out
-    flopr #(32) DataFF(3'b000,  clk,     reset,  ReadData,   data);
+    flopr #(32) DataFF(3'b000,  clk,     resetn,  ReadData,   data);
 
     assign op = ReadData[6:0];
     assign funct3 = ReadData[14:12];
@@ -128,8 +131,8 @@ module datapath(
         RD2                 // [out] the output where the value from register a2 appears
     );
                                         //   d    q
-    flopr #(32) Data_RD1(3'b001, clk, reset, RD1, register_output_A);
-    flopr #(32) Data_RD2(3'b010, clk, reset, RD2, WriteData);
+    flopr #(32) Data_RD1(3'b001, clk, resetn, RD1, register_output_A);
+    flopr #(32) Data_RD2(3'b010, clk, resetn, RD2, WriteData);
 
     // sign extend module
     // param 1 = instruction bits (part of the instruction to sign extend)
@@ -149,7 +152,7 @@ module datapath(
     //      input A     input B     operation       result output       zero flag
     alu alu(SrcA,       SrcB,       ALUControl,     ALUResult,          Zero);
 
-    flopr #(32) aluResult(3'b011, clk, reset, ALUResult, ALUOut);
+    flopr #(32) aluResult(3'b011, clk, resetn, ALUResult, ALUOut);
 
     // this mux decides, which value is driving the result BUS
     //                      Input A (00)     Input B (01)       Input C (10)        SelectSignal        Output
