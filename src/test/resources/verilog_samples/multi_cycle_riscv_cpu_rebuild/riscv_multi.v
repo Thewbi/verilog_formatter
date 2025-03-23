@@ -13,6 +13,12 @@ module riscv_multi(
     wire            Zero;
     wire [31:0]     PC;
     wire [31:0]     ReadData;   // instruction memory
+
+    wire PCWrite;
+    wire AdrSrc;
+    wire MemWrite;
+    wire IRWrite;
+
     // wire [31:0] ReadDData;  // data memory
     wire [1:0]      ResultSrc;
     wire [2:0]      ImmSrc;

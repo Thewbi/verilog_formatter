@@ -4,14 +4,14 @@
 cd C:\Users\wolfg\dev\Java\verilog_formatter\src\test\resources\verilog_samples\multi_cycle_riscv_cpu_rebuild
 
 // sepearate instruction memory (imem) and data memory (dmem)
-C:\iverilog\bin\iverilog.exe -s top_testbench -o build/riscv.vvp top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v imem.v dmem.v
+C:\iverilog\bin\iverilog.exe -s top_testbench -o build/aout.vvp top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v imem.v dmem.v
 
 // for data and code in a single RAM module (ram.v)
-C:\iverilog\bin\iverilog.exe -s top_testbench -o build/riscv.vvp top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v
+C:\iverilog\bin\iverilog.exe -s top_testbench -o build/aout.vvp top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v > build/compile.log
 
-clear && C:\iverilog\bin\vvp.exe build/riscv.vvp
+clear && C:\iverilog\bin\vvp.exe build/aout.vvp
 
-gtkwave build/test.vcd
+gtkwave build/aout.vcd
 
 C:\iverilog\bin\vvp.exe build/riscv.vvp -lxt2
 ```
@@ -32,10 +32,10 @@ set PATH=%PATH%;C:\Users\wolfg\Downloads\oss-cad-suite\lib\
 C:\Users\wolfg\Downloads\oss-cad-suite\environment.bat
 
 // synthesis - including top_testbench
-yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v
+yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v
 
 // synthesis - without top_testbench
-yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v
+yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v
 
 // routing
 nextpnr-ice40 --hx1k --package tq144 --json build/aout.json --asc build/aout.asc --pcf icestick.pcf -q
@@ -54,6 +54,7 @@ iceprog -d i:0x0403:0x6010:0 build/aout.bin
 * When writing combinational logic like this think about what are the inputs and outputs of the block. If it's an output you should only write to it if it's an input only read from it. Anything you want to read and write should be some internal signal to that block (i.e. not accessed anywhere else) and must be written first (otherwise you end up with this kind of situation with some kind of latching behaviour).
 * Verilog is capable of all kinds of weird and wonderful behaviours due to it's many event regions and scheduling semantics. Don't play tricks with them it's likely to end badly as they're poorly specified and each synthesis tool will have it's own spin on how to deal with odd cases. Generally people follow a strict style guide to keep things simple and avoid issues like this and many of the possible race conditions that exist.
 * yosys has horrible error output or output in general. It will output so much to the console that you can almost not see any errors or warnings! Better use Icarus Verilog first for linting. Icarus Verilog will abort when undefined signals are used for example. Such errors are completely buried by the pages of output that yosys produces.
+* Only a single process should change a register. Sometimes yosys will abort the compilation if this rule is violated but sometimes it will finish without errors and output warnings instead! Pipe the output of yosys into a log file and search for all warnings for the register you are interested in! Make sure that there are no warnings!
 
 # Errors
 
