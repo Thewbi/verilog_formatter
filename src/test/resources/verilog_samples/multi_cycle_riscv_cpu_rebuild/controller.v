@@ -47,6 +47,9 @@ module controller (
                 // lui t2, 2441 - load the unsigned integer 2441 into t2
                 $display("[ALU_DEC] lui");
                 decodeAluOp = 3'b000; // add, addi
+
+                // tx_Data = 8'h41;
+                // tx_DataValid = 1'b1;
             end
 
             // I-Type (instructions containing immediate parameters encoded inside their machine code)
@@ -60,6 +63,9 @@ module controller (
                         // addi
                         $display("[ALU_DEC] addi");
                         decodeAluOp = 3'b000; // add, addi
+
+                        // tx_Data = 8'h42;
+                        // tx_DataValid = 1'b1;
                     end
 
                     3'b010:
@@ -67,11 +73,17 @@ module controller (
                         // slti
                         $display("[ALU_DEC] slti");
                         decodeAluOp = 3'b101; // slt, slti
+
+                        // tx_Data = 8'h43;
+                        // tx_DataValid = 1'b1;
                     end
 
                     3'b011:
                     begin
                         // sltiu
+
+                        // tx_Data = 8'h44;
+                        // tx_DataValid = 1'b1;
                     end
 
                     3'b100:
@@ -79,6 +91,9 @@ module controller (
                         // xori
                         $display("[ALU_DEC] xori");
                         decodeAluOp = 3'b011; // xor operation
+
+                        // tx_Data = 8'h45;
+                        // tx_DataValid = 1'b1;
                     end
 
                     3'b110:
@@ -86,6 +101,9 @@ module controller (
                         // ori
                         $display("[ALU_DEC] ori");
                         decodeAluOp = 3'b110; // ori
+
+                        // tx_Data = 8'h46;
+                        // tx_DataValid = 1'b1;
                     end
 
                     3'b111:
@@ -93,11 +111,17 @@ module controller (
                         // andi
                         $display("[ALU_DEC] andi");
                         decodeAluOp = 3'b010; // andi
+
+                        // tx_Data = 8'h47;
+                        // tx_DataValid = 1'b1;
                     end
 
                     3'b001:
                     begin
                         // slli
+
+                        // tx_Data = 8'h48;
+                        // tx_DataValid = 1'b1;
                     end
 
                     3'b101:
@@ -107,11 +131,17 @@ module controller (
                             7'b0000000:
                             begin
                                 // srli
+
+                                // tx_Data = 8'h49;
+                                // tx_DataValid = 1'b1;
                             end
 
                             7'b0100000:
                             begin
                                 // srai
+
+                                // tx_Data = 8'h50;
+                                // tx_DataValid = 1'b1;
                             end
 
                         endcase
@@ -135,6 +165,9 @@ module controller (
                                 // add
                                 $display("[ALU_DEC] add");
                                 decodeAluOp = 3'b000; // addition
+
+                                // tx_Data = 8'h51;
+                                // tx_DataValid = 1'b1;
                             end
 
                             7'b0100000:
@@ -142,6 +175,9 @@ module controller (
                                 // sub
                                 $display("[ALU_DEC] sub");
                                 decodeAluOp = 3'b001; // subtraction
+
+                                // tx_Data = 8'h52;
+                                // tx_DataValid = 1'b1;
                             end
 
                         endcase
@@ -151,6 +187,9 @@ module controller (
                     3'b001:
                     begin
                         // sll
+
+                        // tx_Data = 8'h53;
+                        // tx_DataValid = 1'b1;
                     end
 
                     3'b010:
@@ -158,16 +197,25 @@ module controller (
                         // slt
                         $display("[ALU_DEC] slt");
                         decodeAluOp = 3'b101; // slt, slti
+
+                        // tx_Data = 8'h54;
+                        // tx_DataValid = 1'b1;
                     end
 
                     3'b011:
                     begin
                         // sltu
+
+                        // tx_Data = 8'h55;
+                        // tx_DataValid = 1'b1;
                     end
 
                     3'b100:
                     begin
                         // xor
+
+                        // tx_Data = 8'h56;
+                        // tx_DataValid = 1'b1;
                     end
 
                     3'b101:
@@ -178,11 +226,17 @@ module controller (
                             7'b0000000:
                             begin
                                 // srl
+
+                                // tx_Data = 8'h57;
+                                // tx_DataValid = 1'b1;
                             end
 
                             7'b0100000:
                             begin
                                 // sra
+
+                                // tx_Data = 8'h58;
+                                // tx_DataValid = 1'b1;
                             end
 
                         endcase
@@ -194,6 +248,9 @@ module controller (
                         // or
                         $display("[ALU_DEC] or");
                         decodeAluOp = 3'b110; // or
+
+                        // tx_Data = 8'h59;
+                        // tx_DataValid = 1'b1;
                     end
 
                     3'b111:
@@ -201,6 +258,9 @@ module controller (
                         // and
                         $display("[ALU_DEC] and");
                         decodeAluOp = 3'b010; // and
+
+                        // tx_Data = 8'h60;
+                        // tx_DataValid = 1'b1;
                     end
 
                 endcase
@@ -210,18 +270,27 @@ module controller (
             begin
                 $display("[ALU_DEC] jal jal jal jal jal jal");
                 decodeAluOp = 3'b000; // addition
+
+                // tx_Data = 8'h61;
+                // tx_DataValid = 1'b1;
             end
 
             7'b1100011:
             begin
                 $display("[ALU_DEC] beq beq beq beq beq beq");
                 decodeAluOp = 3'b000; // addition
+
+                // tx_Data = 8'h62;
+                // tx_DataValid = 1'b1;
             end
 
             default:
             begin
                 $display("[ALU_DEC] default");
                 decodeAluOp = 3'bxxx;
+
+                // tx_Data = 8'h63;
+                // tx_DataValid = 1'b1;
             end
 
         endcase
@@ -431,11 +500,11 @@ module controller (
     end
     endfunction
 
-    function [7:0] sum (input [7:0] a, b);
-    begin
-        sum = a + b;
-    end
-    endfunction
+    // function [7:0] sum (input [7:0] a, b);
+    // begin
+    //     sum = a + b;
+    // end
+    // endfunction
 
     // // this initial block causes the yosys compiler to fail with "cannot be legalized: initialized D latches are not supported"
     // // Enable this block for Icarus Verilog. Remove this block for yosys.
@@ -541,106 +610,112 @@ module controller (
 
     always @(posedge clk)
     begin
-        case(current_state)
-
-            ResetState:
-            begin
-                tx_Data = 8'h41;
-                tx_DataValid = 1'b1;
-            end
-
-            FetchState_1:
-            begin
-                tx_Data = 8'h42;
-                tx_DataValid = 1'b1;
-            end
-
-            FetchState_2:
-            begin
-                tx_Data = 8'h43;
-                tx_DataValid = 1'b1;
-            end
-
-            DecodeState:
-            begin
-                tx_Data = 8'h44;
-                tx_DataValid = 1'b1;
-            end
-
-            MemAddrState:
-            begin
-                tx_Data = 8'h45;
-                tx_DataValid = 1'b1;
-            end
-
-            MemReadState:
-            begin
-                tx_Data = 8'h46;
-                tx_DataValid = 1'b1;
-            end
-
-            MemWBState:
-            begin
-                tx_Data = 8'h47;
-                tx_DataValid = 1'b1;
-            end
-
-            MemWriteState:
-            begin
-                tx_Data = 8'h48;
-                tx_DataValid = 1'b1;
-            end
-
-            ExecuteRState:
-            begin
-                tx_Data = 8'h49;
-                tx_DataValid = 1'b1;
-            end
-
-            ALUWriteBackState:
-            begin
-                tx_Data = 8'h50;
-                tx_DataValid = 1'b1;
-            end
-
-            ExecuteIState:
-            begin
-                tx_Data = 8'h51;
-                tx_DataValid = 1'b1;
-            end
-
-            JALState:
-            begin
-                tx_Data = 8'h52;
-                tx_DataValid = 1'b1;
-            end
-
-            BEQState:
-            begin
-                tx_Data = 8'h53;
-                tx_DataValid = 1'b1;
-            end
-
-            BRANCH_TAKEN_CHECK:
-            begin
-                tx_Data = 8'h54;
-                tx_DataValid = 1'b1;
-            end
-
-            LUI_STATE:
-            begin
-                tx_Data = 8'h55;
-                tx_DataValid = 1'b1;
-            end
-
-            ErrorState:
-            begin
-                tx_Data = 8'h56;
-                tx_DataValid = 1'b1;
-            end
-
-        endcase
+        tx_Data = PC[7:0];
+        tx_DataValid = 1'b1;
     end
+
+    // always @(posedge clk)
+    // begin
+    //     case(current_state)
+
+    //         ResetState:
+    //         begin
+    //             tx_Data = 8'h41;
+    //             tx_DataValid = 1'b1;
+    //         end
+
+    //         FetchState_1:
+    //         begin
+    //             tx_Data = 8'h42;
+    //             tx_DataValid = 1'b1;
+    //         end
+
+    //         FetchState_2:
+    //         begin
+    //             tx_Data = 8'h43;
+    //             tx_DataValid = 1'b1;
+    //         end
+
+    //         DecodeState:
+    //         begin
+    //             tx_Data = 8'h44;
+    //             tx_DataValid = 1'b1;
+    //         end
+
+    //         MemAddrState:
+    //         begin
+    //             tx_Data = 8'h45;
+    //             tx_DataValid = 1'b1;
+    //         end
+
+    //         MemReadState:
+    //         begin
+    //             tx_Data = 8'h46;
+    //             tx_DataValid = 1'b1;
+    //         end
+
+    //         MemWBState:
+    //         begin
+    //             tx_Data = 8'h47;
+    //             tx_DataValid = 1'b1;
+    //         end
+
+    //         MemWriteState:
+    //         begin
+    //             tx_Data = 8'h48;
+    //             tx_DataValid = 1'b1;
+    //         end
+
+    //         ExecuteRState:
+    //         begin
+    //             tx_Data = 8'h49;
+    //             tx_DataValid = 1'b1;
+    //         end
+
+    //         ALUWriteBackState:
+    //         begin
+    //             tx_Data = 8'h50;
+    //             tx_DataValid = 1'b1;
+    //         end
+
+    //         ExecuteIState:
+    //         begin
+    //             tx_Data = 8'h51;
+    //             tx_DataValid = 1'b1;
+    //         end
+
+    //         JALState:
+    //         begin
+    //             tx_Data = 8'h52;
+    //             tx_DataValid = 1'b1;
+    //         end
+
+    //         BEQState:
+    //         begin
+    //             tx_Data = 8'h53;
+    //             tx_DataValid = 1'b1;
+    //         end
+
+    //         BRANCH_TAKEN_CHECK:
+    //         begin
+    //             tx_Data = 8'h54;
+    //             tx_DataValid = 1'b1;
+    //         end
+
+    //         LUI_STATE:
+    //         begin
+    //             tx_Data = 8'h55;
+    //             tx_DataValid = 1'b1;
+    //         end
+
+    //         ErrorState:
+    //         begin
+    //             tx_Data = 8'h56;
+    //             tx_DataValid = 1'b1;
+    //         end
+
+    //     endcase
+    // end
 
     //
     // current state combinational logic
