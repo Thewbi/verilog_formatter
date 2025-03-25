@@ -4,21 +4,25 @@ module ram(
     input wire clk,
     input wire resetn,
 
+    // DEBUG UART
+    output reg [7:0]   tx_Data,
+    output reg         tx_DataValid,
+
     input wire we, // write enable
-    input wire [31:0] a, // read/write address
+    input wire [31:0] adr, // read/write address
     input wire [31:0] wd, // write data
 
     // output
-    output reg [31:0] rd, // data read from memory
-    output reg [31:0] toggle_value
+    output reg [31:0] rd //, // data read from memory
+    // output reg [31:0] toggle_value
 );
 
     // initial
     // begin
-    //     $monitor("[RAM] WriteEnable: %d, Address: 0x%08h, WriteData: 0x%08h, ReadData: 0x%08h", we, a, wd, rd);
+    //     $monitor("[RAM] WriteEnable: %d, Address: 0x%08h, WriteData: 0x%08h, ReadData: 0x%08h", we, adr, wd, rd);
     // end
 
-    reg [31:0] RAM[127:0];
+    reg [31:0] RAM [127:0];
 
     always @(posedge clk, negedge resetn)
     begin
@@ -190,18 +194,26 @@ module ram(
     begin
         if (we)
         begin
-            $display("[RAM] Writing wd: 0x%0h, address: 0x%0h", wd, a[31:0]);
-            RAM[a[31:0]] <= wd;
+            //$display("[RAM] Writing wd: 0x%0h, address: 0x%0h", wd, a[31:0]);
+            RAM[adr[31:0]] <= wd;
         end
     end
 
-    //assign rd = RAM[a[31:0]];
+    // I think yosys goes into an endless loop if this is synthesized
+    // assign rd = RAM[adr[31:0]];
 
     always @(posedge clk)
     begin
-        rd = RAM[a[31:0]];
-        toggle_value = RAM[32'd60]; // memory mapped I/O for the green LED
-        $display("[RAM] WriteEnable: %d, Address: 0x%08h, WriteData: 0x%08h, ReadData: 0x%08h", we, a, wd, rd);
+        rd = RAM[adr[31:0]];
+        //rd = RAM[32'd0];
+
+        // DEBUG output the instruction
+        //tx_Data = rd[7:0];
+        // tx_Data = adr[7:0];
+        // tx_DataValid = 1;
+
+        //toggle_value = RAM[32'd60]; // memory mapped I/O for the green LED
+        //$display("[RAM] WriteEnable: %d, Address: 0x%08h, WriteData: 0x%08h, ReadData: 0x%08h", we, a, wd, rd);
     end
 
     // initial

@@ -35,7 +35,7 @@ C:\Users\wolfg\Downloads\oss-cad-suite\environment.bat
 yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v clock_divider.v
 
 // synthesis - without top_testbench
-yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v clock_divider.v > build/compile.log
+yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v clock_divider.v C:\Users\wolfg\Downloads\oss-cad-suite\share\yosys\ice40\cells_sim.v > build/compile.log
 
 // routing
 nextpnr-ice40 --hx1k --package tq144 --json build/aout.json --asc build/aout.asc --pcf icestick.pcf -q
@@ -59,3 +59,152 @@ iceprog -d i:0x0403:0x6010:0 build/aout.bin
 # Errors
 
 If nextpnr detects combinational loops, check if a value to the same register variable is set by to processes that have the same signal in their sensitivity list. (Example a reset signal is used in two different processes that set the same variable to different values)
+
+
+
+
+
+# Checking pre vs. post synthesis to hunt down bugs in synthesized designs
+
+## Quickstart
+
+```
+set PATH=%PATH%;C:\Users\wolfg\Downloads\oss-cad-suite\lib\
+C:\Users\wolfg\Downloads\oss-cad-suite\environment.bat
+```
+
+```
+C:\iverilog\bin\iverilog.exe -o build/test_pre.vvp test.v test_tb.v
+
+yosys.exe -p "synth_ice40 -top test -blif build/test.blif -json build/test.json" test.v
+
+yosys.exe -o build/test_syn.v build/test.blif
+
+C:\iverilog\bin\iverilog.exe -o build/test_post.vvp -D NO_ICE40_DEFAULT_ASSIGNMENTS -D POST_SYNTHESIS test_tb.v build/test_syn.v C:\Users\wolfg\Downloads\oss-cad-suite\share\yosys\ice40\cells_sim.v
+
+C:\iverilog\bin\vvp.exe build/test_pre.vvp
+C:\iverilog\bin\vvp.exe build/test_post.vvp
+
+gtkwave build/test_post.vcd
+```
+
+```
+// normal simulation
+C:\iverilog\bin\iverilog.exe -o build/alu_pre.vvp alu.v alu_tb.v
+
+// build .blif and .json files
+yosys.exe -p "synth_ice40 -top alu -blif build/alu.blif -json build/alu.json" alu.v
+
+// perform synthesis and store result in alu_syn.v
+//
+// this step might fail. It has to produce a build/alu_syn.v file.
+// You have to see "End of script." on the console. Otherwise it failed!
+yosys.exe -o build/alu_syn.v build/alu.blif
+
+// build alu_post.vvp
+C:\iverilog\bin\iverilog.exe -o build/alu_post.vvp -D NO_ICE40_DEFAULT_ASSIGNMENTS -D POST_SYNTHESIS alu_tb.v build/alu_syn.v C:\Users\wolfg\Downloads\oss-cad-suite\share\yosys\ice40\cells_sim.v
+
+clear & C:\iverilog\bin\vvp.exe build/alu_pre.vvp
+clear & C:\iverilog\bin\vvp.exe build/alu_post.vvp
+
+gtkwave build/alu_post.vcd
+```
+
+## BLIF (Berkeley Logic Interchange Format)
+
+https://neilturley.dev/netlistsvg/
+
+## Original Forum Post
+
+Source: https://stackoverflow.com/questions/35927650/is-it-possible-to-create-a-simulation-waveform-from-yosys-output
+
+So you want to run post-synthesis simulation of iCE40 BLIF netlists.
+
+Consider the following simple example design (test.v):
+
+```
+module test(input clk, resetn, output reg [3:0] y);
+  always @(posedge clk)
+    y <= resetn ? y + 1 : 0;
+endmodule
+```
+
+And its testbench (test_tb.v):
+
+```
+module testbench;
+  reg clk = 1, resetn = 0;
+  wire [3:0] y;
+
+  always #5 clk = ~clk;
+
+  initial begin
+    repeat (10) @(posedge clk);
+    resetn <= 1;
+    repeat (20) @(posedge clk);
+    $finish;
+  end
+
+  always @(posedge clk) begin
+    $display("%b", y);
+  end
+
+  test uut (
+    .clk(clk),
+    .resetn(resetn),
+`ifdef POST_SYNTHESIS
+    . \y[0] (y[0]),
+    . \y[1] (y[1]),
+    . \y[2] (y[2]),
+    . \y[3] (y[3])
+`else
+    .y(y)
+`endif
+  );
+endmodule
+```
+
+Running pre-synthesis simulation is of course simple:
+
+```
+$ iverilog -o test_pre test.v test_tb.v
+$ ./test_pre
+```
+
+For post-synthesis simulation we must first run synthesis:
+
+```
+$ yosys -p 'synth_ice40 -top test -blif test.blif' test.v
+```
+
+Then we must convert the BLIF netlist to a verilog netlist so it can be read by Icarus Verilog:
+
+```
+$ yosys -o test_syn.v test.blif
+```
+
+Now we can build the simulation binary from the test bench, the synthesized design, and the iCE40 simulation models, and run it:
+
+```
+$ iverilog -o test_post -D POST_SYNTHESIS test_tb.v test_syn.v \
+                        `yosys-config --datdir/ice40/cells_sim.v`
+$ ./test_post
+```
+
+[..] won't synthesize with iverilog for simulation.
+
+This is most likely because Yosys is not as strict as iverilog when it comes to enforcing the Verilog standard. For example, in many cases Yosys will except Verilog files with the reg keyword missing from wires that would require the reg keyword according to the Verilog standard. For example, yosys will accept the following input, even though it is not valid Verilog code:
+
+```
+module test(input a, output y);
+  always @* y = !a;
+endmodule
+```
+
+For Icarus Verilog you have to add the missing reg:
+
+```
+module test(input a, output reg y);
+  always @* y = !a;
+endmodule
+```

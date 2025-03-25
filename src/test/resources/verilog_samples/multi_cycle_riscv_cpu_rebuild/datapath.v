@@ -11,7 +11,7 @@ module datapath(
     output  wire [30:0]     funct7b5,       // funct7b5
     output  wire [6:0]      funct7,
     output  wire            Zero,           // the ALU has computed a result that is zero (for branching instructions)
-    output  wire [31:0]     PC,             // current program counter value
+    output  reg [31:0]     PC,             // current program counter value
     output  wire [31:0]     ReadData,       // output from instruction memory
     // output  wire [31:0]     ReadDData,      // output from data memory
 
@@ -27,8 +27,12 @@ module datapath(
     input  wire [2:0]       ImmSrc,         // enable sign extension of the immediate value
     input  wire             RegWrite,       // write enable for the register file
 
-    // output
-    output wire [31:0]      toggle_value    // RAM toggle signal
+    // // output
+    // output wire [31:0]      toggle_value,    // RAM toggle signal
+
+    // DEBUG UART
+    output reg [7:0]        tx_Data,
+    output reg              tx_DataValid
 );
 
     wire [31:0] OldPC;
@@ -49,15 +53,58 @@ module datapath(
     wire [31:0] Result;
     wire [31:0] SrcA;
 
-    // wire [31:0]      toggle_value;
-
     always @(posedge MemWrite)
     begin
         $display("[datapath] MemWrite! ALUResult: 0x%h, Result: 0x%h, WriteData: 0x%h", ALUResult, Result, WriteData);
     end
 
-    //      clk    resetn,    write enable    addr        data to write           output read data
-    ram ram(clk,   resetn,    MemWrite,       adr,        WriteData,              ReadData, toggle_value
+    // // DEBUG reset
+    // always @(posedge clk)
+    // begin
+    //     if (resetn == 0)
+    //     begin
+    //         tx_Data = 8'h34;
+    //         tx_DataValid = 1'b1;
+    //     end
+    //     else
+    //     begin
+    //         tx_Data = 8'h56;
+    //         tx_DataValid = 1'b0;
+    //     end
+    // end
+
+    // // DEBUG output PC
+    // always @(posedge clk)
+    // begin
+    //     tx_Data = PC[7:0];
+    //     tx_DataValid = 1'b1;
+    // end
+
+    // // DEBUG output ALURESULT
+    // always @(posedge clk)
+    // begin
+    //     if (|ALUResult != 0)
+    //     begin
+    //         tx_Data = ALUResult[7:0];
+    //         tx_DataValid = 1'b1;
+    //     end
+    //     else
+    //     begin
+    //         tx_DataValid = 1'b0;
+    //     end
+    // end
+
+    // process the reset signal
+    always @(posedge clk)
+    begin
+        if (resetn == 0)
+        begin
+            PC = 32'b0; // initialize PC to zero on reset
+        end
+    end
+
+    //      clk    resetn,                           write enable    addr        data to write           output read data
+    ram ram(clk,   resetn,    tx_Data, tx_DataValid, MemWrite,       adr,        WriteData,              ReadData /*, toggle_value*/
     );
 
     //          clk     write enable    addr        data            output read data
@@ -101,15 +148,6 @@ module datapath(
     //     funct7b5 <= Instr[30:0];
     // end
 
-    // always @(negedge resetn)
-    always @(posedge clk)
-    begin
-        if (resetn == 0)
-        begin
-            PC = 32'b0; // initialize PC to zero
-        end
-    end
-
     // register file logic
     regfile rf (
 
@@ -146,8 +184,8 @@ module datapath(
     mux3 #(32) srcbmux(WriteData,   ImmExt,     32'h00000004,   ALUSrcB,            SrcB);
 
     // ALU
-    //      input A     input B     operation       result output       zero flag
-    alu alu(SrcA,       SrcB,       ALUControl,     ALUResult,          Zero);
+    //                             input A     input B     operation       result output       zero flag
+    alu alu(tx_Data, tx_DataValid, SrcA,       SrcB,       ALUControl,     ALUResult,          Zero);
 
     flopr #(32) aluResult(3'b011, clk, resetn, ALUResult, ALUOut);
 

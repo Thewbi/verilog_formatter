@@ -1,10 +1,15 @@
 module top(
+
+    // clock and reset
     input wire clk,
     //input wire resetn,
-    output reg led_green,
+
     // UART lines
     input ftdi_rx,
     output ftdi_tx,
+
+    // LEDS
+    output reg led_green,
     output reg D1,
     output reg D2,
     output reg D3,
@@ -18,16 +23,16 @@ module top(
     wire clk_divided;
     clock_divider clk_div(clk, clk_divided);
 
-    //
-    // memory mapped I/O
-    //
+    // //
+    // // memory mapped I/O
+    // //
 
-    wire [31:0] toggle_value;
+    // wire [31:0] toggle_value;
 
-    always @(posedge clk)
-    begin
-        led_green = toggle_value[0];
-    end
+    // always @(posedge clk)
+    // begin
+    //     led_green = toggle_value[0];
+    // end
 
     //
     // Reset logic
@@ -35,15 +40,31 @@ module top(
 
     // https://stackoverflow.com/questions/38030768/icestick-yosys-using-the-global-set-reset-gsr
     wire resetn;
-    reg [3:0] rststate = 0;
+    //reg [21:0] rststate = 0;
+    reg [23:0] rststate = 0;
 
-    always @(posedge clk_divided)
+    always @(posedge clk)
     begin
         rststate <= rststate + !resetn; // once resetn turns to 1, rststate is not incremented any more
     end
 
     //assign resetn = 0;
     assign resetn = &rststate; // and all bits of rststate together which yields a 1 only after rststate reached 0x0F.
+
+    // DEBUG reset
+    // always @(posedge clk)
+    // begin
+    //     if (resetn == 0)
+    //     begin
+    //         tx_Data = 8'h12;
+    //         tx_DataValid = 1'b1;
+    //     end
+    //     else
+    //     begin
+    //         tx_Data = 8'h00;
+    //         tx_DataValid = 1'b0;
+    //     end
+    // end
 
     //
     // UART
@@ -152,7 +173,8 @@ module top(
         // clock and reset
         clk_divided,
         resetn, // the system should reset, when resetn is 0. The system should keep running, when resetn is 1.
-        toggle_value,
+
+        // toggle_value,
 
         // DEBUG UART
         tx_Data,

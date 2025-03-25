@@ -1,11 +1,13 @@
 // flip flop with enable and reset
 module flopenr #(parameter WIDTH = 8) (
 
+    // DEBUG id of this instance
     input wire[2:0] id,
 
     // clock and reset
     input wire clk,
     input wire resetn,
+
     input wire en,
     input wire [WIDTH-1:0] d,
 
@@ -15,6 +17,7 @@ module flopenr #(parameter WIDTH = 8) (
 
     always @(posedge clk, negedge resetn)
     begin
+
         if (resetn == 0)
         begin
             $display("[flopenr %d] reset", id);
@@ -40,6 +43,7 @@ module flopenr #(parameter WIDTH = 8) (
 
             q <= d;
         end
+
     end
 
 endmodule

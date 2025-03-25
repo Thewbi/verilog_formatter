@@ -592,27 +592,37 @@ module controller (
 
             current_state = FetchState_1;
 
-            PCWrite = 1'b0;
+            PCWrite = 1'b1;
+
             // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
             AdrSrc = 1'b0; // this connects the PC flip flop to the instruction memory
             MemWrite = 1'b0; // not writing into memory
             IRWrite = 1'b0; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
             RegWrite = 1'b0;
             ImmSrc = 2'b00; // no immediate extension required
+
             // ACTION 2 - increment PC
             ALUSrcA = 2'b00; // PC
-            ALUSrcB = 2'b00; // hardcoded 4
+            ALUSrcB = 2'b10; // hardcoded 4
             ALUControl = 3'b000; // add operation
-            ResultSrc = 2'b00; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
+            ResultSrc = 2'b10; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
 
         end
     end
 
-    always @(posedge clk)
-    begin
-        tx_Data = PC[7:0];
-        tx_DataValid = 1'b1;
-    end
+    // // DEBUG print PC
+    // always @(posedge clk)
+    // begin
+    //     if (|PC != 0)
+    //     begin
+    //         tx_Data = PC[7:0];
+    //         tx_DataValid = 1'b1;
+    //     end
+    //     else
+    //     begin
+    //         tx_DataValid = 1'b0;
+    //     end
+    // end
 
     // always @(posedge clk)
     // begin
