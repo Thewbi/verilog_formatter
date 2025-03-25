@@ -15,7 +15,7 @@ module mux4 #(parameter WIDTH = 8) (
     always @(d0, d1, d2, d3, s)
     begin
 
-        $display("[MUX4] d0: %b, d1: %b, d2: %b, d3: %b, s: %b", d0, d1, d2, d3, s);
+        //$display("[MUX4] d0: %b, d1: %b, d2: %b, d3: %b, s: %b", d0, d1, d2, d3, s);
 
         if (s == 2'b00)
         begin
@@ -33,10 +33,10 @@ module mux4 #(parameter WIDTH = 8) (
         begin
             y = d3;
         end
-        else
-        begin
-           y = d0;
-        end
+        // else
+        // begin
+        //    y = d0;
+        // end
 
     end
 

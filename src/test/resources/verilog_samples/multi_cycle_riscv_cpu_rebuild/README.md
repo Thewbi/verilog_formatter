@@ -41,7 +41,9 @@ yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" 
 nextpnr-ice40 --hx1k --package tq144 --json build/aout.json --asc build/aout.asc --pcf icestick.pcf -q
 
 icepack build/aout.asc build/aout.bin
+
 iceprog -d i:0x0403:0x6010:0 build/aout.bin
+
 ```
 
 # Lessons Learned

@@ -3,7 +3,7 @@ module riscv_multi(
     input wire              clk,
     input wire              resetn,
 
-    // output wire [31:0]      toggle_value,
+    output wire [31:0]      toggle_value,
 
     output reg [7:0]       tx_Data,
     output reg             tx_DataValid
@@ -95,7 +95,7 @@ module riscv_multi(
         ImmSrc,         // enable sign extension of the immediate value
         RegWrite,       // write enable for the register file
 
-        // toggle_value,
+        toggle_value,
 
         // UART
         tx_Data,

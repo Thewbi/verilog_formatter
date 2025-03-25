@@ -34,9 +34,9 @@ module alu #(parameter WIDTH = 32) (
                 // compute zero
                 Z = (ALUResult == 0);
 
-                // DEBUG output parameter b
-                // if (b_in > 0) begin
-                //     tx_Data[7:0] = b_in;
+                // // DEBUG output parameter b
+                // if (b_in == 32'd4) begin
+                //     tx_Data[7:0] = ALUResult[7:0];
                 //     tx_DataValid = 1;
                 // end
             end

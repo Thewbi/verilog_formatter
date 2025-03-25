@@ -11,8 +11,8 @@ module datapath(
     output  wire [30:0]     funct7b5,       // funct7b5
     output  wire [6:0]      funct7,
     output  wire            Zero,           // the ALU has computed a result that is zero (for branching instructions)
-    output  reg [31:0]     PC,             // current program counter value
-    output  wire [31:0]     ReadData,       // output from instruction memory
+    output  reg [31:0]      PC,             // current program counter value
+    output  reg [31:0]     ReadData,       // output from instruction memory
     // output  wire [31:0]     ReadDData,      // output from data memory
 
     // input
@@ -27,8 +27,8 @@ module datapath(
     input  wire [2:0]       ImmSrc,         // enable sign extension of the immediate value
     input  wire             RegWrite,       // write enable for the register file
 
-    // // output
-    // output wire [31:0]      toggle_value,    // RAM toggle signal
+    // output
+    output wire [31:0]      toggle_value,    // RAM toggle signal
 
     // DEBUG UART
     output reg [7:0]        tx_Data,
@@ -53,10 +53,10 @@ module datapath(
     wire [31:0] Result;
     wire [31:0] SrcA;
 
-    always @(posedge MemWrite)
-    begin
-        $display("[datapath] MemWrite! ALUResult: 0x%h, Result: 0x%h, WriteData: 0x%h", ALUResult, Result, WriteData);
-    end
+    // always @(posedge MemWrite)
+    // begin
+    //     $display("[datapath] MemWrite! ALUResult: 0x%h, Result: 0x%h, WriteData: 0x%h", ALUResult, Result, WriteData);
+    // end
 
     // // DEBUG reset
     // always @(posedge clk)
@@ -73,10 +73,17 @@ module datapath(
     //     end
     // end
 
-    // // DEBUG output PC
+    // DEBUG output PC
+    always @(posedge clk)
+    begin
+        tx_Data = PC[7:0];
+        tx_DataValid = 1'b1;
+    end
+
+    // // DEBUG output instruction read from memory
     // always @(posedge clk)
     // begin
-    //     tx_Data = PC[7:0];
+    //     tx_Data = ReadData[7:0];
     //     tx_DataValid = 1'b1;
     // end
 
@@ -94,14 +101,18 @@ module datapath(
     //     end
     // end
 
-    // process the reset signal
-    always @(posedge clk)
-    begin
-        if (resetn == 0)
-        begin
-            PC = 32'b0; // initialize PC to zero on reset
-        end
-    end
+    // // process the reset signal
+    // always @(posedge clk)
+    // begin
+    //     if (resetn == 0)
+    //     begin
+    //         PC = 32'b0; // initialize PC to zero on reset
+    //     end
+    //     else
+    //     begin
+    //         PC = PC;
+    //     end
+    // end
 
     //      clk    resetn,                           write enable    addr        data to write           output read data
     ram ram(clk,   resetn,    tx_Data, tx_DataValid, MemWrite,       adr,        WriteData,              ReadData /*, toggle_value*/
@@ -116,6 +127,7 @@ module datapath(
     // next PC logic (PCNext is the input which is stored in posedge clock.)
     // The flip flop will output the stored data onto PC
     //                    id        clock       reset,      enable,     input       output
+    //check this
     flopenr #(32) pcreg(3'b000,     clk,        resetn,      PCWrite,    Result,     PC);
 
     //                  input A     input B     selector    muxed output
@@ -187,7 +199,7 @@ module datapath(
     //                             input A     input B     operation       result output       zero flag
     alu alu(tx_Data, tx_DataValid, SrcA,       SrcB,       ALUControl,     ALUResult,          Zero);
 
-    flopr #(32) aluResult(3'b011, clk, resetn, ALUResult, ALUOut);
+    flopr #(32) aluResultFlopr(3'b011, clk, resetn, ALUResult, ALUOut);
 
     // this mux decides, which value is driving the result BUS
     //                      Input A (00)     Input B (01)       Input C (10)        SelectSignal        Output

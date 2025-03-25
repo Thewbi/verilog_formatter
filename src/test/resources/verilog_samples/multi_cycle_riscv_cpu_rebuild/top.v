@@ -23,16 +23,23 @@ module top(
     wire clk_divided;
     clock_divider clk_div(clk, clk_divided);
 
+    // // DEBUG clk_divided
+    // always @(posedge clk)
+    // begin
+    //     tx_Data = clk_divided;
+    //     tx_DataValid = 1'b1;
+    // end
+
     // //
     // // memory mapped I/O
     // //
 
-    // wire [31:0] toggle_value;
+    wire [31:0] toggle_value;
 
-    // always @(posedge clk)
-    // begin
-    //     led_green = toggle_value[0];
-    // end
+    always @(posedge clk)
+    begin
+        led_green = toggle_value[0];
+    end
 
     //
     // Reset logic
@@ -51,7 +58,7 @@ module top(
     //assign resetn = 0;
     assign resetn = &rststate; // and all bits of rststate together which yields a 1 only after rststate reached 0x0F.
 
-    // DEBUG reset
+    // // DEBUG reset
     // always @(posedge clk)
     // begin
     //     if (resetn == 0)
@@ -171,10 +178,11 @@ module top(
 
     riscv_multi rvmulti(
         // clock and reset
-        clk_divided,
+        //clk_divided,
+        slow_clock,
         resetn, // the system should reset, when resetn is 0. The system should keep running, when resetn is 1.
 
-        // toggle_value,
+        toggle_value,
 
         // DEBUG UART
         tx_Data,

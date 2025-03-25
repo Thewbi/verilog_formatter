@@ -20,28 +20,32 @@ module flopenr #(parameter WIDTH = 8) (
 
         if (resetn == 0)
         begin
-            $display("[flopenr %d] reset", id);
+            //$display("[flopenr %d] reset", id);
             q = 0;
         end
         else if (en)
         begin
-            //$display("[flopenr %d] set 0x%h", id, d);
-            if (id == 3'b000)
-            begin
-                $display("[flopenr CurrPC] q:0x%08h <- d:0x%08h", q, d);
-            end
+            // //$display("[flopenr %d] set 0x%h", id, d);
+            // if (id == 3'b000)
+            // begin
+            //     //$display("[flopenr CurrPC] q:0x%08h <- d:0x%08h", q, d);
+            // end
 
-            if (id == 3'b001)
-            begin
-                $display("[flopenr OldPC] q:0x%08h <- d:0x%08h", q, d);
-            end
+            // if (id == 3'b001)
+            // begin
+            //     //$display("[flopenr OldPC] q:0x%08h <- d:0x%08h", q, d);
+            // end
 
-            if (id == 3'b010)
-            begin
-                $display("[flopenr Instr] q:0x%08h <- d:0x%08h", q, d);
-            end
+            // if (id == 3'b010)
+            // begin
+            //     //$display("[flopenr Instr] q:0x%08h <- d:0x%08h", q, d);
+            // end
 
-            q <= d;
+            q = d;
+        end
+        else
+        begin
+            q = q;
         end
 
     end
