@@ -4,8 +4,8 @@ module extend(
     output reg [31:0] immext
 );
 
-    //always @(instr, immsrc, immext)
-    always @*
+    //always @*
+    always @(instr, immsrc, immext)
     begin
 
         case(immsrc)

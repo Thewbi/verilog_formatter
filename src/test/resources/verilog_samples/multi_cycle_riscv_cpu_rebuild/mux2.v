@@ -7,8 +7,8 @@ module mux2 #(parameter WIDTH = 32) (
 
     //assign y = s ? d1 : d0;
 
-    //always @(d0, d1, s)
-    always @*
+    //always @*
+    always @(d0, d1, s)
     begin
 
         if (s == 1'b0)

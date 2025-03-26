@@ -16,8 +16,8 @@ module alu #(parameter WIDTH = 32) (
     output reg                  Z // zero
 );
 
-    // compute the result
-    always @(a_in or b_in or ALUControl)
+    always @*
+    //always @(a_in or b_in or ALUControl)
     begin
 
         //tx_DataValid = 0;

@@ -1,37 +1,37 @@
 // this is a post-synthesis testbench and also a normal testbench
 // depending on the existence of the parameter -D POST_SYNTHESIS
 //
-// C:\iverilog\bin\iverilog.exe -o build/mux3_pre.vvp mux3.v mux3_tb.v
+// C:\iverilog\bin\iverilog.exe -o build/mux4_pre.vvp mux4.v mux4_tb.v
 //
 // synthesize to .blif file
-// yosys.exe -p "synth_ice40 -top mux3 -blif build/mux3.blif -json build/mux3.json" mux3.v
+// yosys.exe -p "synth_ice40 -top mux4 -blif build/mux4.blif -json build/mux4.json" mux4.v
 //
 // convert .blif file back to verilog file containing post synthesis code
-// yosys.exe -o build/mux3_syn.v build/mux3.blif
+// yosys.exe -o build/mux4_syn.v build/mux4.blif
 //
 // build a .vvp file from the testbench in post-synthesis mode
-// C:\iverilog\bin\iverilog.exe -o build/mux3_post.vvp -D NO_ICE40_DEFAULT_ASSIGNMENTS -D POST_SYNTHESIS mux3_tb.v build/mux3_syn.v C:\Users\wolfg\Downloads\oss-cad-suite\share\yosys\ice40\cells_sim.v
+// C:\iverilog\bin\iverilog.exe -o build/mux4_post.vvp -D NO_ICE40_DEFAULT_ASSIGNMENTS -D POST_SYNTHESIS mux4_tb.v build/mux4_syn.v C:\Users\wolfg\Downloads\oss-cad-suite\share\yosys\ice40\cells_sim.v
 //
-// C:\iverilog\bin\vvp.exe build/mux3_pre.vvp
-// C:\iverilog\bin\vvp.exe build/mux3_post.vvp
+// C:\iverilog\bin\vvp.exe build/mux4_pre.vvp
+// C:\iverilog\bin\vvp.exe build/mux4_post.vvp
 //
-// gtkwave build/mux3_pre.vcd
-// gtkwave build/mux3_post.vcd
+// gtkwave build/mux4_pre.vcd
+// gtkwave build/mux4_post.vcd
 
 /*
 cheat sheet for pre synthesis (iverilog only)
 
-C:\iverilog\bin\iverilog.exe -o build/mux3_pre.vvp mux3.v mux3_tb.v
-C:\iverilog\bin\vvp.exe build/mux3_pre.vvp
+C:\iverilog\bin\iverilog.exe -o build/mux4_pre.vvp mux4.v mux4_tb.v
+C:\iverilog\bin\vvp.exe build/mux4_pre.vvp
 */
 
 /*
 cheat sheet for post synthesis
 
-yosys.exe -p "synth_ice40 -top mux3 -blif build/mux3.blif -json build/mux3.json" mux3.v
-yosys.exe -o build/mux3_syn.v build/mux3.blif
-C:\iverilog\bin\iverilog.exe -o build/mux3_post.vvp -D NO_ICE40_DEFAULT_ASSIGNMENTS -D POST_SYNTHESIS mux3_tb.v build/mux3_syn.v C:\Users\wolfg\Downloads\oss-cad-suite\share\yosys\ice40\cells_sim.v
-C:\iverilog\bin\vvp.exe build/mux3_post.vvp
+yosys.exe -p "synth_ice40 -top mux4 -blif build/mux4.blif -json build/mux4.json" mux4.v
+yosys.exe -o build/mux4_syn.v build/mux4.blif
+C:\iverilog\bin\iverilog.exe -o build/mux4_post.vvp -D NO_ICE40_DEFAULT_ASSIGNMENTS -D POST_SYNTHESIS mux4_tb.v build/mux4_syn.v C:\Users\wolfg\Downloads\oss-cad-suite\share\yosys\ice40\cells_sim.v
+C:\iverilog\bin\vvp.exe build/mux4_post.vvp
 
 */
 module testbench;
@@ -39,6 +39,7 @@ module testbench;
     reg     [31:0]  d0; // input A (s == 0)
     reg     [31:0]  d1; // input B (s == 1)
     reg     [31:0]  d2; // input C (s == 2)
+    reg     [31:0]  d3; // input D (s == 3)
     reg     [1:0]   s;  // selector
     wire    [31:0]  y;  // output
 
@@ -57,25 +58,37 @@ module testbench;
         d0 = 32'h0000AAAA;
         d1 = 32'hBBBB0000;
         d2 = 32'h00CCCC00;
+        d3 = 32'hDD0000DD;
         s = 2'b00;
         #1
-        $display("d0: %h, d1: %h, d2: %h, s: %b, y: %h", d0, d1, d2, s, y); // expected q = 32'h0000AAAA
+        $display("d0: %h, d1: %h, d2: %h, d3: %h, s: %b, y: %h", d0, d1, d2, d3, s, y); // expected q = 32'h0000AAAA
 
         #10
         d0 = 32'h0000AAAA;
         d1 = 32'hBBBB0000;
         d2 = 32'h00CCCC00;
+        d3 = 32'hDD0000DD;
         s = 2'b01;
         #1
-        $display("d0: %h, d1: %h, d3: %h, s: %b, y: %h", d0, d1, d2, s, y); // expected q = 32'hBBBB0000
+        $display("d0: %h, d1: %h, d2: %h, d3: %h, s: %b, y: %h", d0, d1, d2, d3, s, y); // expected q = 32'hBBBB0000
 
         #10
         d0 = 32'h0000AAAA;
         d1 = 32'hBBBB0000;
         d2 = 32'h00CCCC00;
+        d3 = 32'hDD0000DD;
         s = 2'b10;
         #1
-        $display("d0: %h, d1: %h, d3: %h, s: %b, y: %h", d0, d1, d2, s, y); // expected q = 32'h00CCCC00
+        $display("d0: %h, d1: %h, d2: %h, d3: %h, s: %b, y: %h", d0, d1, d2, d3, s, y); // expected q = 32'h00CCCC00
+
+        #10
+        d0 = 32'h0000AAAA;
+        d1 = 32'hBBBB0000;
+        d2 = 32'h00CCCC00;
+        d3 = 32'hDD0000DD;
+        s = 2'b11;
+        #1
+        $display("d0: %h, d1: %h, d2: %h, d3: %h, s: %b, y: %h", d0, d1, d2, d3, s, y); // expected q = 32'hDD0000DD
 
         #100
         $finish;
@@ -94,7 +107,7 @@ module testbench;
         // a million individually resolved ports when your design is based on
         // array constraints that are in turn based on parameters.
 
-        mux3 uut (
+        mux4 uut (
 
             . \d0[0]  (d0[0]),
             . \d0[1]  (d0[1]),
@@ -195,6 +208,39 @@ module testbench;
             . \d2[30] (d2[30]),
             . \d2[31] (d2[31]),
 
+            . \d3[0]  (d3[0]),
+            . \d3[1]  (d3[1]),
+            . \d3[2]  (d3[2]),
+            . \d3[3]  (d3[3]),
+            . \d3[4]  (d3[4]),
+            . \d3[5]  (d3[5]),
+            . \d3[6]  (d3[6]),
+            . \d3[7]  (d3[7]),
+            . \d3[8]  (d3[8]),
+            . \d3[9]  (d3[9]),
+            . \d3[10] (d3[10]),
+            . \d3[11] (d3[11]),
+            . \d3[12] (d3[12]),
+            . \d3[13] (d3[13]),
+            . \d3[14] (d3[14]),
+            . \d3[15] (d3[15]),
+            . \d3[16] (d3[16]),
+            . \d3[17] (d3[17]),
+            . \d3[18] (d3[18]),
+            . \d3[19] (d3[19]),
+            . \d3[20] (d3[20]),
+            . \d3[21] (d3[21]),
+            . \d3[22] (d3[22]),
+            . \d3[23] (d3[23]),
+            . \d3[24] (d3[24]),
+            . \d3[25] (d3[25]),
+            . \d3[26] (d3[26]),
+            . \d3[27] (d3[27]),
+            . \d3[28] (d3[28]),
+            . \d3[29] (d3[29]),
+            . \d3[30] (d3[30]),
+            . \d3[31] (d3[31]),
+
             . \s[0] (s[0]),
             . \s[1] (s[1]),
 
@@ -234,10 +280,11 @@ module testbench;
 
     `else
 
-        mux3 #(32) uut (
+        mux4 #(32) uut (
             .d0(d0),
             .d1(d1),
             .d2(d2),
+            .d3(d3),
             .s(s),
             .y(y)
         );

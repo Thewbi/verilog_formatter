@@ -1,4 +1,4 @@
-module mux4 #(parameter WIDTH = 8) (
+module mux4 #(parameter WIDTH = 32) (
 
     input wire [WIDTH-1:0] d0,  // input A (selector: 00)
     input wire [WIDTH-1:0] d1,  // input B (selector: 01)
