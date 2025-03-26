@@ -1,3 +1,5 @@
+// this is a post-synthesis testbench and also a normal testbench
+// depending on the existence of the parameter -D POST_SYNTHESIS
 module testbench;
 
     reg clk = 1;
