@@ -14,7 +14,8 @@ module flopr #(parameter WIDTH = 8) (
     output reg [WIDTH-1:0] q    // [out] this is the value stores in the flip flop
 );
 
-    always @(posedge clk, negedge resetn)
+    //always @(posedge clk, negedge resetn)
+    always @*
     begin
 
         if (resetn == 0)

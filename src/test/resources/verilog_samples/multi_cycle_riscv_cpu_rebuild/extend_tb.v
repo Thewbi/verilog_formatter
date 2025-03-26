@@ -1,7 +1,7 @@
 // this is a post-synthesis testbench and also a normal testbench
 // depending on the existence of the parameter -D POST_SYNTHESIS
 //
-// C:\iverilog\bin\iverilog.exe -o build/test_pre.vvp extend.v extend_tb.v
+// C:\iverilog\bin\iverilog.exe -o build/extend_pre.vvp extend.v extend_tb.v
 //
 // synthesize to .blif file
 // yosys.exe -p "synth_ice40 -top extend -blif build/extend.blif -json build/extend.json" extend.v

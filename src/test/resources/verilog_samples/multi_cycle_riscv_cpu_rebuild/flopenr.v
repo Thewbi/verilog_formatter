@@ -1,5 +1,5 @@
 // flip flop with enable and reset
-module flopenr #(parameter WIDTH = 8) (
+module flopenr #(parameter WIDTH = 32) (
 
     // DEBUG id of this instance
     input wire[2:0] id,
@@ -13,9 +13,11 @@ module flopenr #(parameter WIDTH = 8) (
 
     // output
     output reg [WIDTH-1:0] q
+
 );
 
-    always @(posedge clk, negedge resetn)
+    //always @(posedge clk, negedge resetn)
+    always @*
     begin
 
         if (resetn == 0)
@@ -25,7 +27,8 @@ module flopenr #(parameter WIDTH = 8) (
         end
         else if (en)
         begin
-            // //$display("[flopenr %d] set 0x%h", id, d);
+            //$display("[flopenr %d] set 0x%h", id, d);
+
             // if (id == 3'b000)
             // begin
             //     //$display("[flopenr CurrPC] q:0x%08h <- d:0x%08h", q, d);
@@ -45,6 +48,8 @@ module flopenr #(parameter WIDTH = 8) (
         end
         else
         begin
+
+            //$display("[flopenr %d] hold 0x%h", id, q);
             q = q;
         end
 
