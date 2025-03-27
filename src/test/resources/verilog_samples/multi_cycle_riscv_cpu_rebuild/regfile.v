@@ -4,9 +4,11 @@ module regfile(
     input   wire            clk,    // clock
     input   wire            we3,    // write enable, register a3 is written with wd3
 
+    // read
     input   wire [4:0]      a1,     // register 1 to read (no clock tick needed)
     input   wire [4:0]      a2,     // register 2 to read (no clock tick needed)
 
+    // write
     input   wire [4:0]      a3,     // register to write
     input   wire [31:0]     wd3,    // data value to write
 

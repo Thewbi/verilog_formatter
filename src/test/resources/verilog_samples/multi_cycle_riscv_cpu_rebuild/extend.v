@@ -1,6 +1,7 @@
 module extend(
     input wire [31:7] instr,
     input wire [2:0] immsrc,
+
     output reg [31:0] immext
 );
 
@@ -8,7 +9,7 @@ module extend(
 
         case(immsrc)
 
-            // I−type
+            // I−type, load word (lw)
             // lui (00134313)
             3'b000:
             begin

@@ -6,7 +6,7 @@ module datapath(
 
     // output
     output  wire [6:0]      op,             // operation code from within the instruction
-    output  wire [6:0]      oldOp,
+    output  reg [6:0]      oldOp,
     output  wire [2:0]      funct3,         // funct3 for instruction identification
     output  wire [30:0]     funct7b5,       // funct7b5
     output  wire [6:0]      funct7,
@@ -49,12 +49,243 @@ module datapath(
     wire [31:0] Result;
     wire [31:0] SrcA;
 
+    function [2:0] decodeImmSrc (input [6:0] opcode, input [2:0] funct3, input [6:0] funct7);
+    begin
+        $display("decodeImmSrc() op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
+
+        case (opcode)
+
+            7'b0110111:
+            begin
+                // lui
+                // lui t2, 2441 - load the unsigned integer 2441 into t2
+                $display("[decodeImmSrc] lui");
+                decodeImmSrc = 3'b100; // lui
+            end
+
+            7'b0000011:
+            begin
+                case (funct3)
+
+                    3'b010:
+                    begin
+                        // lw
+                        $display("[decodeImmSrc] lw");
+                        decodeImmSrc = 3'b000; // addi, I-Type
+                    end
+
+                endcase
+            end
+
+            7'b0100011:
+            begin
+                case (funct3)
+
+                    3'b010:
+                    begin
+                        // lw
+                        $display("[decodeImmSrc] sw");
+                        decodeImmSrc = 3'b001; // addi, S-Type
+                    end
+
+                endcase
+            end
+
+            7'b0010011:
+            begin
+
+                case (funct3)
+
+                    3'b000:
+                    begin
+                        // addi
+                        $display("[decodeImmSrc] addi");
+                        decodeImmSrc = 3'b000; // addi, I-Type
+                    end
+
+                    3'b010:
+                    begin
+                        // slti
+                        $display("[decodeImmSrc] slti");
+                        decodeImmSrc = 3'b000; // slti, I-Type
+                    end
+
+                    3'b011:
+                    begin
+                        // sltiu
+                        //$finish(1);
+                    end
+
+                    3'b100:
+                    begin
+                        // xori (exampel: 00134313)
+                        $display("[decodeImmSrc] xori");
+                        decodeImmSrc = 3'b000; // I-Type [31:20] is sign extended
+                    end
+
+                    3'b110:
+                    begin
+                        // ori
+                        $display("[decodeImmSrc] ori");
+                        decodeImmSrc = 3'b000; // ori, I-Type
+                    end
+
+                    3'b111:
+                    begin
+                        // andi
+                        $display("[decodeImmSrc] andi");
+                        decodeImmSrc = 3'b000; // I-Type
+                    end
+
+                    3'b001:
+                    begin
+                        // slli
+                        //$finish(3);
+                    end
+
+                    3'b101:
+                    begin
+                        case (funct7)
+
+                            7'b0000000:
+                            begin
+                                // srli, I-Type
+                                $display("[decodeImmSrc] srli");
+                                decodeImmSrc = 3'b000; // I-Type
+                            end
+
+                            7'b0100000:
+                            begin
+                                // srai, I-Type
+                                $display("[decodeImmSrc] srai");
+                                decodeImmSrc = 3'b000; // I-Type
+                            end
+
+                        endcase
+                    end
+
+                endcase
+            end
+
+            7'b0110011:
+            begin
+
+                case (funct3)
+
+                    3'b000:
+                    begin
+
+                        case (funct7)
+
+                            7'b0000000:
+                            begin
+                                // add
+                                $display("[decodeImmSrc] add");
+                                decodeImmSrc = 3'bxxx; // addition, no immediate encoded within the instruction
+                            end
+
+                            7'b0100000:
+                            begin
+                                // sub
+                                $display("[decodeImmSrc] sub");
+                                decodeImmSrc = 3'bxxx; // subtraction, no immediate encoded within the instruction
+                            end
+
+                        endcase
+
+                    end
+
+                    3'b001:
+                    begin
+                        // sll
+                        //$finish(4);
+                    end
+
+                    3'b010:
+                    begin
+                        // slt
+                        $display("[decodeImmSrc] slt");
+                        decodeImmSrc = 3'bxxx; // no immediate
+                    end
+
+                    3'b011:
+                    begin
+                        // sltu
+                        //$finish(5);
+                    end
+
+                    3'b100:
+                    begin
+                        // xor
+                        //$finish(6);
+                    end
+
+                    3'b101:
+                    begin
+
+                        case (funct7)
+
+                            7'b0000000:
+                            begin
+                                // srl
+                                //$finish(7);
+                            end
+
+                            7'b0100000:
+                            begin
+                                // sra
+                                //$finish(8);
+                            end
+
+                        endcase
+
+                    end
+
+                    3'b110:
+                    begin
+                        // or
+                        $display("[decodeImmSrc] or");
+                        decodeImmSrc = 3'bxxx; // or R-Type has no immediate!
+                    end
+
+                    3'b111:
+                    begin
+                        // and
+                        $display("[decodeImmSrc] and");
+                        decodeImmSrc = 3'bxxx; // and R-Type has no immediate!
+                    end
+
+                endcase
+            end
+
+            7'b1101111:
+            begin
+                $display("[decodeImmSrc] jal jal jal jal jal jal");
+                decodeImmSrc = 3'b011; // I-Type
+            end
+
+            7'b1100011:
+            begin
+                $display("[decodeImmSrc] beq beq beq beq beq beq");
+                decodeImmSrc = 3'b010; // B-Type
+            end
+
+            default:
+            begin
+                $display("[decodeImmSrc] default");
+                decodeImmSrc = 3'bxxx;
+            end
+
+        endcase
+    end
+    endfunction
+
     // wire [31:0]      toggle_value;
 
-    always @(posedge MemWrite)
-    begin
-        $display("[datapath] MemWrite! ALUResult: 0x%h, Result: 0x%h, WriteData: 0x%h", ALUResult, Result, WriteData);
-    end
+    // always @(posedge MemWrite)
+    // begin
+    //     $display("[datapath] MemWrite! ALUResult: 0x%h, Result: 0x%h, WriteData: 0x%h", ALUResult, Result, WriteData);
+    // end
 
     //      clk    resetn,    write enable    addr        data to write           output read data
     ram ram(clk,   resetn,    MemWrite,       adr,        WriteData,              ReadData, toggle_value
@@ -89,10 +320,21 @@ module datapath(
     assign funct7b5 = ReadData[30:0];
     assign funct7 = ReadData[31:25];
 
-    assign oldOp = Instr[6:0];
+    reg [2:0] immSrcInternal;
+    always @(posedge clk)
+    begin
+        immSrcInternal = decodeImmSrc(op, funct3, funct7);
+    end
+
+    //assign oldOp = Instr[6:0];
     // assign funct3 = Instr[14:12];
     // assign funct7b5 = Instr[30:0];
     // assign funct7 = Instr[31:25];
+
+    always @(posedge clk)
+    begin
+        oldOp = op;
+    end
 
     // always @(posedge Instr)
     // begin
@@ -108,10 +350,12 @@ module datapath(
         clk,                // [in] clock
         RegWrite,           // [in] write enable, register a3 is written with wd3
 
-        Instr[19:15],       // [in] register 1 to read (no clock tick needed)
-        Instr[24:20],       // [in] register 2 to read (no clock tick needed)
+        // read
+        ReadData[19:15],       // [in] register 1 to read (no clock tick needed)
+        ReadData[24:20],       // [in] register 2 to read (no clock tick needed)
 
-        Instr[11:7],        // [in] register to write
+        // write
+        ReadData[11:7],        // [in] register to write
         Result,             // [in] data value to write
 
         // output
@@ -126,7 +370,8 @@ module datapath(
     // param 1 = instruction bits (part of the instruction to sign extend)
     // param 2 = type of instruction that is sign extension applied to
     // param 3 = output
-    extend ext(Instr[31:7], ImmSrc, ImmExt);
+    //extend ext(ReadData[31:7], ImmSrc, ImmExt);
+    extend ext(ReadData[31:7], immSrcInternal, ImmExt);
 
     // ALU input muxes
     //                 Input A      Input B     Input C         SelectSignal        Output

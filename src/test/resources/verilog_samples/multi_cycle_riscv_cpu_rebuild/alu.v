@@ -87,10 +87,10 @@ module alu #(parameter WIDTH = 32) (
             default:
             begin
                 $display("[ALU] default");
-                ALUResult = 32'b01010101010101010101010101010101;
+                //ALUResult = 32'b01010101010101010101010101010101;
 
                 // compute zero
-                Z = (ALUResult == 0);
+                //Z = (ALUResult == 0);
             end
 
         endcase

@@ -9,7 +9,7 @@ C:\iverilog\bin\iverilog.exe -s top_testbench -o build/aout.vvp top_testbench.v 
 // for data and code in a single RAM module (ram.v)
 C:\iverilog\bin\iverilog.exe -s top_testbench -o build/aout.vvp top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v > build/compile.log
 
-clear && C:\iverilog\bin\vvp.exe build/aout.vvp
+clear && C:\iverilog\bin\vvp.exe build/aout.vvp > build/verilog_log.txt
 
 gtkwave build/aout.vcd
 

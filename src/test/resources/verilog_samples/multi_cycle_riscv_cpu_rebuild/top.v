@@ -28,7 +28,7 @@ module top(
 
     // https://stackoverflow.com/questions/38030768/icestick-yosys-using-the-global-set-reset-gsr
     wire resetn;
-    reg [3:0] rststate = 0;
+    reg [1:0] rststate = 0;
 
     always @(posedge clk)
     begin
