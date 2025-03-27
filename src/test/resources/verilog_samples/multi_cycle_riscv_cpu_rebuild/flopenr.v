@@ -16,8 +16,8 @@ module flopenr #(parameter WIDTH = 32) (
 
 );
 
-    //always @(posedge clk, negedge resetn)
-    always @*
+    //always @* // using the * option causes a combinational loop with nextpnr
+    always @(posedge clk, negedge resetn)
     begin
 
         if (resetn == 0)

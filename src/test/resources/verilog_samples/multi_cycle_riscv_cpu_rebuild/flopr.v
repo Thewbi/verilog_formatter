@@ -1,7 +1,7 @@
 // Flip Flop with reset
 // on posedge of the clock, will store the value d
 // on posedge of the clock, will return the current value q
-module flopr #(parameter WIDTH = 8) (
+module flopr #(parameter WIDTH = 32) (
 
     // DEBUG id
     input wire [2:0] id,
@@ -14,8 +14,8 @@ module flopr #(parameter WIDTH = 8) (
     output reg [WIDTH-1:0] q    // [out] this is the value stores in the flip flop
 );
 
-    //always @(posedge clk, negedge resetn)
     always @*
+    //always @(posedge clk, negedge resetn)
     begin
 
         if (resetn == 0)

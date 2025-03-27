@@ -32,7 +32,7 @@ module top_testbench();
          begin
             $dumpfile("build/aout.vcd");
 
-            $dumpvars(0, clk);
+            // $dumpvars(0, clk);
             // $dumpvars(0, resetn);
             $dumpvars(0, dut);
 

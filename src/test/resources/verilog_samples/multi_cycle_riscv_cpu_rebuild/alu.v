@@ -2,9 +2,9 @@
 
 module alu #(parameter WIDTH = 32) (
 
-    // DEBUG UART
-    output reg [7:0]            tx_Data,
-    output reg                  tx_DataValid,
+    // // DEBUG UART
+    // output reg [7:0]            tx_Data,
+    // output reg                  tx_DataValid,
 
     // input
     input  wire [WIDTH-1:0]     a_in,

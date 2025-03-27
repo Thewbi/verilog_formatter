@@ -3,11 +3,11 @@
 ```
 cd C:\Users\wolfg\dev\Java\verilog_formatter\src\test\resources\verilog_samples\multi_cycle_riscv_cpu_rebuild
 
-// sepearate instruction memory (imem) and data memory (dmem)
-C:\iverilog\bin\iverilog.exe -s top_testbench -o build/aout.vvp top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v imem.v dmem.v
+// separate instruction memory (imem) and data memory (dmem)
+C:\iverilog\bin\iverilog.exe -s top_testbench -o build/aout.vvp top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v imem.v dmem.v clock_divider.v
 
 // for data and code in a single RAM module (ram.v)
-C:\iverilog\bin\iverilog.exe -s top_testbench -o build/aout.vvp top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v > build/compile.log
+C:\iverilog\bin\iverilog.exe -s top_testbench -o build/aout.vvp top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v clock_divider.v > build/compile.log
 
 clear && C:\iverilog\bin\vvp.exe build/aout.vvp
 
@@ -91,8 +91,11 @@ gtkwave build/test_post.vcd
 ```
 
 ```
-// normal simulation
+// normal simulation (pre synthesis)
 C:\iverilog\bin\iverilog.exe -o build/alu_pre.vvp alu.v alu_tb.v
+clear & C:\iverilog\bin\vvp.exe build/alu_pre.vvp
+
+
 
 // build .blif and .json files
 yosys.exe -p "synth_ice40 -top alu -blif build/alu.blif -json build/alu.json" alu.v
@@ -106,11 +109,78 @@ yosys.exe -o build/alu_syn.v build/alu.blif
 // build alu_post.vvp
 C:\iverilog\bin\iverilog.exe -o build/alu_post.vvp -D NO_ICE40_DEFAULT_ASSIGNMENTS -D POST_SYNTHESIS alu_tb.v build/alu_syn.v C:\Users\wolfg\Downloads\oss-cad-suite\share\yosys\ice40\cells_sim.v
 
-clear & C:\iverilog\bin\vvp.exe build/alu_pre.vvp
+
 clear & C:\iverilog\bin\vvp.exe build/alu_post.vvp
 
 gtkwave build/alu_post.vcd
 ```
+
+
+
+```
+yosys.exe -p "synth_ice40 -top top -blif build/top.blif -json build/top.json" top.v riscv_multi.v uart_rx.v uart_tx.v clock_divider.v datapath.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v flopenr.v flopr.v regfile.v
+
+yosys.exe -p "synth_ice40 -top riscv_multi -blif build/riscv_multi.blif -json build/riscv_multi.json" riscv_multi.v datapath.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v flopenr.v flopr.v regfile.v
+
+yosys.exe -p "synth_ice40 -top datapath -blif build/datapath.blif -json build/datapath.json" datapath.v mux2.v mux3.v mux4.v alu.v extend.v ram.v flopenr.v flopr.v regfile.v
+
+yosys.exe -p "synth_ice40 -top flopenr -blif build/flopenr.blif -json build/flopenr.json" flopenr.v
+
+yosys.exe -p "synth_ice40 -top flopr -blif build/flopr.blif -json build/flopr.json" flopr.v
+
+yosys.exe -p "synth_ice40 -top regfile -blif build/regfile.blif -json build/regfile.json" regfile.v
+
+yosys.exe -p "synth_ice40 -top controller -blif build/controller.blif -json build/controller.json" controller.v
+
+yosys.exe -p "synth_ice40 -top mux2 -blif build/mux2.blif -json build/mux2.json" mux2.v
+
+yosys.exe -p "synth_ice40 -top mux3 -blif build/mux3.blif -json build/mux3.json" mux3.v
+
+yosys.exe -p "synth_ice40 -top mux4 -blif build/mux4.blif -json build/mux4.json" mux4.v
+
+yosys.exe -p "synth_ice40 -top alu -blif build/alu.blif -json build/alu.json" alu.v
+
+yosys.exe -p "synth_ice40 -top extend -blif build/extend.blif -json build/extend.json" extend.v
+
+yosys.exe -p "synth_ice40 -top ram -blif build/ram.blif -json build/ram.json" ram.v
+
+yosys.exe -p "synth_ice40 -top uart_rx -blif build/uart_rx.blif -json build/uart_rx.json" uart_rx.v
+
+yosys.exe -p "synth_ice40 -top uart_tx -blif build/uart_tx.blif -json build/uart_tx.json" uart_tx.v
+
+yosys.exe -p "synth_ice40 -top clock_divider -blif build/clock_divider.blif -json build/clock_divider.json" clock_divider.v
+
+
+yosys.exe -o build/top_syn.v build/top.blif
+yosys.exe -o build/riscv_multi_syn.v build/riscv_multi.blif
+yosys.exe -o build/datapath_syn.v build/datapath.blif
+yosys.exe -o build/flopenr_syn.v build/flopenr.blif
+yosys.exe -o build/flopr_syn.v build/flopr.blif
+yosys.exe -o build/regfile_syn.v build/regfile.blif
+yosys.exe -o build/controller_syn.v build/controller.blif
+yosys.exe -o build/mux2_syn.v build/mux2.blif
+yosys.exe -o build/mux3_syn.v build/mux3.blif
+yosys.exe -o build/mux4_syn.v build/mux4.blif
+yosys.exe -o build/alu_syn.v build/alu.blif
+yosys.exe -o build/extend_syn.v build/extend.blif
+yosys.exe -o build/ram_syn.v build/ram.blif
+yosys.exe -o build/uart_rx_syn.v build/uart_rx.blif
+yosys.exe -o build/uart_tx_syn.v build/uart_tx.blif
+yosys.exe -o build/clock_divider_syn.v build/clock_divider.blif
+
+
+
+C:\iverilog\bin\iverilog.exe -o build/top_post.vvp -D NO_ICE40_DEFAULT_ASSIGNMENTS -D POST_SYNTHESIS top_testbench.v build/top_syn.v build/riscv_multi_syn.v build/datapath_syn.v build/flopenr_syn.v build/flopr_syn.v build/regfile_syn.v build/controller_syn.v build/mux2_syn.v build/mux3_syn.v build/mux4_syn.v build/alu_syn.v build/extend_syn.v build/ram_syn.v build/uart_rx_syn.v build/uart_tx_syn.v build/clock_divider_syn.v C:\Users\wolfg\Downloads\oss-cad-suite\share\yosys\ice40\cells_sim.v
+
+
+clear & C:\iverilog\bin\vvp.exe build/top_post.vvp
+
+gtkwave build/aout.vcd
+```
+
+
+
+
 
 ## BLIF (Berkeley Logic Interchange Format)
 

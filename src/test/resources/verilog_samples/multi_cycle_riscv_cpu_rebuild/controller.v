@@ -790,9 +790,7 @@ module controller (
                 PCWrite = 1'b0;
                 ALUSrcA = 2'b01; // oldPC
                 ALUSrcB = 2'b01; // immediate sign extended (this will compute the jump target for JAL and BEQ)
-                //ALUControl = 3'b000;
                 ALUControl = decodeAluOp(op, funct3, funct7);
-                //newALUControl = decodeAluOp(op, funct3, funct7);
                 ResultSrc = 2'bxx;
                 AdrSrc = 1'bx;
                 RegWrite = 1'b0;

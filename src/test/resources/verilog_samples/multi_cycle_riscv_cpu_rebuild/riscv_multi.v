@@ -5,8 +5,12 @@ module riscv_multi(
 
     output wire [31:0]      toggle_value,
 
-    output reg [7:0]       tx_Data,
-    output reg             tx_DataValid
+    // // works with yosys but not with iverilog
+    // output reg [7:0]       tx_Data,
+    // output reg             tx_DataValid
+
+    output wire [7:0]       tx_Data,
+    output wire             tx_DataValid
 );
 
     wire [31:0]     Instr;
@@ -22,7 +26,6 @@ module riscv_multi(
     wire            MemWrite;
     wire            IRWrite;
 
-    // wire [31:0] ReadDData;  // data memory
     wire [1:0]      ResultSrc;
     wire [2:0]      ImmSrc;
     wire [2:0]      ALUControl;
@@ -34,6 +37,13 @@ module riscv_multi(
     wire [6:0]      funct7;
     wire [1:0]      ALUSrcB;
     wire [1:0]      ALUSrcA;
+
+    // initial
+    //      begin
+    //         $dumpfile("build/aout_ctr.vcd");
+    //         $dumpvars(0, ctr);
+    //         #8000 $finish();
+    //      end
 
     controller ctr (
         // clock and reset

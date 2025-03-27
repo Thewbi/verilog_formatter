@@ -16,6 +16,18 @@ module top(
     output reg D4
 );
 
+    // initial
+    // begin
+    //     $dumpfile("build/aout_rvmulti.vcd");
+
+    //     // $dumpvars(0, clk);
+    //     // $dumpvars(0, resetn);
+    //     $dumpvars(0, rvmulti);
+
+    //     //#500 $finish();
+    //     #8000 $finish();
+    // end
+
     //
     // clock
     //
@@ -34,8 +46,11 @@ module top(
     // // memory mapped I/O
     // //
 
-    wire [31:0] toggle_value;
+    //
+    // memory mapped toggle value
+    //
 
+    wire [31:0] toggle_value;
     always @(posedge clk)
     begin
         led_green = toggle_value[0];
@@ -47,8 +62,10 @@ module top(
 
     // https://stackoverflow.com/questions/38030768/icestick-yosys-using-the-global-set-reset-gsr
     wire resetn;
+    reg [4:0] rststate = 0;
     //reg [21:0] rststate = 0;
-    reg [23:0] rststate = 0;
+    //reg [23:0] rststate = 0;
+    //reg [24:0] rststate = 0;
 
     always @(posedge clk)
     begin
@@ -164,7 +181,8 @@ module top(
 
     // end
 
-    always @(posedge slow_clock)
+    //always @(posedge slow_clock)
+    always @(posedge clk_divided)
     begin
         D1 = ~D1;
         D2 = 0;
@@ -178,8 +196,8 @@ module top(
 
     riscv_multi rvmulti(
         // clock and reset
-        //clk_divided,
-        slow_clock,
+        clk_divided,
+        //slow_clock,
         resetn, // the system should reset, when resetn is 0. The system should keep running, when resetn is 1.
 
         toggle_value,

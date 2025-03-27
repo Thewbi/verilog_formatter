@@ -11,8 +11,16 @@ module datapath(
     output  wire [30:0]     funct7b5,       // funct7b5
     output  wire [6:0]      funct7,
     output  wire            Zero,           // the ALU has computed a result that is zero (for branching instructions)
-    output  reg [31:0]      PC,             // current program counter value
-    output  reg [31:0]     ReadData,       // output from instruction memory
+
+
+    //output  reg [31:0]      PC,             // current program counter value
+    output  wire [31:0]      PC,             // current program counter value
+
+    // works with yosys but not with iVerilog
+    //output  reg [31:0]     ReadData,       // output from instruction memory
+    output  wire [31:0]     ReadData,       // output from instruction memory
+
+
     // output  wire [31:0]     ReadDData,      // output from data memory
 
     // input
@@ -31,8 +39,13 @@ module datapath(
     output wire [31:0]      toggle_value,    // RAM toggle signal
 
     // DEBUG UART
+
+    // // works with yosys but not with iverilog
     output reg [7:0]        tx_Data,
     output reg              tx_DataValid
+
+    // output wire [7:0]        tx_Data,
+    // output wire              tx_DataValid
 );
 
     wire [31:0] OldPC;
@@ -73,12 +86,12 @@ module datapath(
     //     end
     // end
 
-    // DEBUG output PC
-    always @(posedge clk)
-    begin
-        tx_Data = PC[7:0];
-        tx_DataValid = 1'b1;
-    end
+    // // DEBUG output PC
+    // always @(posedge clk)
+    // begin
+    //     tx_Data = PC[7:0];
+    //     tx_DataValid = 1'b1;
+    // end
 
     // // DEBUG output instruction read from memory
     // always @(posedge clk)
@@ -115,8 +128,7 @@ module datapath(
     // end
 
     //      clk    resetn,                           write enable    addr        data to write           output read data
-    ram ram(clk,   resetn,    tx_Data, tx_DataValid, MemWrite,       adr,        WriteData,              ReadData /*, toggle_value*/
-    );
+    ram ram(clk,   resetn,    /*tx_Data, tx_DataValid,*/ MemWrite,       adr,        WriteData,              ReadData, toggle_value);
 
     //          clk     write enable    addr        data            output read data
     //dmem dmem(  clk,    MemWrite,       Result,     WriteData,      ReadDData);
@@ -143,12 +155,27 @@ module datapath(
     //                          clock    reset   data-in     data-out
     flopr #(32) DataFF(3'b000,  clk,     resetn,  ReadData,   data);
 
+    // always @*
+    // begin
+    //     op = ReadData[6:0];
+    //     funct3 = ReadData[14:12];
+    //     funct7b5 = ReadData[30:0];
+    //     funct7 = ReadData[31:25];
+
+    //     oldOp = Instr[6:0];
+    // end
+
     assign op = ReadData[6:0];
     assign funct3 = ReadData[14:12];
     assign funct7b5 = ReadData[30:0];
     assign funct7 = ReadData[31:25];
 
     assign oldOp = Instr[6:0];
+
+
+
+
+
     // assign funct3 = Instr[14:12];
     // assign funct7b5 = Instr[30:0];
     // assign funct7 = Instr[31:25];
@@ -197,7 +224,7 @@ module datapath(
 
     // ALU
     //                             input A     input B     operation       result output       zero flag
-    alu alu(tx_Data, tx_DataValid, SrcA,       SrcB,       ALUControl,     ALUResult,          Zero);
+    alu alu(/*tx_Data, tx_DataValid,*/ SrcA,       SrcB,       ALUControl,     ALUResult,          Zero);
 
     flopr #(32) aluResultFlopr(3'b011, clk, resetn, ALUResult, ALUOut);
 

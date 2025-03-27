@@ -140,6 +140,7 @@ module testbench;
             . \a_in[29] (a_in[29]),
             . \a_in[30] (a_in[30]),
             . \a_in[31] (a_in[31]),
+
             . \b_in[0]  (b_in[0]),
             . \b_in[1]  (b_in[1]),
             . \b_in[2]  (b_in[2]),
@@ -172,9 +173,11 @@ module testbench;
             . \b_in[29] (b_in[29]),
             . \b_in[30] (b_in[30]),
             . \b_in[31] (b_in[31]),
+
             . \ALUControl[0] (ALUControl[0]),
             . \ALUControl[1] (ALUControl[1]),
             . \ALUControl[2] (ALUControl[2]),
+
             . \tx_Data[0] (tx_Data[0]),
             . \tx_Data[1] (tx_Data[1]),
             . \tx_Data[2] (tx_Data[2]),
@@ -183,7 +186,9 @@ module testbench;
             . \tx_Data[5] (tx_Data[5]),
             . \tx_Data[6] (tx_Data[6]),
             . \tx_Data[7] (tx_Data[7]),
+
             . tx_DataValid (tx_DataValid),
+
             . \ALUResult[0]     (ALUResult[0]),
             . \ALUResult[1]     (ALUResult[1]),
             . \ALUResult[2]     (ALUResult[2]),
@@ -216,6 +221,7 @@ module testbench;
             . \ALUResult[29]    (ALUResult[29]),
             . \ALUResult[30]    (ALUResult[30]),
             . \ALUResult[31]    (ALUResult[31]),
+
             . Z (Z)
         );
 
