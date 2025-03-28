@@ -240,6 +240,7 @@ module ram(
     always @(posedge clk)
     begin
         rd = RAM[a[31:0]];
+        //rd = RAM[32'b0];
         toggle_value = RAM[32'd60]; // memory mapped I/O for the green LED
         $display("[RAM] WriteEnable: %d, Address: 0x%08h, WriteData: 0x%08h, ReadData: 0x%08h", we, a, wd, rd);
     end

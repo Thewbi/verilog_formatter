@@ -27,7 +27,7 @@ module riscv_multi(
     wire [6:0]      op;
     wire [6:0]      oldOp;
     wire [2:0]      funct3;
-    wire [30:0]     funct7b5;
+    // wire [30]     funct7b5;
     wire [6:0]      funct7;
     wire [1:0]      ALUSrcB;
     wire [1:0]      ALUSrcA;
@@ -45,7 +45,7 @@ module riscv_multi(
         op,             // operation code from within the instruction
         oldOp,
         funct3,
-        funct7b5,
+        // funct7b5,
         funct7,
         Zero,           // ALU result is zero
         PC,             // current programm counter
@@ -76,7 +76,7 @@ module riscv_multi(
         op,
         oldOp,
         funct3,
-        funct7b5,
+        // funct7b5,
         funct7,
         Zero,
         PC,

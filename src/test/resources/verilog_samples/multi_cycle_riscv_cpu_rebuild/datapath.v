@@ -8,7 +8,7 @@ module datapath(
     output  wire [6:0]      op,             // operation code from within the instruction
     output  reg [6:0]      oldOp,
     output  wire [2:0]      funct3,         // funct3 for instruction identification
-    output  wire [30:0]     funct7b5,       // funct7b5
+    // output  wire [30]     funct7b5,       // funct7b5
     output  wire [6:0]      funct7,
     output  wire            Zero,           // the ALU has computed a result that is zero (for branching instructions)
     output  wire [31:0]     PC,             // current program counter value
@@ -317,8 +317,13 @@ module datapath(
 
     assign op = ReadData[6:0];
     assign funct3 = ReadData[14:12];
-    assign funct7b5 = ReadData[30:0];
+    //assign funct7b5 = ReadData[30];
     assign funct7 = ReadData[31:25];
+
+    // assign op = Instr[6:0];
+    // assign funct3 = Instr[14:12];
+    // // assign funct7b5 = Instr[30];
+    // assign funct7 = Instr[31:25];
 
     reg [2:0] immSrcInternal;
     always @(posedge clk)
@@ -326,10 +331,7 @@ module datapath(
         immSrcInternal = decodeImmSrc(op, funct3, funct7);
     end
 
-    //assign oldOp = Instr[6:0];
-    // assign funct3 = Instr[14:12];
-    // assign funct7b5 = Instr[30:0];
-    // assign funct7 = Instr[31:25];
+
 
     always @(posedge clk)
     begin
@@ -347,20 +349,20 @@ module datapath(
     regfile rf (
 
         // clock write enable
-        clk,                // [in] clock
-        RegWrite,           // [in] write enable, register a3 is written with wd3
+        .clk(clk),                // [in] clock
+        .we3(RegWrite),           // [in] write enable for register 3. if high, register a3 is written with wd3
 
         // read
-        ReadData[19:15],       // [in] register 1 to read (no clock tick needed)
-        ReadData[24:20],       // [in] register 2 to read (no clock tick needed)
+        .a1(Instr[19:15]),       // [in] register 1 to read (no clock tick needed)
+        .a2(Instr[24:20]),       // [in] register 2 to read (no clock tick needed)
 
         // write
-        ReadData[11:7],        // [in] register to write
-        Result,             // [in] data value to write
+        .a3(Instr[11:7]),        // [in] register to write
+        .wd3(Result),             // [in] data value to write
 
         // output
-        RD1,                // [out] the output where the value from register a1 appears
-        RD2                 // [out] the output where the value from register a2 appears
+        .rd1(RD1),                // [out] the output where the value from register a1 appears
+        .rd2(RD2)                 // [out] the output where the value from register a2 appears
     );
                                         //   d    q
     flopr #(32) Data_RD1(3'b001, clk, resetn, RD1, register_output_A);
@@ -389,7 +391,8 @@ module datapath(
 
     // this mux decides, which value is driving the result BUS
     //                      Input A (00)     Input B (01)       Input C (10)        SelectSignal        Output
-    mux3 #(32) resultmux(   ALUOut,          data,              ALUResult,          ResultSrc,          Result);
+    //mux3 #(32) resultmux(   ALUOut,          data,              ALUResult,          ResultSrc,          Result);
+    mux3 #(32) resultmux(   ALUOut,          ReadData,              ALUResult,          ResultSrc,          Result);
 
 endmodule
 

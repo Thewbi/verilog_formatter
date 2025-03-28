@@ -14,7 +14,7 @@ module controller (
     input   wire [6:0]  op,         // operation code from within the instruction
     input   wire [6:0]  oldOp,
     input   wire [2:0]  funct3,     // funct3 for instruction identification. This encodes the operation that the ALU has to execute
-    input   wire [30:0] funct7b5,     // funct7b5
+    // input   wire [30] funct7b5,     // funct7b5
     input   wire [6:0]  funct7,     // funct7
     input   wire        Zero,       // the ALU has computed a result that is zero (for branching instruction making)
     input   wire [31:0] PC,
@@ -560,7 +560,7 @@ module controller (
             // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
             AdrSrc = 1'b0; // this connects the PC flip flop to the instruction memory
             MemWrite = 1'b0; // not writing into memory
-            IRWrite = 1'b0; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
+            IRWrite = 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
             RegWrite = 1'b0;
             ImmSrc = 2'b00; // no immediate extension required
             // ACTION 2 - increment PC
@@ -591,7 +591,7 @@ module controller (
                 // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
                 AdrSrc = 1'b0; // this connects the PC flip flop to the instruction memory
                 MemWrite = 1'b0; // not writing into memory
-                IRWrite = 1'b0; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
+                IRWrite = 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
                 RegWrite = 1'b0;
                 ImmSrc = 2'b00; // no immediate extension required
                 // ACTION 2 - increment PC
@@ -643,7 +643,7 @@ module controller (
                 //RegWrite = 1'b0;
                 //MemWrite = 1'b0;
                 ImmSrc = decodeImmSrc(op, funct3, funct7); // tell the sign extender how to correctly read the bits for the immediate value encoded in the instruction.
-                //IRWrite = 1'b0;
+                IRWrite = 1'b0;
             end
 
             // S4 "MemAddr" State
@@ -667,7 +667,7 @@ module controller (
                 // RegWrite = 1'b0;
                 // MemWrite = 1'b0;
                 // ImmSrc = 3'b001; // set the sign extender to S−type (stores)
-                // IRWrite = 1'b0;
+                IRWrite = 1'b0;
             end
 
             // S5 "MemRead" State
@@ -706,7 +706,8 @@ module controller (
                 // ALUSrcA = 2'b00;
                 // ALUSrcB = 2'b00;
                 // ALUControl = 3'b000;
-                ResultSrc = 2'b00; // take the value from the Data register and place it onto the result bus
+                //ResultSrc = 2'b00; // take the value from the Data register and place it onto the result bus
+                ResultSrc = 2'b01;
                 // AdrSrc = 1'bx;
                 RegWrite = 1'b1;
                 // MemWrite = 1'b0;
