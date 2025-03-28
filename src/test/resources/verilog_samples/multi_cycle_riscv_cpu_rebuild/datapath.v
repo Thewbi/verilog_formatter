@@ -315,15 +315,15 @@ module datapath(
     //                          clock    reset   data-in     data-out
     flopr #(32) DataFF(3'b000,  clk,     resetn,  ReadData,   data);
 
-    assign op = ReadData[6:0];
-    assign funct3 = ReadData[14:12];
-    //assign funct7b5 = ReadData[30];
-    assign funct7 = ReadData[31:25];
+    // assign op = ReadData[6:0];
+    // assign funct3 = ReadData[14:12];
+    // //assign funct7b5 = ReadData[30];
+    // assign funct7 = ReadData[31:25];
 
-    // assign op = Instr[6:0];
-    // assign funct3 = Instr[14:12];
-    // // assign funct7b5 = Instr[30];
-    // assign funct7 = Instr[31:25];
+    assign op = Instr[6:0];
+    assign funct3 = Instr[14:12];
+    // assign funct7b5 = Instr[30];
+    assign funct7 = Instr[31:25];
 
     reg [2:0] immSrcInternal;
     always @(posedge clk)
@@ -373,7 +373,8 @@ module datapath(
     // param 2 = type of instruction that is sign extension applied to
     // param 3 = output
     //extend ext(ReadData[31:7], ImmSrc, ImmExt);
-    extend ext(ReadData[31:7], immSrcInternal, ImmExt);
+    //extend ext(ReadData[31:7], immSrcInternal, ImmExt);
+    extend ext(Instr[31:7], immSrcInternal, ImmExt);
 
     // ALU input muxes
     //                 Input A      Input B     Input C         SelectSignal        Output
@@ -391,8 +392,8 @@ module datapath(
 
     // this mux decides, which value is driving the result BUS
     //                      Input A (00)     Input B (01)       Input C (10)        SelectSignal        Output
-    //mux3 #(32) resultmux(   ALUOut,          data,              ALUResult,          ResultSrc,          Result);
-    mux3 #(32) resultmux(   ALUOut,          ReadData,              ALUResult,          ResultSrc,          Result);
+    mux3 #(32) resultmux(   ALUOut,          data,              ALUResult,          ResultSrc,          Result);
+    //mux3 #(32) resultmux(   ALUOut,          ReadData,              ALUResult,          ResultSrc,          Result);
 
 endmodule
 

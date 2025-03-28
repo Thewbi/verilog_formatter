@@ -12,7 +12,7 @@ module controller (
 
     // input
     input   wire [6:0]  op,         // operation code from within the instruction
-    input   wire [6:0]  oldOp,
+    input   wire [6:0]  oldOp,      //
     input   wire [2:0]  funct3,     // funct3 for instruction identification. This encodes the operation that the ALU has to execute
     // input   wire [30] funct7b5,     // funct7b5
     input   wire [6:0]  funct7,     // funct7
@@ -504,16 +504,9 @@ module controller (
         ErrorState          = 5'b01111       // S15 "ERROR" State
         ;
 
-    // wire resetn2 = 0;
-
     // current state and next state
     reg [4:0] current_state = ResetState;
-    reg [4:0] next_state;
-
-
-    reg [6:0] op_latch;
-    reg [2:0] funct3_latch;
-    reg [6:0] funct7_latch;
+    reg [4:0] next_state = FetchState_1;
 
     // sequential memory of the Moore FSM
     always @(posedge clk)
@@ -554,7 +547,7 @@ module controller (
         begin
             $display("[controller] Resetting.");
 
-            current_state = FetchState_1;
+            current_state = ResetState;
 
             PCWrite = 1'b0;
             // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
@@ -580,6 +573,7 @@ module controller (
     // Moore == output only depends on the current state
     //
 
+    //always @(current_state, resetn)
     always @(current_state)
     begin
         case(current_state)
@@ -632,7 +626,7 @@ module controller (
                 $display("");
                 $display("[CTRL.OUTPUT.DECODE_STATE] op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
 
-                //PCWrite = 1'b0;
+                PCWrite = 1'b0;
                 ALUSrcA = 2'b01; // oldPC
                 ALUSrcB = 2'b01; // immediate sign extended (this will compute the jump target for JAL and BEQ)
                 //ALUControl = 3'b000;
@@ -658,16 +652,18 @@ module controller (
 
                 // compute the target address as rs1 + imm12
 
-                // PCWrite = 1'b0;
-                ALUSrcA = 2'b10; // register
-                ALUSrcB = 2'b01; // immediate sign extended
-                ALUControl = 3'b000; // add
-                // ResultSrc = 2'b00;
-                // AdrSrc = 1'b0;
-                // RegWrite = 1'b0;
-                // MemWrite = 1'b0;
-                // ImmSrc = 3'b001; // set the sign extender to S−type (stores)
+                // figure 7.32 page 447
+
+                PCWrite = 1'b0;
+                AdrSrc = 1'bx;
+                MemWrite = 1'b0;
                 IRWrite = 1'b0;
+                ResultSrc = 2'bxx;
+                ALUControl = 3'b000; // add
+                ALUSrcB = 2'b01; // immediate sign extended
+                ALUSrcA = 2'b10; // register
+                ImmSrc = 3'b000; // keep value from last state
+                RegWrite = 1'b0;
             end
 
             // S5 "MemRead" State
@@ -677,20 +673,20 @@ module controller (
                 $display("");
                 $display("[CTRL.OUTPUT.MemReadState] op: %b, oldOp: %b, funct3: %b, funct7: %b", op, oldOp, funct3, funct7);
 
-                // PCWrite = 1'b0;
+                PCWrite = 1'b0;
 
-                // // ALUSrcA = 2'bxx;
-                // // ALUSrcB = 2'bxx;
-                // // ALUControl = 3'bxxx;
+                ALUSrcA = 2'bxx;
+                ALUSrcB = 2'bxx;
+                ALUControl = 3'bxxx;
 
                 // //ResultSrc = 2'b10; // ALUOut register to Result bus
                 ResultSrc = 2'b00;
 
                 AdrSrc = 1'b1; // Result bus is connected to the memory addr port
-                // RegWrite = 1'b0;
-                // MemWrite = 1'b0;
-                // ImmSrc = 3'b000;
-                // IRWrite = 1'b0;
+                RegWrite = 1'b0;
+                MemWrite = 1'b0;
+                ImmSrc = 3'b000; // (lw)
+                IRWrite = 1'b0;
             end
 
             // S6 "MemWB" State
@@ -702,17 +698,16 @@ module controller (
 
                 // $display("[CTRL.OUTPUT.MemWBState] ReadDData: 0x%0h", ReadDData);
 
-                // PCWrite = 1'b0;
-                // ALUSrcA = 2'b00;
-                // ALUSrcB = 2'b00;
-                // ALUControl = 3'b000;
-                //ResultSrc = 2'b00; // take the value from the Data register and place it onto the result bus
-                ResultSrc = 2'b01;
-                // AdrSrc = 1'bx;
+                PCWrite = 1'b0;
+                AdrSrc = 1'bx;
+                MemWrite = 1'b0;
+                IRWrite = 1'b0;
+                ResultSrc = 2'b01; // take the value from the Data register and place it onto the result bus
+                ALUControl = 3'bxxx;
+                ALUSrcB = 2'bxx;
+                ALUSrcA = 2'bxx;
+                ImmSrc = 3'b000;
                 RegWrite = 1'b1;
-                // MemWrite = 1'b0;
-                // ImmSrc = 3'b000;
-                // IRWrite = 1'b0;
             end
 
             // S7 "MemWrite" State
@@ -723,15 +718,15 @@ module controller (
                 $display("[CTRL.OUTPUT.MemWriteState] op: %b, oldOp: %b, funct3: %b, funct7: %b", op, oldOp, funct3, funct7);
 
                 PCWrite = 1'b0;
-                // ALUSrcA = 2'bxx;
-                // ALUSrcB = 2'bxx;
-                // ALUControl = 3'bxxx;
-                ResultSrc = 2'b10; // place ALU out onto the result bus
                 AdrSrc = 1'b1; // connect the result bus to the address line of the memory
-                RegWrite = 1'b0;
                 MemWrite = 1'b1; // enable a write to memory
-                ImmSrc = 3'b001;
                 IRWrite = 1'b0;
+                ResultSrc = 2'b00; // place ALU out onto the result bus
+                ALUControl = 3'bxxx;
+                ALUSrcB = 2'bxx;
+                ALUSrcA = 2'bxx;
+                ImmSrc = 3'b001;
+                RegWrite = 1'b0;
             end
 
             // S8 "ExecuteRState" State // execute R-Type instruction
@@ -922,22 +917,31 @@ module controller (
     // to determine next state
     //
 
-    always @(current_state, resetn)
+    //always @(current_state, resetn)
+    always @(current_state)
     begin
+
+        if (resetn == 0)
+        begin
+            next_state = FetchState_1;
+        end
+        else
+        begin
 
         case(current_state)
 
-            // This causes a combinational loop
+            // // This causes a combinational loop in nextpnr
             // // S0 "Reset" State
-            // ResetState:
-            // begin
-            //     //$display("resetn: %d", resetn);
-            //     if (resetn == 1)
-            //     begin
-            //         $display("[controller] goto ResetState -> FetchState_1");
-            //         next_state = FetchState_1;
-            //     end
-            // end
+            ResetState:
+            begin
+                // //$display("resetn: %d", resetn);
+                // if (resetn == 1)
+                // begin
+                //     $display("[controller] goto ResetState -> FetchState_1");
+                //     next_state = FetchState_1;
+                // end
+                next_state = FetchState_1;
+            end
 
             // S1 "Fetch_1" State
             FetchState_1:
@@ -1013,6 +1017,21 @@ module controller (
                     $display("[controller] goto MemAddrState -> ErrorState");
                     next_state = ErrorState;
                 end
+                // if (op == 7'b0000011) // lw
+                // begin
+                //     $display("[controller] goto MemAddrState -> MemReadState");
+                //     next_state = MemReadState;
+                // end
+                // else if (op == 7'b0100011) // sw
+                // begin
+                //     $display("[controller] goto MemAddrState -> MemWriteState");
+                //     next_state = MemWriteState;
+                // end
+                // else
+                // begin
+                //     $display("[controller] goto MemAddrState -> ErrorState");
+                //     next_state = ErrorState;
+                // end
             end
 
             // S5 "MemRead" State
@@ -1088,10 +1107,13 @@ module controller (
             default:
             begin
                 $display("[controller] default goto default -> ErrorState");
-                next_state = ErrorState;
+                //next_state = ErrorState;
+                next_state = ResetState;
             end
 
         endcase
+
+    end
     end
 
 

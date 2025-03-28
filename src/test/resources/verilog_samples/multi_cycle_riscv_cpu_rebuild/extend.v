@@ -5,7 +5,7 @@ module extend(
     output reg [31:0] immext
 );
 
-    always @(instr, immsrc, immext)
+    always @(instr, immsrc)
 
         case(immsrc)
 
