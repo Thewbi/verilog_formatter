@@ -34,6 +34,7 @@ module immsrcdec(
             7'b1100011: ALUControl = 3'b010; // beq
             7'b0010011: ALUControl = 3'b000; // I–type ALU
             7'b1101111: ALUControl = 3'b011; // jal
+            7'b0110111: ALUControl = 3'b100; // U-Type (lui)
             default: ALUControl = 3'bxxx; // ???
         endcase
 
