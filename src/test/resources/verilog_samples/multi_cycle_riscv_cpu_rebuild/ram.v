@@ -248,30 +248,30 @@ module ram(
 
 
 
-            // lui test
-            //
-            // Expected result in verilog_log.txt:
-            // [regfile] WriteBack. a3= 7, wd3=0x00000015
-            // [regfile] WriteBack. a3= 7, wd3=0x00000016
-            // [regfile] WriteBack. a3= 7, wd3=0x00000017
+            // // lui test
+            // //
+            // // Expected result in verilog_log.txt:
+            // // [regfile] WriteBack. a3= 7, wd3=0x00000015
+            // // [regfile] WriteBack. a3= 7, wd3=0x00000016
+            // // [regfile] WriteBack. a3= 7, wd3=0x00000017
 
-            RAM[32'd00] = 32'h000153b7; // 0x00   lui x7, 0x15 (0x15 = 21d)
-            RAM[32'd04] = 32'h000163b7; // 0x04   lui x7, 0x16 (0x16 = 22d)
-            RAM[32'd08] = 32'h000173b7; // 0x08   lui x7, 0x17 (0x17 = 23d)
-            RAM[32'd12] = 32'h00000000;
-            RAM[32'd16] = 32'h00000000;
+            // RAM[32'd00] = 32'h000153b7; // 0x00   lui x7, 0x15 (0x15 = 21d)
+            // RAM[32'd04] = 32'h000163b7; // 0x04   lui x7, 0x16 (0x16 = 22d)
+            // RAM[32'd08] = 32'h000173b7; // 0x08   lui x7, 0x17 (0x17 = 23d)
+            // RAM[32'd12] = 32'h00000000;
+            // RAM[32'd16] = 32'h00000000;
 
-            RAM[32'd20] = 32'h00000000;
-            RAM[32'd24] = 32'h00000000;
-            RAM[32'd28] = 32'h00000000;
-            RAM[32'd32] = 32'h00000000;
-            RAM[32'd36] = 32'h00000000;
+            // RAM[32'd20] = 32'h00000000;
+            // RAM[32'd24] = 32'h00000000;
+            // RAM[32'd28] = 32'h00000000;
+            // RAM[32'd32] = 32'h00000000;
+            // RAM[32'd36] = 32'h00000000;
 
-            RAM[32'd40] = 32'h00000000;
-            RAM[32'd44] = 32'h00000000;
-            RAM[32'd48] = 32'h00000000;
-            RAM[32'd52] = 32'h00000000;
-            RAM[32'd56] = 32'h00000000;
+            // RAM[32'd40] = 32'h00000000;
+            // RAM[32'd44] = 32'h00000000;
+            // RAM[32'd48] = 32'h00000000;
+            // RAM[32'd52] = 32'h00000000;
+            // RAM[32'd56] = 32'h00000000;
 
 
 
@@ -322,35 +322,36 @@ module ram(
 
 
 
-            // // beq test - case: branch is NOT taken (because x5 != x7)
-            // //
-            // // addi x5, x0, 0x05
-            // // addi x7, x0, 0x03
-            // // beq  x5, x7, 0x56
-            // //
-            // // Expected: PC jumps from 0x08 to 0x0C. Check with GTKWave.
-            // //
-            // // [regfile] WriteBack. a3= 5, wd3=0x00000005
-            // // [regfile] WriteBack. a3= 7, wd3=0x00000003
-            // //
+            // beq test - case: branch is NOT taken (because x5 != x7)
+            //
+            // addi x5, x0, 0x05
+            // addi x7, x0, 0x03
+            // beq  x5, x7, 0x56
+            //
+            // Expected: PC jumps from 0x08 to 0x0C. Check with GTKWave.
+            //
+            // [regfile] WriteBack. a3= 5, wd3=0x00000005
+            // [regfile] WriteBack. a3= 7, wd3=0x00000003
+            // [regfile] WriteBack. a3= 5, wd3=0x00000011
+            //
 
-            // RAM[32'd00] = 32'h00500293; // 0x00   addi x5, x0, 0x05
-            // RAM[32'd04] = 32'h00300393; // 0x04   addi x7, x0, 0x03
-            // RAM[32'd08] = 32'h04728b63; // 0x08   beq  x5, x7, 0x56 (0x56 == 86dec)
-            // RAM[32'd12] = 32'h00000000;
-            // RAM[32'd16] = 32'h00000000;
+            RAM[32'd00] = 32'h00500293; // 0x00   addi x5, x0, 0x05
+            RAM[32'd04] = 32'h00300393; // 0x04   addi x7, x0, 0x03
+            RAM[32'd08] = 32'h04728b63; // 0x08   beq  x5, x7, 0x56 (0x56 == 86dec) (BRANCH IS NOT TAKEN)
+            RAM[32'd12] = 32'h01100293; // 0x0C   addi x5, x0, 17 (17 == 0x11)
+            RAM[32'd16] = 32'h00000000;
 
-            // RAM[32'd20] = 32'h00000000;
-            // RAM[32'd24] = 32'h00000000;
-            // RAM[32'd28] = 32'h00000000;
-            // RAM[32'd32] = 32'h00000000;
-            // RAM[32'd36] = 32'h00000000;
+            RAM[32'd20] = 32'h00000000;
+            RAM[32'd24] = 32'h00000000;
+            RAM[32'd28] = 32'h00000000;
+            RAM[32'd32] = 32'h00000000;
+            RAM[32'd36] = 32'h00000000;
 
-            // RAM[32'd40] = 32'h00000000;
-            // RAM[32'd44] = 32'h00000000;
-            // RAM[32'd48] = 32'h00000000;
-            // RAM[32'd52] = 32'h00000000;
-            // RAM[32'd56] = 32'h00000000;
+            RAM[32'd40] = 32'h00000000;
+            RAM[32'd44] = 32'h00000000;
+            RAM[32'd48] = 32'h00000000;
+            RAM[32'd52] = 32'h00000000;
+            RAM[32'd56] = 32'h00000000;
 
             RAM[32'd60] = 32'h000000AB; // this memory cell is toggled between 1 and 0 every 9999999 iterations
             RAM[32'd64] = 32'h00000000;
