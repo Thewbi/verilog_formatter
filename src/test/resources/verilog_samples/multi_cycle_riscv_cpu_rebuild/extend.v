@@ -17,7 +17,7 @@ module extend(
                 immext = { { 20{instr[31]} }, instr[31:20] };
             end
 
-            // S−type (stores)
+            // S−type (stores) (sw)
             3'b001:
             begin
                 $display("[extend] S Type");

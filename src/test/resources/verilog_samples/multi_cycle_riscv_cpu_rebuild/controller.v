@@ -466,6 +466,9 @@ module controller (
     wire [2:0] ALUControlAluDec;
     aludec ad(ReadData[6:0], ReadData[5], ReadData[14:12], ReadData[30], ALUControlAluDec);
 
+    wire [2:0] ALUControlImmSrcDec;
+    immsrcdec isd(ReadData[6:0], ReadData[5], ReadData[14:12], ReadData[30], ALUControlImmSrcDec);
+
     // // this initial block causes the yosys compiler to fail with "cannot be legalized: initialized D latches are not supported"
     // // Enable this block for Icarus Verilog. Remove this block for yosys.
     // initial
@@ -558,7 +561,7 @@ module controller (
             MemWrite = 1'b0; // not writing into memory
             IRWrite = 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
             RegWrite = 1'b0;
-            ImmSrc = 2'b00; // no immediate extension required
+            //ImmSrc = 2'b00; // no immediate extension required
             // ACTION 2 - increment PC
             ALUSrcA = 2'b00; // PC
             ALUSrcB = 2'b00; // hardcoded 4
@@ -592,7 +595,7 @@ module controller (
                 MemWrite = 1'b0; // not writing into memory
                 IRWrite = 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
                 RegWrite = 1'b0;
-                ImmSrc = 2'b00; // no immediate extension required
+                //ImmSrc = 2'b00; // no immediate extension required
                 // ACTION 2 - increment PC
                 ALUSrcA = 2'b00; // PC
                 ALUSrcB = 2'b00; // hardcoded 4
@@ -650,7 +653,8 @@ module controller (
                 //AdrSrc = 1'bx;
                 //RegWrite = 1'b0;
                 //MemWrite = 1'b0;
-                ImmSrc = decodeImmSrc(op, funct3, funct7); // tell the sign extender how to correctly read the bits for the immediate value encoded in the instruction.
+                //ImmSrc = decodeImmSrc(op, funct3, funct7); // tell the sign extender how to correctly read the bits for the immediate value encoded in the instruction.
+                ImmSrc = ALUControlImmSrcDec;
                 IRWrite = 1'b0;
             end
 
@@ -676,7 +680,7 @@ module controller (
                 ALUControl = 3'b000; // add
                 ALUSrcB = 2'b01; // immediate sign extended
                 ALUSrcA = 2'b10; // register
-                ImmSrc = 3'b000; // keep value from last state
+                //ImmSrc = 3'b000; // keep value from last state
                 RegWrite = 1'b0;
             end
 
@@ -699,7 +703,7 @@ module controller (
                 AdrSrc = 1'b1; // Result bus is connected to the memory addr port
                 RegWrite = 1'b0;
                 MemWrite = 1'b0;
-                ImmSrc = 3'b000; // (lw)
+                //ImmSrc = 3'b000; // (lw)
                 IRWrite = 1'b0;
             end
 
@@ -720,7 +724,7 @@ module controller (
                 ALUControl = 3'bxxx;
                 ALUSrcB = 2'bxx;
                 ALUSrcA = 2'bxx;
-                ImmSrc = 3'b000;
+                //ImmSrc = 3'b000;
                 RegWrite = 1'b1;
             end
 
@@ -739,7 +743,7 @@ module controller (
                 ALUControl = 3'bxxx;
                 ALUSrcB = 2'bxx;
                 ALUSrcA = 2'bxx;
-                ImmSrc = 3'b001;
+                //ImmSrc = 3'b001;
                 RegWrite = 1'b0;
             end
 
@@ -758,7 +762,7 @@ module controller (
                 AdrSrc = 1'b0;
                 RegWrite = 1'b0;
                 MemWrite = 1'b0;
-                ImmSrc = 3'b000;
+                //ImmSrc = 3'b000;
                 IRWrite = 1'b0;
             end
 
@@ -777,7 +781,7 @@ module controller (
                 AdrSrc = 1'b0;
                 RegWrite = 1'b1; // enable the RegWrite feature of the register file so it stores the result bus into the destination register rd
                 MemWrite = 1'b0;
-                ImmSrc = 3'b000;
+                //ImmSrc = 3'b000;
                 IRWrite = 1'b0;
             end
 
@@ -839,7 +843,7 @@ module controller (
                 RegWrite = 1'b0;
                 ALUSrcA = 2'b01; // oldPC
                 ALUSrcB = 2'b10; // hard coded 4
-                ImmSrc = 3'b011; // Immediate sign extend (J-Type)
+                //ImmSrc = 3'b011; // Immediate sign extend (J-Type)
                 ALUControl = 3'b000; // add
                 ResultSrc = 2'b00; // ALUOut goes onto the result bus
             end
@@ -911,7 +915,7 @@ module controller (
                 AdrSrc = 1'b0;
                 RegWrite = 1'b0;
                 MemWrite = 1'b0;
-                ImmSrc = 3'b100; // LUI
+                //ImmSrc = 3'b100; // LUI
                 IRWrite = 1'b0;
             end
 

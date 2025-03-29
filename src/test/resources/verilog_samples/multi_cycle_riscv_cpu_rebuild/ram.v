@@ -283,7 +283,8 @@ module ram(
             // addi x7, x0, 0x03
             // beq  x5, x7, 0x56
             //
-            // Expected: PC jumps from 0x08 to 0x56. Check with GTKWave.
+            // Expected: PC jumps from 0x08 to 0x08+0x56 = 5E because this is a PC relative jump!
+            // Check with GTKWave.
             //
             // Expected result in verilog_log.txt contains:
             //
