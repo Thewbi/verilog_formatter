@@ -57,6 +57,9 @@ module aludec(
                     3'b010:
                         begin ALUControl = 3'b101; end // slt, slti
 
+                    3'b100:
+                        begin ALUControl = 3'b101; end // xor, xori
+
                     3'b110:
                         begin ALUControl = 3'b011; end // or, ori
 

@@ -579,7 +579,7 @@ module controller (
     // Moore == output only depends on the current state
     //
 
-    assign PCWrite = Zero || current_state == FetchState_1;
+    assign PCWrite = (Zero && (current_state == BEQState)) || current_state == FetchState_1;
 
     //always @(current_state, resetn)
     always @(current_state)
@@ -842,7 +842,8 @@ module controller (
                 IRWrite = 1'b0;
                 RegWrite = 1'b0;
                 ALUSrcA = 2'b01; // oldPC
-                ALUSrcB = 2'b10; // hard coded 4
+                //ALUSrcB = 2'b10; // hard coded 4
+                ALUSrcB = 2'b01; // Immediate sign extended
                 //ImmSrc = 3'b011; // Immediate sign extend (J-Type)
                 ALUControl = 3'b000; // add
                 ResultSrc = 2'b00; // ALUOut goes onto the result bus
