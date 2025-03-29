@@ -603,18 +603,24 @@ module controller (
                 $display("[CTRL.OUTPUT.FETCH_STATE_1] op: %b, oldOp: %b, funct3: %b, funct7: %b", op, oldOp, funct3, funct7);
 
                 PCWrite = 1'b1;
-
                 // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
                 AdrSrc = 1'b0; // this connects the PC flip flop to the instruction memory
-                //MemWrite = 1'b0; // not writing into memory
+                MemWrite = 1'b0; // not writing into memory
                 IRWrite = 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
-                //RegWrite = 1'b0;
-                // ACTION 2 - increment PC
-                ALUSrcA = 2'b00; // PC
-                ALUSrcB = 2'b10; // hardcoded 4
-                //ImmSrc = 3'bxxx; // no immediate extension required
-                ALUControl = 3'b000; // add operation
+
                 ResultSrc = 2'b10; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
+                // ACTION 2 - increment PC
+                ALUControl = 3'b000; // add operation
+                ALUSrcB = 2'b10; // hardcoded 4
+                ALUSrcA = 2'b00; // PC
+
+                // this is in the book in figure 7.32 on page 425 but it does not work! The PC is not incremented!
+                // ALUControl = 3'bxxx; // add operation
+                // ALUSrcB = 2'bxx; // hardcoded 4
+                // ALUSrcA = 2'bxx; // PC
+
+                //ImmSrc = 3'bxxx; // no immediate extension required
+                RegWrite = 1'b0;
             end
 
             // S2 "Fetch_2" State
@@ -631,6 +637,7 @@ module controller (
                 ALUSrcB = 2'b01; // immediate sign extended (this will compute the jump target for JAL and BEQ)
                 //ALUControl = 3'b000;
                 ALUControl = decodeAluOp(op, funct3, funct7);
+                //ALUControl = 3'b001;
                 //newALUControl = decodeAluOp(op, funct3, funct7);
                 //ResultSrc = 2'bxx;
                 //AdrSrc = 1'bx;

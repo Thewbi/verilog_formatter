@@ -32,12 +32,12 @@ module extend(
             end
 
             // U−type (lui)
-            // example: 000003b7
+            // example: lui x7, 0x00 - 000003b7
+            // example: lui x7, 0x15 - 0x000153b7
             3'b100:
             begin
                 $display("[extend] U Type");
-                //immext = { { 12{instr[31]} }, instr[31:12] };
-                immext = { instr[31:12], 12'b000000000000 };
+                immext = { { 12{instr[31]} }, instr[31:12] };
             end
 
             // J−type (jal)
