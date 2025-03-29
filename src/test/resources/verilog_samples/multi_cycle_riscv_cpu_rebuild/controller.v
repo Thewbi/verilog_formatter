@@ -22,7 +22,7 @@ module controller (
     // input   wire [31:0] ReadDData,
 
     // output
-    output  reg         PCWrite,    // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
+    output  wire         PCWrite,    // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
     output  reg         AdrSrc,     // address source selector
     output  reg         MemWrite,   // write enable for the memory module
     output  reg         IRWrite,    // instruction register write
@@ -213,7 +213,7 @@ module controller (
             7'b1100011:
             begin
                 $display("[ALU_DEC] beq beq beq beq beq beq");
-                decodeAluOp = 3'b000; // addition
+                decodeAluOp = 3'b010; // addition
             end
 
             default:
@@ -463,6 +463,9 @@ module controller (
     end
     endfunction
 
+    wire [2:0] ALUControlAluDec;
+    aludec ad(ReadData[6:0], ReadData[5], ReadData[14:12], ReadData[30], ALUControlAluDec);
+
     // // this initial block causes the yosys compiler to fail with "cannot be legalized: initialized D latches are not supported"
     // // Enable this block for Icarus Verilog. Remove this block for yosys.
     // initial
@@ -486,22 +489,22 @@ module controller (
     //
 
     parameter
-        ResetState          = 5'b00000,      // S0 "Reset" State
-        FetchState_1        = 5'b00001,      // S1 "FetchState_1" State
-        FetchState_2        = 5'b00010,      // S2 "FetchState_2" State
-        DecodeState         = 5'b00011,      // S3 "Decode" State
-        MemAddrState        = 5'b00100,      // S4 "MemAddr" State
-        MemReadState        = 5'b00101,      // S5 "MemRead" State
-        MemWBState          = 5'b00110,      // S6 "MemWB" State
-        MemWriteState       = 5'b00111,      // S7 "MemWrite" State
-        ExecuteRState       = 5'b01000,      // S8 "ExecuteR" State
-        ALUWriteBackState   = 5'b01001,      // S9 "ALUWriteBack"
-        ExecuteIState       = 5'b01010,      // S10 "ExecuteI" State // execute I-Type instruction
-        JALState            = 5'b01011,      // S11 "JAL" State
-        BEQState            = 5'b01100,      // S12 "BEQ" State
-        BRANCH_TAKEN_CHECK  = 5'b01101,      // S13 "BRANCH_TAKEN_CHECK" State
-        LUI_STATE           = 5'b01110,      // S14 "LUI" State
-        ErrorState          = 5'b01111       // S15 "ERROR" State
+        ResetState          = 5'b00000,      // 0 S0 "Reset" State
+        FetchState_1        = 5'b00001,      // 1 S1 "FetchState_1" State
+        FetchState_2        = 5'b00010,      // 2 S2 "FetchState_2" State
+        DecodeState         = 5'b00011,      // 3 S3 "Decode" State
+        MemAddrState        = 5'b00100,      // 4 S4 "MemAddr" State
+        MemReadState        = 5'b00101,      // 5 S5 "MemRead" State
+        MemWBState          = 5'b00110,      // 6 S6 "MemWB" State
+        MemWriteState       = 5'b00111,      // 7 S7 "MemWrite" State
+        ExecuteRState       = 5'b01000,      // 8 S8 "ExecuteR" State
+        ALUWriteBackState   = 5'b01001,      // 9 S9 "ALUWriteBack"
+        ExecuteIState       = 5'b01010,      // A S10 "ExecuteI" State // execute I-Type instruction
+        JALState            = 5'b01011,      // B S11 "JAL" State
+        BEQState            = 5'b01100,      // C S12 "BEQ" State
+        BRANCH_TAKEN_CHECK  = 5'b01101,      // D S13 "BRANCH_TAKEN_CHECK" State
+        LUI_STATE           = 5'b01110,      // E S14 "LUI" State
+        ErrorState          = 5'b01111       // F S15 "ERROR" State
         ;
 
     // current state and next state
@@ -549,7 +552,7 @@ module controller (
 
             current_state = ResetState;
 
-            PCWrite = 1'b0;
+            // PCWrite = 1'b0;
             // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
             AdrSrc = 1'b0; // this connects the PC flip flop to the instruction memory
             MemWrite = 1'b0; // not writing into memory
@@ -573,6 +576,8 @@ module controller (
     // Moore == output only depends on the current state
     //
 
+    assign PCWrite = Zero || current_state == FetchState_1;
+
     //always @(current_state, resetn)
     always @(current_state)
     begin
@@ -581,7 +586,7 @@ module controller (
             // S0 "Reset" State
             ResetState:
             begin
-                PCWrite = 1'b0;
+                // PCWrite = 1'b0;
                 // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
                 AdrSrc = 1'b0; // this connects the PC flip flop to the instruction memory
                 MemWrite = 1'b0; // not writing into memory
@@ -602,7 +607,7 @@ module controller (
                 $display("");
                 $display("[CTRL.OUTPUT.FETCH_STATE_1] op: %b, oldOp: %b, funct3: %b, funct7: %b", op, oldOp, funct3, funct7);
 
-                PCWrite = 1'b1;
+                // PCWrite = 1'b1;
                 // ACTION 1 - read the instruction at PC. connect PC to instruction memory address input port
                 AdrSrc = 1'b0; // this connects the PC flip flop to the instruction memory
                 MemWrite = 1'b0; // not writing into memory
@@ -632,12 +637,14 @@ module controller (
                 $display("");
                 $display("[CTRL.OUTPUT.DECODE_STATE] op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
 
-                PCWrite = 1'b0;
+                // PCWrite = 1'b0;
                 ALUSrcA = 2'b01; // oldPC
                 ALUSrcB = 2'b01; // immediate sign extended (this will compute the jump target for JAL and BEQ)
                 //ALUControl = 3'b000;
-                ALUControl = decodeAluOp(op, funct3, funct7);
+                //ALUControl = decodeAluOp(op, funct3, funct7);
+                //ALUControl = 3'b010;
                 //ALUControl = 3'b001;
+                ALUControl = ALUControlAluDec;
                 //newALUControl = decodeAluOp(op, funct3, funct7);
                 //ResultSrc = 2'bxx;
                 //AdrSrc = 1'bx;
@@ -661,7 +668,7 @@ module controller (
 
                 // figure 7.32 page 447
 
-                PCWrite = 1'b0;
+                // PCWrite = 1'b0;
                 AdrSrc = 1'bx;
                 MemWrite = 1'b0;
                 IRWrite = 1'b0;
@@ -680,7 +687,7 @@ module controller (
                 $display("");
                 $display("[CTRL.OUTPUT.MemReadState] op: %b, oldOp: %b, funct3: %b, funct7: %b", op, oldOp, funct3, funct7);
 
-                PCWrite = 1'b0;
+                // PCWrite = 1'b0;
 
                 ALUSrcA = 2'bxx;
                 ALUSrcB = 2'bxx;
@@ -705,7 +712,7 @@ module controller (
 
                 // $display("[CTRL.OUTPUT.MemWBState] ReadDData: 0x%0h", ReadDData);
 
-                PCWrite = 1'b0;
+                // PCWrite = 1'b0;
                 AdrSrc = 1'bx;
                 MemWrite = 1'b0;
                 IRWrite = 1'b0;
@@ -724,7 +731,7 @@ module controller (
                 $display("");
                 $display("[CTRL.OUTPUT.MemWriteState] op: %b, oldOp: %b, funct3: %b, funct7: %b", op, oldOp, funct3, funct7);
 
-                PCWrite = 1'b0;
+                // PCWrite = 1'b0;
                 AdrSrc = 1'b1; // connect the result bus to the address line of the memory
                 MemWrite = 1'b1; // enable a write to memory
                 IRWrite = 1'b0;
@@ -744,7 +751,7 @@ module controller (
                 $display("");
                 $display("[CTRL.OUTPUT.ExecuteRState] op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
 
-                PCWrite = 1'b0;
+                // PCWrite = 1'b0;
                 ALUSrcA = 2'b10; // register
                 ALUSrcB = 2'b00; // register
                 ResultSrc = 2'b00;
@@ -762,7 +769,7 @@ module controller (
                 $display("");
                 $display("[CTRL.OUTPUT.ALUWB_STATE]");
 
-                PCWrite = 1'b0;
+                // PCWrite = 1'b0;
                 ALUSrcA = 2'b00;
                 ALUSrcB = 2'b00;
                 ALUControl = 3'b000;
@@ -774,8 +781,7 @@ module controller (
                 IRWrite = 1'b0;
             end
 
-            // S10 "ExecuteI" State // execute I-Type instruction
-            // XORI
+            // A S10 "ExecuteI" State // execute I-Type instruction (XORI, ADDI, ...)
             ExecuteIState:
             begin
                 $display("");
@@ -783,7 +789,7 @@ module controller (
                 //$display("[CTRL.OUTPUT.EXECUTEI_STATE] op: %b, funct3: %b, funct7: %b, ALUControl: %d, newALUControl: %d, ALUSrcA: %d, ALUSrcB: %d", op, funct3, funct7, ALUControl, newALUControl, ALUSrcA, ALUSrcB);
                 $display("[CTRL.OUTPUT.EXECUTEI_STATE]");
 
-                PCWrite = 1'b0;
+                // PCWrite = 1'b0;
                 //IRWrite = 1'b0;
                 //ResultSrc = 2'b00;
 
@@ -819,14 +825,14 @@ module controller (
                 // SNAP
             end
 
-            // S11 "JAL" State // execute J Type instruction
+            // B S11 "JAL" State // execute J Type instruction
             JALState:
             begin
                 $display("");
                 $display("");
                 $display("[CTRL.OUTPUT.JALState]");
 
-                PCWrite = 1'b1; // Write into the PC register
+                // PCWrite = 1'b1; // Write into the PC register
                 AdrSrc = 1'bx; // confuse the muxer so it does not perform any action
                 MemWrite = 1'b0;
                 IRWrite = 1'b0;
@@ -838,14 +844,14 @@ module controller (
                 ResultSrc = 2'b00; // ALUOut goes onto the result bus
             end
 
-            // S12 "BEQ" State
+            // C S12 "BEQ" State
             BEQState:
             begin
                 $display("");
                 $display("");
                 $display("[CTRL.OUTPUT.BEQ_STATE]");
 
-                PCWrite = 1'b0;
+                // PCWrite = 1'b0;
                 ALUSrcA = 2'b10; // register
                 ALUSrcB = 2'b00; // register
                 ALUControl = 3'b001; // subtraction
@@ -853,46 +859,51 @@ module controller (
                 AdrSrc = 1'b0;
                 RegWrite = 1'b0;
                 MemWrite = 1'b0;
-                ImmSrc = 3'b000;
+                //ImmSrc = 3'b000; // reuse the value from prior states
                 IRWrite = 1'b0;
+
+                // if (Zero == 1)
+                // begin
+                //     PCWrite = 1'b1;
+                // end
             end
 
-            // S13 "BRANCH_TAKEN_CHECK" State
+            // D S13 "BRANCH_TAKEN_CHECK" State
             BRANCH_TAKEN_CHECK:
             begin
                 $display("");
                 $display("");
                 $display("[CTRL.OUTPUT.BRANCH_TAKEN_CHECK]");
 
-                if (Zero == 1)
-                begin
-                    $display("[CTRL.OUTPUT.BEQ_STATE] Branch taken. Zero: %d", Zero);
+                // if (Zero == 1)
+                // begin
+                //     $display("[CTRL.OUTPUT.BEQ_STATE] Branch taken. Zero: %d", Zero);
 
-                    PCWrite = 1'b1;
-                    ALUSrcA = 2'b01; // oldPC
-                    ALUSrcB = 2'b01; // immext
-                    ALUControl = 3'b000; // add
-                    ResultSrc = 2'b10;
-                    AdrSrc = 1'b0;
-                    RegWrite = 1'b0;
-                    MemWrite = 1'b0;
-                    ImmSrc = 3'b010;
-                    IRWrite = 1'b0;
-                end
-                else
-                begin
-                    $display("[CTRL.OUTPUT.BEQ_STATE] Branch NOT taken");
-                end
+                //     PCWrite = 1'b1;
+                //     ALUSrcA = 2'b01; // oldPC
+                //     ALUSrcB = 2'b01; // immext
+                //     ALUControl = 3'b000; // add
+                //     ResultSrc = 2'b10;
+                //     AdrSrc = 1'b0;
+                //     RegWrite = 1'b0;
+                //     MemWrite = 1'b0;
+                //     ImmSrc = 3'b010;
+                //     IRWrite = 1'b0;
+                // end
+                // else
+                // begin
+                //     $display("[CTRL.OUTPUT.BEQ_STATE] Branch NOT taken");
+                // end
             end
 
-            // S14 "LUI_STATE" State
+            // E S14 "LUI_STATE" State
             LUI_STATE:
             begin
                 $display("");
                 $display("");
                 $display("[CTRL.OUTPUT.LUI_STATE]");
 
-                PCWrite = 1'b0;
+                // PCWrite = 1'b0;
                 ALUSrcA = 2'b11; // new zero input
                 ALUSrcB = 2'b10; // sign extended immediate
                 ALUControl = 3'b000; // add
@@ -904,7 +915,7 @@ module controller (
                 IRWrite = 1'b0;
             end
 
-            // S15
+            // F S15
             ErrorState:
             begin
                 IRWrite = 1'b0;
@@ -977,17 +988,17 @@ module controller (
                 else if (op == 7'b0010011) // I-Type ALU (xori, addi, ...)
                 begin
                     $display("[controller] goto DecodeState -> ExecuteIState");
-                    next_state = ExecuteIState;
+                    next_state = ExecuteIState; // 0x0A
                 end
                 else if (op == 7'b1101111) // JAL
                 begin
                     $display("[controller] goto DecodeState -> JALState");
                     next_state = JALState;
                 end
-                else if (op == 7'b1100011) // BEQ
+                else if (op == 7'b1100011) // BEQ // 7'b1100011 == 63dec
                 begin
                     $display("[controller] goto DecodeState -> BEQState");
-                    next_state = BEQState;
+                    next_state = BEQState; // 0x0D
                 end
                 else if (op == 7'b0000000) // nop
                 begin
@@ -1076,7 +1087,7 @@ module controller (
                 next_state = FetchState_1;
             end
 
-            // S10 "ExecuteI" State // execute I-Type instruction
+            // A S10 "ExecuteI" State // execute I-Type instruction
             ExecuteIState:
             begin
                 $display("[controller] goto ExecuteIState -> ALUWriteBackState");
@@ -1093,8 +1104,11 @@ module controller (
             // S12 "BEQ" State
             BEQState:
             begin
-                $display("[controller] goto BEQState -> BRANCH_TAKEN_CHECK.");
-                next_state = BRANCH_TAKEN_CHECK;
+                //$display("[controller] goto BEQState -> BRANCH_TAKEN_CHECK.");
+                //next_state = BRANCH_TAKEN_CHECK;
+
+                $display("[controller] goto BEQState -> FetchState_1.");
+                next_state = FetchState_1;
             end
 
             // S13 "BRANCH_TAKEN_CHECK" State

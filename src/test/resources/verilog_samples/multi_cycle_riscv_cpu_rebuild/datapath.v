@@ -49,6 +49,198 @@ module datapath(
     wire [31:0] Result;
     wire [31:0] SrcA;
 
+    function [2:0] decodeAluOp (input [6:0] opcode, input [2:0] funct3, input [6:0] funct7);
+    begin
+        $display("decodeAluOp() op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
+        case (opcode)
+
+            7'b0110111:
+            begin
+                // lui
+                // lui t2, 2441 - load the unsigned integer 2441 into t2
+                $display("[ALU_DEC] lui");
+                decodeAluOp = 3'b000; // add, addi
+            end
+
+            // I-Type (instructions containing immediate parameters encoded inside their machine code)
+            7'b0010011:
+            begin
+
+                case (funct3)
+
+                    3'b000:
+                    begin
+                        // addi
+                        $display("[ALU_DEC] addi");
+                        decodeAluOp = 3'b000; // add, addi
+                    end
+
+                    3'b010:
+                    begin
+                        // slti
+                        $display("[ALU_DEC] slti");
+                        decodeAluOp = 3'b101; // slt, slti
+                    end
+
+                    3'b011:
+                    begin
+                        // sltiu
+                    end
+
+                    3'b100:
+                    begin
+                        // xori
+                        $display("[ALU_DEC] xori");
+                        decodeAluOp = 3'b011; // xor operation
+                    end
+
+                    3'b110:
+                    begin
+                        // ori
+                        $display("[ALU_DEC] ori");
+                        decodeAluOp = 3'b110; // ori
+                    end
+
+                    3'b111:
+                    begin
+                        // andi
+                        $display("[ALU_DEC] andi");
+                        decodeAluOp = 3'b010; // andi
+                    end
+
+                    3'b001:
+                    begin
+                        // slli
+                    end
+
+                    3'b101:
+                    begin
+                        case (funct7)
+
+                            7'b0000000:
+                            begin
+                                // srli
+                            end
+
+                            7'b0100000:
+                            begin
+                                // srai
+                            end
+
+                        endcase
+                    end
+
+                endcase
+            end
+
+            7'b0110011:
+            begin
+
+                case (funct3)
+
+                    3'b000:
+                    begin
+
+                        case (funct7)
+
+                            7'b0000000:
+                            begin
+                                // add
+                                $display("[ALU_DEC] add");
+                                decodeAluOp = 3'b000; // addition
+                            end
+
+                            7'b0100000:
+                            begin
+                                // sub
+                                $display("[ALU_DEC] sub");
+                                decodeAluOp = 3'b001; // subtraction
+                            end
+
+                        endcase
+
+                    end
+
+                    3'b001:
+                    begin
+                        // sll
+                    end
+
+                    3'b010:
+                    begin
+                        // slt
+                        $display("[ALU_DEC] slt");
+                        decodeAluOp = 3'b101; // slt, slti
+                    end
+
+                    3'b011:
+                    begin
+                        // sltu
+                    end
+
+                    3'b100:
+                    begin
+                        // xor
+                    end
+
+                    3'b101:
+                    begin
+
+                        case (funct7)
+
+                            7'b0000000:
+                            begin
+                                // srl
+                            end
+
+                            7'b0100000:
+                            begin
+                                // sra
+                            end
+
+                        endcase
+
+                    end
+
+                    3'b110:
+                    begin
+                        // or
+                        $display("[ALU_DEC] or");
+                        decodeAluOp = 3'b110; // or
+                    end
+
+                    3'b111:
+                    begin
+                        // and
+                        $display("[ALU_DEC] and");
+                        decodeAluOp = 3'b010; // and
+                    end
+
+                endcase
+            end
+
+            7'b1101111:
+            begin
+                $display("[ALU_DEC] jal jal jal jal jal jal");
+                decodeAluOp = 3'b000; // addition
+            end
+
+            7'b1100011:
+            begin
+                $display("[ALU_DEC] beq beq beq beq beq beq");
+                decodeAluOp = 3'b010; // addition
+            end
+
+            default:
+            begin
+                $display("[ALU_DEC] default");
+                decodeAluOp = 3'bxxx;
+            end
+
+        endcase
+    end
+    endfunction
+
     function [2:0] decodeImmSrc (input [6:0] opcode, input [2:0] funct3, input [6:0] funct7);
     begin
         $display("decodeImmSrc() op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
@@ -280,6 +472,8 @@ module datapath(
     end
     endfunction
 
+
+
     // wire [31:0]      toggle_value;
 
     // always @(posedge MemWrite)
@@ -309,7 +503,6 @@ module datapath(
     //imem imem(PC, ReadData);
 
     //                     id     clock     reset,      enable,     input       output
-    //flopenr #(32) OldPCFF(3'b001, clk,      resetn,      IRWrite,    PC,         OldPC);
     flopenr #(32) InstrFF(3'b010, clk,      resetn,      IRWrite,    ReadData,    Instr);
 
     //                          clock    reset   data-in     data-out
@@ -325,13 +518,11 @@ module datapath(
     // assign funct7b5 = Instr[30];
     assign funct7 = Instr[31:25];
 
-    reg [2:0] immSrcInternal;
-    always @(posedge clk)
-    begin
-        immSrcInternal = decodeImmSrc(op, funct3, funct7);
-    end
-
-
+    // reg [2:0] immSrcInternal;
+    // always @(posedge clk)
+    // begin
+    //     immSrcInternal = decodeImmSrc(op, funct3, funct7);
+    // end
 
     always @(posedge clk)
     begin
@@ -350,6 +541,7 @@ module datapath(
 
         // clock write enable
         .clk(clk),                // [in] clock
+        .resetn(resetn),          // [in] resetn
         .we3(RegWrite),           // [in] write enable for register 3. if high, register a3 is written with wd3
 
         // read
@@ -372,9 +564,10 @@ module datapath(
     // param 1 = instruction bits (part of the instruction to sign extend)
     // param 2 = type of instruction that is sign extension applied to
     // param 3 = output
-    //extend ext(ReadData[31:7], ImmSrc, ImmExt);
+    //extend ext(ReadData[31:0], ImmSrc, ImmExt);
+    extend ext(Instr[31:0], ImmSrc, ImmExt);
     //extend ext(ReadData[31:7], immSrcInternal, ImmExt);
-    extend ext(Instr[31:7], immSrcInternal, ImmExt);
+    // extend ext(Instr[31:7], immSrcInternal, ImmExt);
 
     // ALU input muxes
     //                 Input A      Input B     Input C         SelectSignal        Output
@@ -387,6 +580,10 @@ module datapath(
     // ALU
     //      input A     input B     operation       result output       zero flag
     alu alu(SrcA,       SrcB,       ALUControl,     ALUResult,          Zero);
+
+    // wire [2:0] ALUControlInternal;
+    // assign ALUControlInternal = decodeAluOp(op, funct3, funct7);
+    // alu alu(SrcA,       SrcB,       ALUControlInternal,     ALUResult,          Zero);
 
     flopr #(32) aluResult(3'b011, clk, resetn, ALUResult, ALUOut);
 
