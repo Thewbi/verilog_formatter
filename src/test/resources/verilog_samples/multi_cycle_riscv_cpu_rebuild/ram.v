@@ -145,23 +145,23 @@ module ram(
             // 02602e23
             // fd9ff06f
 
-            // RAM[32'd00] = 32'h00000293; // inita:        addi x5, x0, 0x0
-            // RAM[32'd04] = 32'h00000313; //               addi x6, x0, 0x0
-            // RAM[32'd08] = 32'h000f43b7; //               lui x7, 244/0xf4
-            // RAM[32'd12] = 32'h23f38393; //               addi x7, x7, 575/0x23f
-            // RAM[32'd16] = 32'h00728663; // loop_head:    beq x5, x7, 0x0C     # if (x5 == x7) jump to loop_end
+            RAM[32'd00] = 32'h00000293; // inita:        addi x5, x0, 0x0
+            RAM[32'd04] = 32'h00000313; //               addi x6, x0, 0x0
+            RAM[32'd08] = 32'h000f43b7; //               lui x7, 244/0xf4
+            RAM[32'd12] = 32'h23f38393; //               addi x7, x7, 575/0x23f
+            RAM[32'd16] = 32'h00728663; // loop_head:    beq x5, x7, 0x0C     # if (x5 == x7) jump to loop_end
 
-            // RAM[32'd20] = 32'h00128293; //               addi x5, x5, 1
-            // RAM[32'd24] = 32'hff9ff06f; //               jal x0, -8          # jal loop head
-            // RAM[32'd28] = 32'h03c02303; // loop_end:     lw x6, 60(x0)
-            // RAM[32'd32] = 32'h00134313; //               xori x6, x6, 1
-            // RAM[32'd36] = 32'h02602e23; //               sw x6, 60(x0)
+            RAM[32'd20] = 32'h00128293; //               addi x5, x5, 1
+            RAM[32'd24] = 32'hff9ff06f; //               jal x0, -8          # jal loop head
+            RAM[32'd28] = 32'h03c02303; // loop_end:     lw x6, 60(x0)
+            RAM[32'd32] = 32'h00134313; //               xori x6, x6, 1
+            RAM[32'd36] = 32'h02602e23; //               sw x6, 60(x0)
 
-            // RAM[32'd40] = 32'hfd9ff06f; //               jal x0, -36         # jal inita
-            // RAM[32'd44] = 32'h00000000;
-            // RAM[32'd48] = 32'h00000000;
-            // RAM[32'd52] = 32'h00000000;
-            // RAM[32'd56] = 32'h00000000;
+            RAM[32'd40] = 32'hfd9ff06f; //               jal x0, -36         # jal inita
+            RAM[32'd44] = 32'h00000000;
+            RAM[32'd48] = 32'h00000000;
+            RAM[32'd52] = 32'h00000000;
+            RAM[32'd56] = 32'h00000000;
 
 
             // // loop 3 times
@@ -242,6 +242,34 @@ module ram(
             // RAM[32'd52] = 32'h00000000;
             // RAM[32'd56] = 32'h00000000;
 
+
+
+
+
+
+            // // store word test (sw)
+            // //
+            // // Expected result in verilog_log.txt:
+            // // [regfile] WriteBack. a3= 6, wd3=0x00000004
+            // // [RAM] Writing wd: 0x4, address: 0x3c
+
+            // RAM[32'd00] = 32'h00400313; // 0x00                 addi x6, x0, 4
+            // RAM[32'd04] = 32'h02602e23; // 0x04                 sw x6, 60(x0)    (60dec == 3C)
+            // RAM[32'd08] = 32'h00000000;
+            // RAM[32'd12] = 32'h00000000;
+            // RAM[32'd16] = 32'h00000000;
+
+            // RAM[32'd20] = 32'h00000000;
+            // RAM[32'd24] = 32'h00000000;
+            // RAM[32'd28] = 32'h00000000;
+            // RAM[32'd32] = 32'h00000000;
+            // RAM[32'd36] = 32'h00000000;
+
+            // RAM[32'd40] = 32'h00000000;
+            // RAM[32'd44] = 32'h00000000;
+            // RAM[32'd48] = 32'h00000000;
+            // RAM[32'd52] = 32'h00000000;
+            // RAM[32'd56] = 32'h00000000;
 
 
 
