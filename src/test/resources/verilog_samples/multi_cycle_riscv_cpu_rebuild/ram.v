@@ -222,9 +222,10 @@ module ram(
             // //
             // // Expected result in verilog_log.txt:
             // // [regfile] WriteBack. a3= 6, wd3=0x000000ab
+            // // [regfile] WriteBack. a3= 5, wd3=0x00000004
 
             // RAM[32'd00] = 32'h03c02303; // 0x00                 lw x6, 60(x0)
-            // RAM[32'd04] = 32'h00000293; // 0x04 inita:          addi x5, x0, 0x0
+            // RAM[32'd04] = 32'h00400293; // 0x04 inita:          addi x5, x0, 0x4
             // RAM[32'd08] = 32'h00000000;
             // RAM[32'd12] = 32'h00000000;
             // RAM[32'd16] = 32'h00000000;
@@ -276,42 +277,49 @@ module ram(
 
 
 
-            // // beq test - case: branch is taken (because x5 == x7)
-            // //
-            // // addi x5, x0, 0x03
-            // // addi x7, x0, 0x03
-            // // beq  x5, x7, 0x56
-            // //
-            // // Expected: PC jumps from 0x08 to 0x56. Check with GTKWave.
-            // //
-            // // Expected result in verilog_log.txt contains:
-            // //
-            // // [regfile] WriteBack. a3= 5, wd3=0x00000003
-            // // [regfile] WriteBack. a3= 7, wd3=0x00000003
-            // // [CTRL.OUTPUT.BEQ_STATE] Branch taken. Zero: 1
+            // beq test - case: branch is taken (because x5 == x7)
+            //
+            // addi x5, x0, 0x03
+            // addi x7, x0, 0x03
+            // beq  x5, x7, 0x56
+            //
+            // Expected: PC jumps from 0x08 to 0x56. Check with GTKWave.
+            //
+            // Expected result in verilog_log.txt contains:
+            //
+            // [regfile] WriteBack. a3= 5, wd3=0x00000003
+            // [regfile] WriteBack. a3= 7, wd3=0x00000003
+            // [CTRL.OUTPUT.BEQ_STATE] Branch taken. Zero: 1
 
-            // // RAM[32'd00] = 32'h00300293; // 0x00   addi x5, x0, 0x03
-            // // RAM[32'd04] = 32'h00300393; // 0x04   addi x7, x0, 0x03
-            // // RAM[32'd08] = 32'h04728b63; // 0x08   beq  x5, x7, 0x56 = 86dec
+            RAM[32'd00] = 32'h00300293; // 0x00   addi x5, x0, 0x03
+            RAM[32'd04] = 32'h00300393; // 0x04   addi x7, x0, 0x03
+            RAM[32'd08] = 32'h04728b63; // 0x08   beq  x5, x7, 0x56 = 86dec
 
             // RAM[32'd00] = 32'h04728b63; // 0x08   beq  x5, x7, 0x56 = 86dec
             // RAM[32'd04] = 32'h00000000;
             // RAM[32'd08] = 32'h00000000;
 
-            // RAM[32'd12] = 32'h00000000;
-            // RAM[32'd16] = 32'h00000000;
+            RAM[32'd12] = 32'h00000000;
+            RAM[32'd16] = 32'h00000000;
 
-            // RAM[32'd20] = 32'h00000000;
-            // RAM[32'd24] = 32'h00000000;
-            // RAM[32'd28] = 32'h00000000;
-            // RAM[32'd32] = 32'h00000000;
-            // RAM[32'd36] = 32'h00000000;
+            RAM[32'd20] = 32'h00000000;
+            RAM[32'd24] = 32'h00000000;
+            RAM[32'd28] = 32'h00000000;
+            RAM[32'd32] = 32'h00000000;
+            RAM[32'd36] = 32'h00000000;
 
-            // RAM[32'd40] = 32'h00000000;
-            // RAM[32'd44] = 32'h00000000;
-            // RAM[32'd48] = 32'h00000000;
-            // RAM[32'd52] = 32'h00000000;
-            // RAM[32'd56] = 32'h00000000;
+            RAM[32'd40] = 32'h00000000;
+            RAM[32'd44] = 32'h00000000;
+            RAM[32'd48] = 32'h00000000;
+            RAM[32'd52] = 32'h00000000;
+            RAM[32'd56] = 32'h00000000;
+
+
+
+
+
+
+
 
             // // beq test - case: branch is NOT taken (because x5 != x7)
             // //

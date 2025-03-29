@@ -935,6 +935,9 @@ module controller (
     // to determine next state
     //
 
+    wire [6:0] newOp;
+    assign newOp = ReadData[6:0];
+
     //always @(current_state, resetn)
     always @(current_state)
     begin
@@ -969,43 +972,46 @@ module controller (
             end
 
             // S2 "Fetch_2" State
+            FetchState_2:
+            begin
+            end
 
             // S3 "Decode" State
             DecodeState:
             begin
 
-                $display("[controller DecodeState] op: %b", op);
-                if ((op == 7'b0000011) || (op == 7'b0100011)) // lw or sw
+                $display("[controller DecodeState] op: %b", newOp);
+                if ((newOp == 7'b0000011) || (newOp == 7'b0100011)) // lw or sw
                 begin
                     $display("[controller] goto DecodeState -> MemAddrState");
-                    next_state = MemAddrState;
+                    next_state = MemAddrState; // 0x04
                 end
-                else if (op == 7'b0110011) // R-Type
+                else if (newOp == 7'b0110011) // R-Type
                 begin
                     $display("[controller] goto DecodeState -> ExecuteRState");
                     next_state = ExecuteRState;
                 end
-                else if (op == 7'b0010011) // I-Type ALU (xori, addi, ...)
+                else if (newOp == 7'b0010011) // I-Type ALU (xori, addi, ...)
                 begin
                     $display("[controller] goto DecodeState -> ExecuteIState");
                     next_state = ExecuteIState; // 0x0A
                 end
-                else if (op == 7'b1101111) // JAL
+                else if (newOp == 7'b1101111) // JAL
                 begin
                     $display("[controller] goto DecodeState -> JALState");
                     next_state = JALState;
                 end
-                else if (op == 7'b1100011) // BEQ // 7'b1100011 == 63dec
+                else if (newOp == 7'b1100011) // BEQ // 7'b1100011 == 63dec
                 begin
                     $display("[controller] goto DecodeState -> BEQState");
                     next_state = BEQState; // 0x0D
                 end
-                else if (op == 7'b0000000) // nop
+                else if (newOp == 7'b0000000) // nop
                 begin
                     $display("[controller] goto DecodeState -> FetchState_1 for nop");
                     next_state = FetchState_1;
                 end
-                else if (op == 7'b0110111) // lui
+                else if (newOp == 7'b0110111) // lui
                 begin
                     $display("[controller] goto DecodeState -> LuiState for lui");
                     next_state = LUI_STATE;
@@ -1015,6 +1021,7 @@ module controller (
                     $display("[controller] goto DecodeState -> ErrorState");
                     next_state = ErrorState;
                 end
+
             end
 
             // S4 "MemAddr" State
@@ -1091,7 +1098,7 @@ module controller (
             ExecuteIState:
             begin
                 $display("[controller] goto ExecuteIState -> ALUWriteBackState");
-                next_state = ALUWriteBackState;
+                next_state = ALUWriteBackState; //
             end
 
             // S11 "JAL" State
