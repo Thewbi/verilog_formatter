@@ -31,443 +31,10 @@ module controller (
     output  reg [2:0]   ALUControl, // tells the ALU which operation to perform
     output  reg [1:0]   ALUSrcB,    // decides which line goes into the ALU B parameter input
     output  reg [1:0]   ALUSrcA,    // decides which line goes into the ALU A parameter input
-    output  reg [2:0]   ImmSrc,     // enable sign extension of the immediate value
+    //output  reg [2:0]   ImmSrc,     // enable sign extension of the immediate value
+    output  wire [2:0]   ImmSrc,
     output  reg         RegWrite   // write enable for the register file
 );
-
-    function [2:0] decodeAluOp (input [6:0] opcode, input [2:0] funct3, input [6:0] funct7);
-    begin
-        $display("decodeAluOp() op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
-        case (opcode)
-
-            7'b0110111:
-            begin
-                // lui
-                // lui t2, 2441 - load the unsigned integer 2441 into t2
-                $display("[ALU_DEC] lui");
-                decodeAluOp = 3'b000; // add, addi
-            end
-
-            // I-Type (instructions containing immediate parameters encoded inside their machine code)
-            7'b0010011:
-            begin
-
-                case (funct3)
-
-                    3'b000:
-                    begin
-                        // addi
-                        $display("[ALU_DEC] addi");
-                        decodeAluOp = 3'b000; // add, addi
-                    end
-
-                    3'b010:
-                    begin
-                        // slti
-                        $display("[ALU_DEC] slti");
-                        decodeAluOp = 3'b101; // slt, slti
-                    end
-
-                    3'b011:
-                    begin
-                        // sltiu
-                    end
-
-                    3'b100:
-                    begin
-                        // xori
-                        $display("[ALU_DEC] xori");
-                        decodeAluOp = 3'b011; // xor operation
-                    end
-
-                    3'b110:
-                    begin
-                        // ori
-                        $display("[ALU_DEC] ori");
-                        decodeAluOp = 3'b110; // ori
-                    end
-
-                    3'b111:
-                    begin
-                        // andi
-                        $display("[ALU_DEC] andi");
-                        decodeAluOp = 3'b010; // andi
-                    end
-
-                    3'b001:
-                    begin
-                        // slli
-                    end
-
-                    3'b101:
-                    begin
-                        case (funct7)
-
-                            7'b0000000:
-                            begin
-                                // srli
-                            end
-
-                            7'b0100000:
-                            begin
-                                // srai
-                            end
-
-                        endcase
-                    end
-
-                endcase
-            end
-
-            7'b0110011:
-            begin
-
-                case (funct3)
-
-                    3'b000:
-                    begin
-
-                        case (funct7)
-
-                            7'b0000000:
-                            begin
-                                // add
-                                $display("[ALU_DEC] add");
-                                decodeAluOp = 3'b000; // addition
-                            end
-
-                            7'b0100000:
-                            begin
-                                // sub
-                                $display("[ALU_DEC] sub");
-                                decodeAluOp = 3'b001; // subtraction
-                            end
-
-                        endcase
-
-                    end
-
-                    3'b001:
-                    begin
-                        // sll
-                    end
-
-                    3'b010:
-                    begin
-                        // slt
-                        $display("[ALU_DEC] slt");
-                        decodeAluOp = 3'b101; // slt, slti
-                    end
-
-                    3'b011:
-                    begin
-                        // sltu
-                    end
-
-                    3'b100:
-                    begin
-                        // xor
-                    end
-
-                    3'b101:
-                    begin
-
-                        case (funct7)
-
-                            7'b0000000:
-                            begin
-                                // srl
-                            end
-
-                            7'b0100000:
-                            begin
-                                // sra
-                            end
-
-                        endcase
-
-                    end
-
-                    3'b110:
-                    begin
-                        // or
-                        $display("[ALU_DEC] or");
-                        decodeAluOp = 3'b110; // or
-                    end
-
-                    3'b111:
-                    begin
-                        // and
-                        $display("[ALU_DEC] and");
-                        decodeAluOp = 3'b010; // and
-                    end
-
-                endcase
-            end
-
-            7'b1101111:
-            begin
-                $display("[ALU_DEC] jal jal jal jal jal jal");
-                decodeAluOp = 3'b000; // addition
-            end
-
-            7'b1100011:
-            begin
-                $display("[ALU_DEC] beq beq beq beq beq beq");
-                decodeAluOp = 3'b010; // addition
-            end
-
-            default:
-            begin
-                $display("[ALU_DEC] default");
-                decodeAluOp = 3'bxxx;
-            end
-
-        endcase
-    end
-    endfunction
-
-    function [2:0] decodeImmSrc (input [6:0] opcode, input [2:0] funct3, input [6:0] funct7);
-    begin
-        $display("decodeImmSrc() op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
-
-        case (opcode)
-
-            7'b0110111:
-            begin
-                // lui
-                // lui t2, 2441 - load the unsigned integer 2441 into t2
-                $display("[decodeImmSrc] lui");
-                decodeImmSrc = 3'b100; // lui
-            end
-
-            7'b0000011:
-            begin
-                case (funct3)
-
-                    3'b010:
-                    begin
-                        // lw
-                        $display("[decodeImmSrc] lw");
-                        decodeImmSrc = 3'b000; // addi, I-Type
-                    end
-
-                endcase
-            end
-
-            7'b0100011:
-            begin
-                case (funct3)
-
-                    3'b010:
-                    begin
-                        // lw
-                        $display("[decodeImmSrc] sw");
-                        decodeImmSrc = 3'b001; // addi, S-Type
-                    end
-
-                endcase
-            end
-
-            7'b0010011:
-            begin
-
-                case (funct3)
-
-                    3'b000:
-                    begin
-                        // addi
-                        $display("[decodeImmSrc] addi");
-                        decodeImmSrc = 3'b000; // addi, I-Type
-                    end
-
-                    3'b010:
-                    begin
-                        // slti
-                        $display("[decodeImmSrc] slti");
-                        decodeImmSrc = 3'b000; // slti, I-Type
-                    end
-
-                    3'b011:
-                    begin
-                        // sltiu
-                        //$finish(1);
-                    end
-
-                    3'b100:
-                    begin
-                        // xori (exampel: 00134313)
-                        $display("[decodeImmSrc] xori");
-                        decodeImmSrc = 3'b000; // I-Type [31:20] is sign extended
-                    end
-
-                    3'b110:
-                    begin
-                        // ori
-                        $display("[decodeImmSrc] ori");
-                        decodeImmSrc = 3'b000; // ori, I-Type
-                    end
-
-                    3'b111:
-                    begin
-                        // andi
-                        $display("[decodeImmSrc] andi");
-                        decodeImmSrc = 3'b000; // I-Type
-                    end
-
-                    3'b001:
-                    begin
-                        // slli
-                        //$finish(3);
-                    end
-
-                    3'b101:
-                    begin
-                        case (funct7)
-
-                            7'b0000000:
-                            begin
-                                // srli, I-Type
-                                $display("[decodeImmSrc] srli");
-                                decodeImmSrc = 3'b000; // I-Type
-                            end
-
-                            7'b0100000:
-                            begin
-                                // srai, I-Type
-                                $display("[decodeImmSrc] srai");
-                                decodeImmSrc = 3'b000; // I-Type
-                            end
-
-                        endcase
-                    end
-
-                endcase
-            end
-
-            7'b0110011:
-            begin
-
-                case (funct3)
-
-                    3'b000:
-                    begin
-
-                        case (funct7)
-
-                            7'b0000000:
-                            begin
-                                // add
-                                $display("[decodeImmSrc] add");
-                                decodeImmSrc = 3'bxxx; // addition, no immediate encoded within the instruction
-                            end
-
-                            7'b0100000:
-                            begin
-                                // sub
-                                $display("[decodeImmSrc] sub");
-                                decodeImmSrc = 3'bxxx; // subtraction, no immediate encoded within the instruction
-                            end
-
-                        endcase
-
-                    end
-
-                    3'b001:
-                    begin
-                        // sll
-                        //$finish(4);
-                    end
-
-                    3'b010:
-                    begin
-                        // slt
-                        $display("[decodeImmSrc] slt");
-                        decodeImmSrc = 3'bxxx; // no immediate
-                    end
-
-                    3'b011:
-                    begin
-                        // sltu
-                        //$finish(5);
-                    end
-
-                    3'b100:
-                    begin
-                        // xor
-                        //$finish(6);
-                    end
-
-                    3'b101:
-                    begin
-
-                        case (funct7)
-
-                            7'b0000000:
-                            begin
-                                // srl
-                                //$finish(7);
-                            end
-
-                            7'b0100000:
-                            begin
-                                // sra
-                                //$finish(8);
-                            end
-
-                        endcase
-
-                    end
-
-                    3'b110:
-                    begin
-                        // or
-                        $display("[decodeImmSrc] or");
-                        decodeImmSrc = 3'bxxx; // or R-Type has no immediate!
-                    end
-
-                    3'b111:
-                    begin
-                        // and
-                        $display("[decodeImmSrc] and");
-                        decodeImmSrc = 3'bxxx; // and R-Type has no immediate!
-                    end
-
-                endcase
-            end
-
-            7'b1101111:
-            begin
-                $display("[decodeImmSrc] jal jal jal jal jal jal");
-                decodeImmSrc = 3'b011; // I-Type
-            end
-
-            7'b1100011:
-            begin
-                $display("[decodeImmSrc] beq beq beq beq beq beq");
-                decodeImmSrc = 3'b010; // B-Type
-            end
-
-            default:
-            begin
-                $display("[decodeImmSrc] default");
-                decodeImmSrc = 3'b0xx;
-            end
-
-        endcase
-    end
-    endfunction
-
-    function [7:0] sum (input [7:0] a, b);
-    begin
-        sum = a + b;
-    end
-    endfunction
-
-
-
-    // wire [1:0] aluOp;
-    // assign aluOp = 2'b00;
 
     //reg [2:0] ALUControlAluDec;
     wire [2:0] ALUControlAluDec;
@@ -478,6 +45,7 @@ module controller (
     wire [2:0] ALUControlImmSrcDec;
     //immsrcdec isd(clk, ReadData[6:0], ReadData[5], ReadData[14:12], ReadData[30], ALUControlImmSrcDec);
     immsrcdec isd(/*clk,*/ op, op[5], funct3, funct7b5, ALUControlImmSrcDec);
+    assign ImmSrc = ALUControlImmSrcDec;
 
     // // this initial block causes the yosys compiler to fail with "cannot be legalized: initialized D latches are not supported"
     // // Enable this block for Icarus Verilog. Remove this block for yosys.
@@ -571,7 +139,7 @@ module controller (
             MemWrite = 1'b0; // not writing into memory
             IRWrite = 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
             RegWrite = 1'b0;
-            ImmSrc = 3'b000; // no immediate extension required
+            //ImmSrc = 3'b000; // no immediate extension required
             // ACTION 2 - increment PC
             ALUSrcA = 2'b00; // PC
             ALUSrcB = 2'b00; // hardcoded 4
@@ -605,7 +173,7 @@ module controller (
                 MemWrite = 1'b0; // not writing into memory
                 IRWrite = 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
                 RegWrite = 1'b0;
-                ImmSrc = 3'b000; // no immediate extension required
+                //ImmSrc = 3'b000; // no immediate extension required
                 // ACTION 2 - increment PC
                 ALUSrcA = 2'b00; // PC
                 ALUSrcB = 2'b00; // hardcoded 4
@@ -673,7 +241,7 @@ module controller (
 
 
                 //ImmSrc = 3'b000;
-                ImmSrc = ALUControlImmSrcDec;
+                //ImmSrc = ALUControlImmSrcDec;
 
                 IRWrite = 1'b0;
             end
@@ -701,6 +269,7 @@ module controller (
                 ALUSrcB = 2'b01; // immediate sign extended
                 ALUSrcA = 2'b10; // register
                 //ImmSrc = 3'b000; // keep value from last state
+                //ImmSrc = ALUControlImmSrcDec;
                 RegWrite = 1'b0;
             end
 

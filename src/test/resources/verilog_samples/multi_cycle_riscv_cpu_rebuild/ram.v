@@ -217,6 +217,34 @@ module ram(
 
 
 
+            // lui test
+            //
+            // Expected result in verilog_log.txt:
+            // [regfile] WriteBack. a3= 7, wd3=0x00000015
+            // [regfile] WriteBack. a3= 7, wd3=0x00000016
+            // [regfile] WriteBack. a3= 7, wd3=0x00000017
+
+            RAM[32'd00] = 32'h000153b7; // 0x00   lui x7, 0x15 (0x15 = 21d)
+            RAM[32'd04] = 32'h000163b7; // 0x04   lui x7, 0x16 (0x16 = 22d)
+            RAM[32'd08] = 32'h000173b7; // 0x08   lui x7, 0x17 (0x17 = 23d)
+            RAM[32'd12] = 32'h00000000;
+            RAM[32'd16] = 32'h00000000;
+
+            RAM[32'd20] = 32'h00000000;
+            RAM[32'd24] = 32'h00000000;
+            RAM[32'd28] = 32'h00000000;
+            RAM[32'd32] = 32'h00000000;
+            RAM[32'd36] = 32'h00000000;
+
+            RAM[32'd40] = 32'h00000000;
+            RAM[32'd44] = 32'h00000000;
+            RAM[32'd48] = 32'h00000000;
+            RAM[32'd52] = 32'h00000000;
+            RAM[32'd56] = 32'h00000000;
+
+
+
+
 
             // // lw test
             // //
@@ -241,7 +269,6 @@ module ram(
             // RAM[32'd48] = 32'h00000000;
             // RAM[32'd52] = 32'h00000000;
             // RAM[32'd56] = 32'h00000000;
-
 
 
 
@@ -276,30 +303,6 @@ module ram(
 
 
 
-            // // lui test
-            // //
-            // // Expected result in verilog_log.txt:
-            // // [regfile] WriteBack. a3= 7, wd3=0x00000015
-            // // [regfile] WriteBack. a3= 7, wd3=0x00000016
-            // // [regfile] WriteBack. a3= 7, wd3=0x00000017
-
-            // RAM[32'd00] = 32'h000153b7; // 0x00   lui x7, 0x15 (0x15 = 21d)
-            // RAM[32'd04] = 32'h000163b7; // 0x04   lui x7, 0x16 (0x16 = 22d)
-            // RAM[32'd08] = 32'h000173b7; // 0x08   lui x7, 0x17 (0x17 = 23d)
-            // RAM[32'd12] = 32'h00000000;
-            // RAM[32'd16] = 32'h00000000;
-
-            // RAM[32'd20] = 32'h00000000;
-            // RAM[32'd24] = 32'h00000000;
-            // RAM[32'd28] = 32'h00000000;
-            // RAM[32'd32] = 32'h00000000;
-            // RAM[32'd36] = 32'h00000000;
-
-            // RAM[32'd40] = 32'h00000000;
-            // RAM[32'd44] = 32'h00000000;
-            // RAM[32'd48] = 32'h00000000;
-            // RAM[32'd52] = 32'h00000000;
-            // RAM[32'd56] = 32'h00000000;
 
 
 
@@ -382,43 +385,42 @@ module ram(
 
 
 
+            // // BROKEN
+            // //
+            // // JAL Jump and Link test - ff9ff06f
 
-            // BROKEN
-            //
-            // JAL Jump and Link test - ff9ff06f
+            // // expected:
+            // // endless loop of:
+            // // [regfile] WriteBack. a3= 5, wd3=0x00000005
+            // // [regfile] WriteBack. a3= 7, wd3=0x00000003
+            // //
+            // // In GTKWave the PC should never to the value 0x0C = 12dec
+            // // It should go to 8 and jump back to 0
+            // //
 
-            // expected:
-            // endless loop of:
-            // [regfile] WriteBack. a3= 5, wd3=0x00000005
-            // [regfile] WriteBack. a3= 7, wd3=0x00000003
-            //
-            // In GTKWave the PC should never to the value 0x0C = 12dec
-            // It should go to 8 and jump back to 0
-            //
+            // RAM[32'd00] = 32'h00500293; // 0x00   addi x5, x0, 0x05
+            // RAM[32'd04] = 32'h00300393; // 0x04   addi x7, x0, 0x03
+            // RAM[32'd08] = 32'hff9ff06f; // 0x08   jal x0, -8
+            // RAM[32'd12] = 32'h01100293; // 0x0C   addi x5, x0, 17 (17 == 0x11)
+            // RAM[32'd16] = 32'h00000000;
 
-            RAM[32'd00] = 32'h00500293; // 0x00   addi x5, x0, 0x05
-            RAM[32'd04] = 32'h00300393; // 0x04   addi x7, x0, 0x03
-            RAM[32'd08] = 32'hff9ff06f; // 0x08   jal x0, -8
-            RAM[32'd12] = 32'h01100293; // 0x0C   addi x5, x0, 17 (17 == 0x11)
-            RAM[32'd16] = 32'h00000000;
+            // RAM[32'd20] = 32'h00000000;
+            // RAM[32'd24] = 32'h00000000;
+            // RAM[32'd28] = 32'h00000000;
+            // RAM[32'd32] = 32'h00000000;
+            // RAM[32'd36] = 32'h00000000;
 
-            RAM[32'd20] = 32'h00000000;
-            RAM[32'd24] = 32'h00000000;
-            RAM[32'd28] = 32'h00000000;
-            RAM[32'd32] = 32'h00000000;
-            RAM[32'd36] = 32'h00000000;
-
-            RAM[32'd40] = 32'h00000000;
-            RAM[32'd44] = 32'h00000000;
-            RAM[32'd48] = 32'h00000000;
-            RAM[32'd52] = 32'h00000000;
-            RAM[32'd56] = 32'h00000000;
-
+            // RAM[32'd40] = 32'h00000000;
+            // RAM[32'd44] = 32'h00000000;
+            // RAM[32'd48] = 32'h00000000;
+            // RAM[32'd52] = 32'h00000000;
+            // RAM[32'd56] = 32'h00000000;
 
 
 
 
 
+            // // BROKEN
             // // xori test
 
             // // expected:

@@ -69,7 +69,7 @@ module immsrcdec(
                 begin ALUControl = 3'b010; end
 
             // SB, SH, SW
-            7'b0100011:
+            7'b0100011: // 0x23, 35dec
                 begin ALUControl = 3'b001; end
 
             default:
