@@ -7,7 +7,7 @@ module extend(
 
     always @(instr, immsrc)
 
-        case(immsrc)
+        case (immsrc)
 
             // I−type, load word (lw)
             // lui (00134313)
@@ -31,7 +31,7 @@ module extend(
                 immext = { { 20{instr[31]} }, instr[7], instr[30:25], instr[11:8], 1'b0 };
             end
 
-            // U−type (lui)
+            // U−type (lui, auipc)
             // example: lui x7, 0x00 - 000003b7
             // example: lui x7, 0x15 - 0x000153b7
             3'b100:

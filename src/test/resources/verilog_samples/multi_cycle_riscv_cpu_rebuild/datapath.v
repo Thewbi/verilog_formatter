@@ -6,9 +6,9 @@ module datapath(
 
     // output
     output  wire [6:0]      op,             // operation code from within the instruction
-    output  reg [6:0]      oldOp,
+    output  reg [6:0]       oldOp,
     output  wire [2:0]      funct3,         // funct3 for instruction identification
-    // output  wire [30]     funct7b5,       // funct7b5
+    output  wire            funct7b5,       // funct7b5
     output  wire [6:0]      funct7,
     output  wire            Zero,           // the ALU has computed a result that is zero (for branching instructions)
     output  wire [31:0]     PC,             // current program counter value
@@ -515,7 +515,7 @@ module datapath(
 
     assign op = Instr[6:0];
     assign funct3 = Instr[14:12];
-    // assign funct7b5 = Instr[30];
+    assign funct7b5 = Instr[30];
     assign funct7 = Instr[31:25];
 
     // reg [2:0] immSrcInternal;

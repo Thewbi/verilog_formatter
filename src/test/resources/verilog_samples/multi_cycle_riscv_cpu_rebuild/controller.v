@@ -14,15 +14,16 @@ module controller (
     input   wire [6:0]  op,         // operation code from within the instruction
     input   wire [6:0]  oldOp,      //
     input   wire [2:0]  funct3,     // funct3 for instruction identification. This encodes the operation that the ALU has to execute
-    // input   wire [30] funct7b5,     // funct7b5
+    input   wire        funct7b5,     // funct7b5 (all R-Type (register) operations have funct7, e.g. add)
     input   wire [6:0]  funct7,     // funct7
     input   wire        Zero,       // the ALU has computed a result that is zero (for branching instruction making)
     input   wire [31:0] PC,
+    // input   wire [31:0] Instr,
     input   wire [31:0] ReadData,
     // input   wire [31:0] ReadDData,
 
     // output
-    output  wire         PCWrite,    // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
+    output  wire        PCWrite,    // the PC flip flop enable line, the flip flop stores PCNext and outputs PC
     output  reg         AdrSrc,     // address source selector
     output  reg         MemWrite,   // write enable for the memory module
     output  reg         IRWrite,    // instruction register write
@@ -470,12 +471,13 @@ module controller (
 
     //reg [2:0] ALUControlAluDec;
     wire [2:0] ALUControlAluDec;
-    //assign ALUControlAluDec = 3'b000;
-    aludec ad(clk, ReadData[6:0], ReadData[5], ReadData[14:12], ReadData[30], /*aluOp,*/ ALUControlAluDec);
+    //aludec ad(/*clk,*/ ReadData[6:0], ReadData[5], ReadData[14:12], ReadData[30], /*aluOp,*/ ALUControlAluDec);
+    aludec ad(/*clk,*/ op, op[5], funct3, funct7b5, /*aluOp,*/ ALUControlAluDec);
 
     //reg [2:0] ALUControlImmSrcDec;
     wire [2:0] ALUControlImmSrcDec;
-    immsrcdec isd(clk, ReadData[6:0], ReadData[5], ReadData[14:12], ReadData[30], ALUControlImmSrcDec);
+    //immsrcdec isd(clk, ReadData[6:0], ReadData[5], ReadData[14:12], ReadData[30], ALUControlImmSrcDec);
+    immsrcdec isd(/*clk,*/ op, op[5], funct3, funct7b5, ALUControlImmSrcDec);
 
     // // this initial block causes the yosys compiler to fail with "cannot be legalized: initialized D latches are not supported"
     // // Enable this block for Icarus Verilog. Remove this block for yosys.
@@ -569,7 +571,7 @@ module controller (
             MemWrite = 1'b0; // not writing into memory
             IRWrite = 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
             RegWrite = 1'b0;
-            //ImmSrc = 2'b00; // no immediate extension required
+            ImmSrc = 3'b000; // no immediate extension required
             // ACTION 2 - increment PC
             ALUSrcA = 2'b00; // PC
             ALUSrcB = 2'b00; // hardcoded 4
@@ -603,7 +605,7 @@ module controller (
                 MemWrite = 1'b0; // not writing into memory
                 IRWrite = 1'b1; // fill Instr FlipFlop with read instruction from memory. Store PC into oldPC.
                 RegWrite = 1'b0;
-                //ImmSrc = 2'b00; // no immediate extension required
+                ImmSrc = 3'b000; // no immediate extension required
                 // ACTION 2 - increment PC
                 ALUSrcA = 2'b00; // PC
                 ALUSrcB = 2'b00; // hardcoded 4
@@ -636,6 +638,7 @@ module controller (
                 // ALUSrcA = 2'bxx; // PC
 
                 //ImmSrc = 3'bxxx; // no immediate extension required
+                //ImmSrc = 3'b000;
                 RegWrite = 1'b0;
             end
 
@@ -651,11 +654,8 @@ module controller (
                 // PCWrite = 1'b0;
                 ALUSrcA = 2'b01; // oldPC
                 ALUSrcB = 2'b01; // immediate sign extended (this will compute the jump target for JAL and BEQ)
-                //ALUControl = 3'b000;
-                //ALUControl = decodeAluOp(op, funct3, funct7);
-                //ALUControl = 3'b010;
-                //ALUControl = 3'b001;
-                ALUControl = ALUControlAluDec;
+
+
 
                 //newALUControl = decodeAluOp(op, funct3, funct7);
                 //ResultSrc = 2'bxx;
@@ -664,8 +664,17 @@ module controller (
                 //MemWrite = 1'b0;
                 //ImmSrc = decodeImmSrc(op, funct3, funct7); // tell the sign extender how to correctly read the bits for the immediate value encoded in the instruction.
 
+
+                //ALUControl = 3'b000;
+                //ALUControl = decodeAluOp(op, funct3, funct7);
+                //ALUControl = 3'b010;
+                //ALUControl = 3'b001;
+                ALUControl = ALUControlAluDec;
+
+
                 //ImmSrc = 3'b000;
                 ImmSrc = ALUControlImmSrcDec;
+
                 IRWrite = 1'b0;
             end
 

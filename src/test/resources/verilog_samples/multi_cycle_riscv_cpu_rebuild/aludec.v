@@ -1,13 +1,15 @@
 // decodes ALU control signals from the instruction
 module aludec(
 
+    // clock and reset
+    // input wire clk,
+
     // input
-    input wire clk,
     input   wire    [6:0]       op,
     input   wire                opb5,       // opcode, bit 5 from RISCV instruction
     input   wire    [2:0]       funct3,     // funct3 from RISCV instruction
     input   wire                funct7b5,   // funct7, bit 5 from RISCV instruction
-    //input   wire    [1:0]       ALUOp,      // ??
+    // input   wire    [1:0]       ALUOp,      // ??
 
     // // input
     // input   wire [6:0] opcode,
@@ -19,21 +21,21 @@ module aludec(
 
 );
 
-    reg  RtypeSub;
-    //assign RtypeSub = funct7b5 & opb5; // TRUE for R–type subtract
+    wire  RtypeSub;
+    // reg  RtypeSub;
+    assign RtypeSub = funct7b5 & opb5; // TRUE for R–type subtract
 
-    //reg    [1:0]       ALUOp;
-
+    // wire [1:0] ALUOp;
     reg [1:0] ALUOp;
     // assign ALUOp = 2'b00;
 
-    //always @(ALUOp, RtypeSub)
-    always @(posedge clk)
+    //always @(posedge clk)
+    always @(op, RtypeSub)
     begin
 
-        RtypeSub = funct7b5 & opb5; // TRUE for R–type subtract;
+        // RtypeSub = funct7b5 & opb5; // TRUE for R–type subtract;
 
-        case(op)
+        case (op)
             // RegWrite_ImmSrc_ALUSrc_MemWrite_ResultSrc_Branch_ALUOp_Jump
             7'b0000011: ALUOp = 2'b00; // lw
             7'b0100011: ALUOp = 2'b00; // sw

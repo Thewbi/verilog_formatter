@@ -1,7 +1,15 @@
 // decodes ALU control signals from the instruction
+//
+// R-type ---> undefined 32'bx
+// I−type ---> 3'b000
+// S−type ---> 3'b001
+// B−type ---> 3'b010
+// U−type ---> 3'b100
+// J−type ---> 3'b011
 module immsrcdec(
 
-    input wire clk,
+    // clock and reset
+    // input wire clk,
 
     // input
     input   wire    [6:0]       op,
@@ -20,28 +28,67 @@ module immsrcdec(
 
 );
 
-    reg  RtypeSub;
-    //assign RtypeSub = funct7b5 & opb5; // TRUE for R–type subtract
+    // wire  RtypeSub;
+    // // reg  RtypeSub;
+    // assign RtypeSub = funct7b5 & opb5; // TRUE for R–type subtract
 
-    reg    [1:0]       ALUOp;
+    // wire [1:0] ALUOp;
+    // reg [1:0] ALUOp;
+    // assign ALUOp = 2'b00;
 
-    always @(posedge clk)
+    //always @(posedge clk)
+    //always @(op, RtypeSub)
+    always @(op)
     begin
 
+        case (op)
 
-        RtypeSub = funct7b5 & opb5; // TRUE for R–type subtract
+            // LUI
+            7'b0110111:
+                begin ALUControl = 3'b100; end
+            // AUIPC
+            7'b0010111:
+                begin ALUControl = 3'b100; end
 
-        case(op)
-            // RegWrite_ImmSrc_ALUSrc_MemWrite_ResultSrc_Branch_ALUOp_Jump
-            7'b0000011: ALUControl = 3'b000; // lw
-            7'b0100011: ALUControl = 3'b001; // sw
-            7'b0110011: ALUControl = 3'bxxx; // R–type
-            7'b1100011: ALUControl = 3'b010; // beq
-            7'b0010011: ALUControl = 3'b000; // I–type ALU
-            7'b1101111: ALUControl = 3'b011; // jal
-            7'b0110111: ALUControl = 3'b100; // U-Type (lui)
-            default: ALUControl = 3'bxxx; // ???
+            // JAL
+            7'b1101111:
+                begin ALUControl = 3'b011; end
+
+            // JALR
+            7'b1100111:
+                begin ALUControl = 3'b000; end
+            // LB, LH, LW, LBU, LHU,
+            7'b0000011:
+                begin ALUControl = 3'b000; end
+            // ADDI, SLTI, SLTIU, XORI, ORI, ANDI
+            7'b0010011:
+                begin ALUControl = 3'b000; end
+
+            // BEQ, BNE, BLT, BGE, BLTU, BGEU
+            7'b1100011:
+                begin ALUControl = 3'b010; end
+
+            // SB, SH, SW
+            7'b0100011:
+                begin ALUControl = 3'b001; end
+
+            default:
+                begin ALUControl = 3'bxxx; end // ???
+
         endcase
+
+
+        // case (op)
+        //     // RegWrite_ImmSrc_ALUSrc_MemWrite_ResultSrc_Branch_ALUOp_Jump
+        //     7'b0000011: ALUOp = 3'b000; // lw
+        //     7'b0100011: ALUOp = 3'b001; // sw
+        //     7'b0110011: ALUOp = 3'bxxx; // R–type
+        //     7'b1100011: ALUOp = 3'b010; // beq
+        //     7'b0010011: ALUOp = 3'b000; // I–type ALU
+        //     7'b1101111: ALUOp = 3'b011; // jal
+        //     7'b0110111: ALUOp = 3'b100; // U-Type (lui)
+        //     default: ALUOp = 3'bxxx; // ???
+        // endcase
 
         // case (ALUOp)
 
@@ -74,6 +121,7 @@ module immsrcdec(
 
         //         endcase
         //     end
+
         // endcase
     end
 
