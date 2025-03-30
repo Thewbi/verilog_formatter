@@ -28,7 +28,8 @@ module controller (
     output  reg         MemWrite,   // write enable for the memory module
     output  reg         IRWrite,    // instruction register write
     output  reg [1:0]   ResultSrc,  // controls the multiplexer that decides what goes onto the Result bus
-    output  reg [2:0]   ALUControl, // tells the ALU which operation to perform
+    //output  reg [2:0]   ALUControl, // tells the ALU which operation to perform
+    output  wire [2:0]   ALUControl,
     output  reg [1:0]   ALUSrcB,    // decides which line goes into the ALU B parameter input
     output  reg [1:0]   ALUSrcA,    // decides which line goes into the ALU A parameter input
     //output  reg [2:0]   ImmSrc,     // enable sign extension of the immediate value
@@ -40,6 +41,7 @@ module controller (
     wire [2:0] ALUControlAluDec;
     //aludec ad(/*clk,*/ ReadData[6:0], ReadData[5], ReadData[14:12], ReadData[30], /*aluOp,*/ ALUControlAluDec);
     aludec ad(/*clk,*/ op, op[5], funct3, funct7b5, /*aluOp,*/ ALUControlAluDec);
+    assign ALUControl = ((current_state == DecodeState) || (current_state == ExecuteIState)) ? ALUControlAluDec : 3'b000;
 
     //reg [2:0] ALUControlImmSrcDec;
     wire [2:0] ALUControlImmSrcDec;
@@ -143,7 +145,7 @@ module controller (
             // ACTION 2 - increment PC
             ALUSrcA = 2'b00; // PC
             ALUSrcB = 2'b00; // hardcoded 4
-            ALUControl = 3'b000; // add operation
+            //ALUControl = 3'b000; // add operation
             ResultSrc = 2'b00; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
 
         end
@@ -177,7 +179,7 @@ module controller (
                 // ACTION 2 - increment PC
                 ALUSrcA = 2'b00; // PC
                 ALUSrcB = 2'b00; // hardcoded 4
-                ALUControl = 3'b000; // add operation
+                //ALUControl = 3'b000; // add operation
                 ResultSrc = 2'b00; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
             end
 
@@ -196,7 +198,7 @@ module controller (
 
                 ResultSrc = 2'b10; // place the ALU result onto the result bus immediately so that the incremented PC goes into PCNext
                 // ACTION 2 - increment PC
-                ALUControl = 3'b000; // add operation
+                //ALUControl = 3'b000; // add operation
                 ALUSrcB = 2'b10; // hardcoded 4
                 ALUSrcA = 2'b00; // PC
 
@@ -219,30 +221,9 @@ module controller (
                 $display("");
                 $display("[CTRL.OUTPUT.DECODE_STATE] op: %b, funct3: %b, funct7: %b", op, funct3, funct7);
 
-                // PCWrite = 1'b0;
                 ALUSrcA = 2'b01; // oldPC
                 ALUSrcB = 2'b01; // immediate sign extended (this will compute the jump target for JAL and BEQ)
-
-
-
-                //newALUControl = decodeAluOp(op, funct3, funct7);
-                //ResultSrc = 2'bxx;
-                //AdrSrc = 1'bx;
-                //RegWrite = 1'b0;
-                //MemWrite = 1'b0;
-                //ImmSrc = decodeImmSrc(op, funct3, funct7); // tell the sign extender how to correctly read the bits for the immediate value encoded in the instruction.
-
-
-                //ALUControl = 3'b000;
-                //ALUControl = decodeAluOp(op, funct3, funct7);
-                //ALUControl = 3'b010;
-                //ALUControl = 3'b001;
-                ALUControl = ALUControlAluDec;
-
-
-                //ImmSrc = 3'b000;
-                //ImmSrc = ALUControlImmSrcDec;
-
+                //ALUControl = ALUControlAluDec;
                 IRWrite = 1'b0;
             end
 
@@ -265,7 +246,7 @@ module controller (
                 MemWrite = 1'b0;
                 IRWrite = 1'b0;
                 ResultSrc = 2'bxx;
-                ALUControl = 3'b000; // add
+                //ALUControl = 3'b000; // add
                 ALUSrcB = 2'b01; // immediate sign extended
                 ALUSrcA = 2'b10; // register
                 //ImmSrc = 3'b000; // keep value from last state
@@ -284,7 +265,7 @@ module controller (
 
                 ALUSrcA = 2'bxx;
                 ALUSrcB = 2'bxx;
-                ALUControl = 3'bxxx;
+                //ALUControl = 3'bxxx;
 
                 // //ResultSrc = 2'b10; // ALUOut register to Result bus
                 ResultSrc = 2'b00;
@@ -310,7 +291,7 @@ module controller (
                 MemWrite = 1'b0;
                 IRWrite = 1'b0;
                 ResultSrc = 2'b01; // take the value from the Data register and place it onto the result bus
-                ALUControl = 3'bxxx;
+                //ALUControl = 3'bxxx;
                 ALUSrcB = 2'bxx;
                 ALUSrcA = 2'bxx;
                 //ImmSrc = 3'b000;
@@ -329,7 +310,7 @@ module controller (
                 MemWrite = 1'b1; // enable a write to memory
                 IRWrite = 1'b0;
                 ResultSrc = 2'b00; // place ALU out onto the result bus
-                ALUControl = 3'bxxx;
+                //ALUControl = 3'bxxx;
                 ALUSrcB = 2'bxx;
                 ALUSrcA = 2'bxx;
                 //ImmSrc = 3'b001;
@@ -365,7 +346,7 @@ module controller (
                 // PCWrite = 1'b0;
                 ALUSrcA = 2'b00;
                 ALUSrcB = 2'b00;
-                ALUControl = 3'b000;
+                //ALUControl = 3'b000;
                 ResultSrc = 2'b00; // Result bus is ALUOut flip flop
                 AdrSrc = 1'b0;
                 RegWrite = 1'b1; // enable the RegWrite feature of the register file so it stores the result bus into the destination register rd
@@ -396,9 +377,7 @@ module controller (
 
                 ALUSrcB <= 2'b01; // immediate sign extended
 
-                //ALUControl = 3'b000; // add
-                //ALUControl = decodeAluOp(op, funct3, funct7);
-                //ALUControl <= newALUControl;
+
 
                 // SNIP
 
@@ -434,7 +413,7 @@ module controller (
                 //ALUSrcB = 2'b10; // hard coded 4
                 ALUSrcB = 2'b01; // Immediate sign extended
                 //ImmSrc = 3'b011; // Immediate sign extend (J-Type)
-                ALUControl = 3'b000; // add
+                //ALUControl = 3'b000; // add
                 ResultSrc = 2'b00; // ALUOut goes onto the result bus
             end
 
@@ -448,7 +427,7 @@ module controller (
                 // PCWrite = 1'b0;
                 ALUSrcA = 2'b10; // register
                 ALUSrcB = 2'b00; // register
-                ALUControl = 3'b001; // subtraction
+                //ALUControl = 3'b001; // subtraction
                 ResultSrc = 2'b00; // Result bus is ALUOut flip flop
                 AdrSrc = 1'b0;
                 RegWrite = 1'b0;
@@ -500,7 +479,7 @@ module controller (
                 // PCWrite = 1'b0;
                 ALUSrcA = 2'b11; // new zero input
                 ALUSrcB = 2'b10; // sign extended immediate
-                ALUControl = 3'b000; // add
+                //ALUControl = 3'b000; // add
                 ResultSrc = 2'b00; // saved ALU out
                 AdrSrc = 1'b0;
                 RegWrite = 1'b0;

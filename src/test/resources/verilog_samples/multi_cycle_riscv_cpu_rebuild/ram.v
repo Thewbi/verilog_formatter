@@ -307,7 +307,8 @@ module ram(
 
 
 
-
+            // // BROKEN
+            // //
             // // beq test - case: branch is taken (because x5 == x7)
             // //
             // // addi x5, x0, 0x03
@@ -420,7 +421,6 @@ module ram(
 
 
 
-            // // BROKEN
             // // xori test
 
             // // expected:

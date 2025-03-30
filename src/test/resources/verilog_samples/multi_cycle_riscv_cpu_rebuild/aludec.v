@@ -30,7 +30,7 @@ module aludec(
     // assign ALUOp = 2'b00;
 
     //always @(posedge clk)
-    always @(op, RtypeSub)
+    always @(op, RtypeSub, funct3)
     begin
 
         // RtypeSub = funct7b5 & opb5; // TRUE for R–type subtract;
@@ -43,6 +43,7 @@ module aludec(
             7'b1100011: ALUOp = 2'b00; // beq
             7'b0010011: ALUOp = 2'b10; // I–type ALU
             7'b1101111: ALUOp = 2'b00; // jal
+            7'b0110111: ALUOp = 2'b00; // lui
             default: ALUOp = 2'bxx; // ???
         endcase
 

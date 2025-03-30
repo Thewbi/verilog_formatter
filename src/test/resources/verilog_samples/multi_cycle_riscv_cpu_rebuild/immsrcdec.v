@@ -24,7 +24,7 @@ module immsrcdec(
     // input   wire [6:0] funct7,
 
     // output
-    output  reg [2:0] ALUControl
+    output  reg [2:0] ImmSrc
 
 );
 
@@ -45,35 +45,35 @@ module immsrcdec(
 
             // LUI
             7'b0110111:
-                begin ALUControl = 3'b100; end
+                begin ImmSrc = 3'b100; end
             // AUIPC
             7'b0010111:
-                begin ALUControl = 3'b100; end
+                begin ImmSrc = 3'b100; end
 
             // JAL
             7'b1101111:
-                begin ALUControl = 3'b011; end
+                begin ImmSrc = 3'b011; end
 
             // JALR
             7'b1100111:
-                begin ALUControl = 3'b000; end
+                begin ImmSrc = 3'b000; end
             // LB, LH, LW, LBU, LHU,
             7'b0000011:
-                begin ALUControl = 3'b000; end
+                begin ImmSrc = 3'b000; end
             // ADDI, SLTI, SLTIU, XORI, ORI, ANDI
             7'b0010011:
-                begin ALUControl = 3'b000; end
+                begin ImmSrc = 3'b000; end
 
             // BEQ, BNE, BLT, BGE, BLTU, BGEU
             7'b1100011:
-                begin ALUControl = 3'b010; end
+                begin ImmSrc = 3'b010; end
 
             // SB, SH, SW
             7'b0100011: // 0x23, 35dec
-                begin ALUControl = 3'b001; end
+                begin ImmSrc = 3'b001; end
 
             default:
-                begin ALUControl = 3'bxxx; end // ???
+                begin ImmSrc = 3'bxxx; end // ???
 
         endcase
 
