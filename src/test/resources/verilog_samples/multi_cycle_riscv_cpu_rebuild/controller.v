@@ -41,7 +41,7 @@ module controller (
     wire [2:0] ALUControlAluDec;
     //aludec ad(/*clk,*/ ReadData[6:0], ReadData[5], ReadData[14:12], ReadData[30], /*aluOp,*/ ALUControlAluDec);
     aludec ad(/*clk,*/ op, op[5], funct3, funct7b5, /*aluOp,*/ ALUControlAluDec);
-    assign ALUControl = ((current_state == DecodeState) || (current_state == ExecuteIState)) ? ALUControlAluDec : 3'b000;
+    assign ALUControl = ((current_state == DecodeState) || (current_state == ExecuteIState)) ? ALUControlAluDec : (current_state == BEQState) ? 3'b001 : 3'b000;
 
     //reg [2:0] ALUControlImmSrcDec;
     wire [2:0] ALUControlImmSrcDec;
