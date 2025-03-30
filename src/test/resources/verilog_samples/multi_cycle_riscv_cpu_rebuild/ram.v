@@ -131,39 +131,47 @@ module ram(
             // RAM[32'd40] = 32'hfd9ff06f; //               jal x0, -36         # jal inita
 
 
-            // // loop 999.999 times before toggle
+            // Application
 
-            // // 00000293
-            // // 00000313
-            // // 000f43b7
-            // // 23f38393
-            // // 00728663
-            // // 00128293
-            // // ff9ff06f
-            // // 03c02303
-            // // 00134313
-            // // 02602e23
-            // // fd9ff06f
+            // set memory cell 60dec to 0x00 instead of 0xAB
+            // loop 999.999 times before toggle
 
-            // RAM[32'd00] = 32'h00000293; // inita:        addi x5, x0, 0x0
-            // RAM[32'd04] = 32'h00000313; //               addi x6, x0, 0x0
-            // RAM[32'd08] = 32'h000f43b7; //               lui x7, 244/0xf4
-            // RAM[32'd12] = 32'h23f38393; //               addi x7, x7, 575/0x23f
-            // RAM[32'd16] = 32'h00728663; // loop_head:    beq x5, x7, 0x0C     # if (x5 == x7) jump to loop_end
+            // 00000293
+            // 00000313
+            // 000f43b7
+            // 23f38393
+            // 00728663
+            // 00128293
+            // ff9ff06f
+            // 03c02303
+            // 00134313
+            // 02602e23
+            // fd9ff06f
 
-            // RAM[32'd20] = 32'h00128293; //               addi x5, x5, 1
-            // RAM[32'd24] = 32'hff9ff06f; //               jal x0, -8          # jal loop head
-            // RAM[32'd28] = 32'h03c02303; // loop_end:     lw x6, 60(x0)
-            // RAM[32'd32] = 32'h00134313; //               xori x6, x6, 1
-            // RAM[32'd36] = 32'h02602e23; //               sw x6, 60(x0)
+            RAM[32'd00] = 32'h00000293; // inita:        addi x5, x0, 0x0
+            RAM[32'd04] = 32'h00000313; //               addi x6, x0, 0x0
+            RAM[32'd08] = 32'h000f43b7; //               lui x7, 244/0xf4
+            RAM[32'd12] = 32'h23f38393; //               addi x7, x7, 575/0x23f
+            RAM[32'd16] = 32'h00728663; // loop_head:    beq x5, x7, 0x0C     # if (x5 == x7) jump to loop_end
 
-            // RAM[32'd40] = 32'hfd9ff06f; //               jal x0, -36         # jal inita
-            // RAM[32'd44] = 32'h00000000;
-            // RAM[32'd48] = 32'h00000000;
-            // RAM[32'd52] = 32'h00000000;
-            // RAM[32'd56] = 32'h00000000;
+            RAM[32'd20] = 32'h00128293; //               addi x5, x5, 1
+            RAM[32'd24] = 32'hff9ff06f; //               jal x0, -8          # jal loop head
+            RAM[32'd28] = 32'h03c02303; // loop_end:     lw x6, 60(x0)
+            RAM[32'd32] = 32'h00134313; //               xori x6, x6, 1
+            RAM[32'd36] = 32'h02602e23; //               sw x6, 60(x0)
+
+            RAM[32'd40] = 32'hfd9ff06f; //               jal x0, -36         # jal inita
+            RAM[32'd44] = 32'h00000000;
+            RAM[32'd48] = 32'h00000000;
+            RAM[32'd52] = 32'h00000000;
+            RAM[32'd56] = 32'h00000000;
 
 
+
+
+
+
+            // // Application
             // // loop 3 times
 
             // RAM[32'h00] = 32'h00000293; // 0x00 inita:        addi x5, x0, 0x0
@@ -448,7 +456,9 @@ module ram(
 
 
 
-            RAM[32'd60] = 32'h000000AB; // this memory cell is toggled between 1 and 0 every 9999999 iterations
+            //RAM[32'd60] = 32'h000000AB; // this memory cell is toggled between 1 and 0 every 9999999 iterations
+
+            RAM[32'd60] = 32'h00000000;
             RAM[32'd64] = 32'h00000000;
             RAM[32'd68] = 32'h00000000;
             RAM[32'd72] = 32'h00000000;
