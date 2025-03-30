@@ -463,11 +463,19 @@ module controller (
     end
     endfunction
 
-    wire [2:0] ALUControlAluDec;
-    aludec ad(ReadData[6:0], ReadData[5], ReadData[14:12], ReadData[30], ALUControlAluDec);
 
+
+    // wire [1:0] aluOp;
+    // assign aluOp = 2'b00;
+
+    //reg [2:0] ALUControlAluDec;
+    wire [2:0] ALUControlAluDec;
+    //assign ALUControlAluDec = 3'b000;
+    aludec ad(clk, ReadData[6:0], ReadData[5], ReadData[14:12], ReadData[30], /*aluOp,*/ ALUControlAluDec);
+
+    //reg [2:0] ALUControlImmSrcDec;
     wire [2:0] ALUControlImmSrcDec;
-    immsrcdec isd(ReadData[6:0], ReadData[5], ReadData[14:12], ReadData[30], ALUControlImmSrcDec);
+    immsrcdec isd(clk, ReadData[6:0], ReadData[5], ReadData[14:12], ReadData[30], ALUControlImmSrcDec);
 
     // // this initial block causes the yosys compiler to fail with "cannot be legalized: initialized D latches are not supported"
     // // Enable this block for Icarus Verilog. Remove this block for yosys.
@@ -648,12 +656,15 @@ module controller (
                 //ALUControl = 3'b010;
                 //ALUControl = 3'b001;
                 ALUControl = ALUControlAluDec;
+
                 //newALUControl = decodeAluOp(op, funct3, funct7);
                 //ResultSrc = 2'bxx;
                 //AdrSrc = 1'bx;
                 //RegWrite = 1'b0;
                 //MemWrite = 1'b0;
                 //ImmSrc = decodeImmSrc(op, funct3, funct7); // tell the sign extender how to correctly read the bits for the immediate value encoded in the instruction.
+
+                //ImmSrc = 3'b000;
                 ImmSrc = ALUControlImmSrcDec;
                 IRWrite = 1'b0;
             end
@@ -976,10 +987,10 @@ module controller (
                 next_state = DecodeState;
             end
 
-            // S2 "Fetch_2" State
-            FetchState_2:
-            begin
-            end
+            // // S2 "Fetch_2" State
+            // FetchState_2:
+            // begin
+            // end
 
             // S3 "Decode" State
             DecodeState:

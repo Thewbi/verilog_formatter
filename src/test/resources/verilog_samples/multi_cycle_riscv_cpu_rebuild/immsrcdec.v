@@ -1,6 +1,8 @@
 // decodes ALU control signals from the instruction
 module immsrcdec(
 
+    input wire clk,
+
     // input
     input   wire    [6:0]       op,
     input   wire                opb5,       // opcode, bit 5 from RISCV instruction
@@ -18,13 +20,16 @@ module immsrcdec(
 
 );
 
-    wire  RtypeSub;
-    assign RtypeSub = funct7b5 & opb5; // TRUE for R–type subtract
+    reg  RtypeSub;
+    //assign RtypeSub = funct7b5 & opb5; // TRUE for R–type subtract
 
     reg    [1:0]       ALUOp;
 
-    always @*
+    always @(posedge clk)
     begin
+
+
+        RtypeSub = funct7b5 & opb5; // TRUE for R–type subtract
 
         case(op)
             // RegWrite_ImmSrc_ALUSrc_MemWrite_ResultSrc_Branch_ALUOp_Jump
