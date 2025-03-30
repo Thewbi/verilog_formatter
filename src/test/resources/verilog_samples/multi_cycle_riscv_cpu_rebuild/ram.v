@@ -351,47 +351,46 @@ module ram(
 
 
 
-            // beq test - case: branch is NOT taken (because x5 != x7)
-            //
-            // addi x5, x0, 0x05
-            // addi x7, x0, 0x03
-            // beq  x5, x7, 0x56
-            //
-            // Expected: PC jumps from 0x08 to 0x0C. Check with GTKWave.
-            //
-            // [regfile] WriteBack. a3= 5, wd3=0x00000005
-            // [regfile] WriteBack. a3= 7, wd3=0x00000003
-            // [regfile] WriteBack. a3= 5, wd3=0x00000011
-            //
-
-            RAM[32'd00] = 32'h00500293; // 0x00   addi x5, x0, 0x05
-            RAM[32'd04] = 32'h00300393; // 0x04   addi x7, x0, 0x03
-            RAM[32'd08] = 32'h04728b63; // 0x08   beq  x5, x7, 0x56 (0x56 == 86dec) (BRANCH IS NOT TAKEN)
-            RAM[32'd12] = 32'h01100293; // 0x0C   addi x5, x0, 17 (17 == 0x11)
-            RAM[32'd16] = 32'h00000000;
-
-            RAM[32'd20] = 32'h00000000;
-            RAM[32'd24] = 32'h00000000;
-            RAM[32'd28] = 32'h00000000;
-            RAM[32'd32] = 32'h00000000;
-            RAM[32'd36] = 32'h00000000;
-
-            RAM[32'd40] = 32'h00000000;
-            RAM[32'd44] = 32'h00000000;
-            RAM[32'd48] = 32'h00000000;
-            RAM[32'd52] = 32'h00000000;
-            RAM[32'd56] = 32'h00000000;
-
-
-
-            // // BROKEN
+            // // beq test - case: branch is NOT taken (because x5 != x7)
             // //
+            // // addi x5, x0, 0x05
+            // // addi x7, x0, 0x03
+            // // beq  x5, x7, 0x56
+            // //
+            // // Expected: PC jumps from 0x08 to 0x0C. Check with GTKWave.
+            // //
+            // // [regfile] WriteBack. a3= 5, wd3=0x00000005
+            // // [regfile] WriteBack. a3= 7, wd3=0x00000003
+            // // [regfile] WriteBack. a3= 5, wd3=0x00000011
+            // //
+
+            // RAM[32'd00] = 32'h00500293; // 0x00   addi x5, x0, 0x05
+            // RAM[32'd04] = 32'h00300393; // 0x04   addi x7, x0, 0x03
+            // RAM[32'd08] = 32'h04728b63; // 0x08   beq  x5, x7, 0x56 (0x56 == 86dec) (BRANCH IS NOT TAKEN)
+            // RAM[32'd12] = 32'h01100293; // 0x0C   addi x5, x0, 17 (17 == 0x11)
+            // RAM[32'd16] = 32'h00000000;
+
+            // RAM[32'd20] = 32'h00000000;
+            // RAM[32'd24] = 32'h00000000;
+            // RAM[32'd28] = 32'h00000000;
+            // RAM[32'd32] = 32'h00000000;
+            // RAM[32'd36] = 32'h00000000;
+
+            // RAM[32'd40] = 32'h00000000;
+            // RAM[32'd44] = 32'h00000000;
+            // RAM[32'd48] = 32'h00000000;
+            // RAM[32'd52] = 32'h00000000;
+            // RAM[32'd56] = 32'h00000000;
+
+
+
             // // JAL Jump and Link test - ff9ff06f
 
             // // expected:
             // // endless loop of:
             // // [regfile] WriteBack. a3= 5, wd3=0x00000005
             // // [regfile] WriteBack. a3= 7, wd3=0x00000003
+            // // [flopenr CurrPC] q:0x0000000c <- d:0x00000000
             // //
             // // In GTKWave the PC should never to the value 0x0C = 12dec
             // // It should go to 8 and jump back to 0

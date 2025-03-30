@@ -159,7 +159,7 @@ module controller (
     // Moore == output only depends on the current state
     //
 
-    assign PCWrite = (Zero && (current_state == BEQState)) || current_state == FetchState_1;
+    assign PCWrite = (Zero && (current_state == BEQState)) || current_state == FetchState_1 || current_state == JALState;
 
     //always @(current_state, resetn)
     always @(current_state)
@@ -404,14 +404,15 @@ module controller (
                 $display("");
                 $display("[CTRL.OUTPUT.JALState]");
 
-                // PCWrite = 1'b1; // Write into the PC register
+                //PCWrite = 1'b1; // Write into the PC register
                 AdrSrc = 1'bx; // confuse the muxer so it does not perform any action
                 MemWrite = 1'b0;
                 IRWrite = 1'b0;
                 RegWrite = 1'b0;
+                // compute PC + 4 which is the "link" operation
                 ALUSrcA = 2'b01; // oldPC
-                //ALUSrcB = 2'b10; // hard coded 4
-                ALUSrcB = 2'b01; // Immediate sign extended
+                ALUSrcB = 2'b10; // hard coded 4
+                //ALUSrcB = 2'b01; // Immediate sign extended
                 //ImmSrc = 3'b011; // Immediate sign extend (J-Type)
                 //ALUControl = 3'b000; // add
                 ResultSrc = 2'b00; // ALUOut goes onto the result bus
@@ -674,14 +675,14 @@ module controller (
                 next_state = ALUWriteBackState; //
             end
 
-            // S11 "JAL" State
+            // B S11 "JAL" State
             JALState:
             begin
                 $display("[controller] goto JALState -> ALUWriteBackState");
                 next_state = ALUWriteBackState;
             end
 
-            // S12 "BEQ" State
+            // C S12 "BEQ" State
             BEQState:
             begin
                 //$display("[controller] goto BEQState -> BRANCH_TAKEN_CHECK.");
@@ -691,14 +692,14 @@ module controller (
                 next_state = FetchState_1;
             end
 
-            // S13 "BRANCH_TAKEN_CHECK" State
+            // D S13 "BRANCH_TAKEN_CHECK" State
             BRANCH_TAKEN_CHECK:
             begin
                 $display("[controller] goto BRANCH_TAKEN_CHECK -> FetchState_1.");
                 next_state = FetchState_1;
             end
 
-            // S14 "LUI_STATE" State
+            // E S14 "LUI_STATE" State
             LUI_STATE:
             begin
                 $display("[controller] goto LUI_STATE -> ExecuteIState.");
