@@ -1,9 +1,18 @@
 module riscv_multi(
+
     // clock and reset
     input wire clk,
     input wire resetn,
 
-    output wire [31:0]      toggle_value
+    output wire [31:0]      toggle_value,
+
+    // // DEBUG UART
+    // output reg [7:0]   tx_Data,
+    // output reg         tx_DataValid
+
+    // DEBUG UART
+    output wire [7:0]   tx_Data,
+    output wire         tx_DataValid
 );
 
     wire [31:0]     Instr;
@@ -27,16 +36,22 @@ module riscv_multi(
     wire [6:0]      op;
     wire [6:0]      oldOp;
     wire [2:0]      funct3;
-    // wire [30]     funct7b5;
     wire [6:0]      funct7;
+    wire            funct7b5;
     wire [1:0]      ALUSrcB;
     wire [1:0]      ALUSrcA;
 
-    // wire [31:0]      toggle_value;
+    // this works
+    //assign tx_Data = PC;
+    //assign tx_Data = { 7'b0000000, clk }; // clock works!
+    //assign tx_Data = ALUSrcB[7:0]; // ERROR is always zero!
+    //assign tx_Data = { 7'bb0000000, resetn }; // reset works!
+    // assign tx_Data = { 1'b0, op }; // op from decoder works!
 
-    // wire resetn2 = 0;
+    // assign tx_DataValid = 1'b1;
 
     controller ctr (
+
         // clock and reset
         clk,
         resetn,
@@ -50,7 +65,6 @@ module riscv_multi(
         Zero,           // ALU result is zero
         PC,             // current programm counter
         ReadData,
-        // ReadDData,
 
         // output
         PCWrite,
@@ -62,12 +76,15 @@ module riscv_multi(
         ALUSrcB,        // decides which line goes into the ALU B parameter input
         ALUSrcA,        // decides which line goes into the ALU A parameter input
         ImmSrc,         // enable sign extension of the immediate value
-        RegWrite       // write enable for the register file
+        RegWrite,       // write enable for the register file
+
+        // DEBUG UART
+        tx_Data,
+        tx_DataValid
     );
 
-    //aludec alu_decoder(opb5, funct3, funct7b5, ALUOp, ALUControl);
-
     datapath dp (
+
         // clock and reset
         clk,
         resetn,
@@ -81,7 +98,6 @@ module riscv_multi(
         Zero,
         PC,
         ReadData,       // instruction memory
-        // ReadDData,      // data memory
 
         // input
         PCWrite,

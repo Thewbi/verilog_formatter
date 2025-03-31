@@ -2,7 +2,7 @@
 // three ported register file
 module regfile(
     input   wire            clk,    // clock
-    input wire resetn,
+    input   wire            resetn,
 
     input   wire            we3,    // write enable, register a3 is written with wd3
 

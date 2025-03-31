@@ -7,7 +7,7 @@ cd C:\Users\wolfg\dev\Java\verilog_formatter\src\test\resources\verilog_samples\
 C:\iverilog\bin\iverilog.exe -s top_testbench -o build/aout.vvp top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v imem.v dmem.v
 
 // for data and code in a single RAM module (ram.v)
-C:\iverilog\bin\iverilog.exe -s top_testbench -o build/aout.vvp top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v aludec.v immsrcdec.v > build/compile.log
+C:\iverilog\bin\iverilog.exe -s top_testbench -o build/aout.vvp top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v aludec.v immsrcdec.v > build/iverilog_build.log
 
 clear && C:\iverilog\bin\vvp.exe build/aout.vvp > build/verilog_log.txt
 
@@ -35,10 +35,17 @@ C:\Users\wolfg\Downloads\oss-cad-suite\environment.bat
 yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v aludec.v immsrcdec.v
 
 // synthesis - without top_testbench
-yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v aludec.v immsrcdec.v
+yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v aludec.v immsrcdec.v > build/yosys_build.log
+
+yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v aludec.v immsrcdec.v C:\Users\wolfg\Downloads\oss-cad-suite\share\yosys\ice40\cells_sim.v
 
 // routing
-nextpnr-ice40 --hx1k --package tq144 --json build/aout.json --asc build/aout.asc --pcf icestick.pcf -q
+nextpnr-ice40 --hx1k --package tq144 --json build/aout.json --asc build/aout.asc --pcf icestick.pcf
+nextpnr-ice40 --package hx1k --json build/aout.json --asc build/aout.asc --pcf icestick.pcf
+nextpnr-ice40 --hx1k --json build/aout.json --asc build/aout.asc --pcf icestick.pcf
+
+// quiet mode, no console output
+nextpnr-ice40 --package hx1k --json build/aout.json --asc build/aout.asc --pcf icestick.pcf -q
 
 icepack build/aout.asc build/aout.bin
 iceprog -d i:0x0403:0x6010:0 build/aout.bin

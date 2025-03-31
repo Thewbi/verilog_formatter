@@ -3,8 +3,8 @@
 module alu #(parameter WIDTH = 32) (
 
     // input
-    input       [WIDTH-1:0]     a_in,
-    input       [WIDTH-1:0]     b_in,
+    input  wire [WIDTH-1:0]     a_in,
+    input  wire [WIDTH-1:0]     b_in,
     input  wire [2:0]           ALUControl, // operation to perform
 
     // output

@@ -74,9 +74,6 @@ module datapath(
     //                  input A     input B     selector    muxed output
     mux2 #(32) addrmux( PC,         Result,     AdrSrc,     adr);
 
-    // fetch next instruction
-    //imem imem(PC, ReadData);
-
     //                     id     clock     reset,      enable,     input       output
     flopenr #(32) InstrFF(3'b010, clk,      resetn,      IRWrite,    ReadData,    Instr);
 
@@ -103,6 +100,11 @@ module datapath(
     always @(posedge clk)
     begin
         oldOp = op;
+
+        // if (resetn == 0)
+        // begin
+        //     PC = 32'h00;
+        // end
     end
 
     // always @(posedge Instr)
@@ -155,7 +157,8 @@ module datapath(
 
     // ALU
     //      input A     input B     operation       result output       zero flag
-    alu alu(SrcA,       SrcB,       ALUControl,     ALUResult,          Zero);
+    alu #(32) alu(SrcA,       SrcB,       ALUControl,     ALUResult,          Zero);
+    //alu #(32) alu(32'h00,       32'h04,       3'b000,     ALUResult,          Zero);
 
     // wire [2:0] ALUControlInternal;
     // assign ALUControlInternal = decodeAluOp(op, funct3, funct7);

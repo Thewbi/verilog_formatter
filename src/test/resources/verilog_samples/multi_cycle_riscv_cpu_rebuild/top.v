@@ -28,7 +28,7 @@ module top(
 
     // https://stackoverflow.com/questions/38030768/icestick-yosys-using-the-global-set-reset-gsr
     wire resetn;
-    reg [1:0] rststate = 0;
+    reg [24:0] rststate = 0; // long reset
 
     always @(posedge clk)
     begin
@@ -42,8 +42,9 @@ module top(
     // UART
     //
 
-    reg [7:0] tx_byte = 8'h41; //= 8'h00;
-    reg tx_DataValid = 1'b0;
+    wire [7:0] tx_byte;// = 8'hFF; //= 8'h00;
+    wire tx_DataValid;// = 1'b0;
+
     wire tx_Active;
     wire tx_Done;
     reg tx_Done_reg = 1'b0;
@@ -92,8 +93,8 @@ module top(
     // slow clock signal
     wire slow_clock;
     //assign slow_clock = slow_clock_counter[16]; // way to fast to see
-    //assign slow_clock = slow_clock_counter[20]; // quick
-    assign slow_clock = slow_clock_counter[24]; // slow
+    assign slow_clock = slow_clock_counter[20]; // quick
+    //assign slow_clock = slow_clock_counter[24]; // slow
 
     // count up
     always @(posedge clk) begin
@@ -101,23 +102,23 @@ module top(
         slow_clock_counter = slow_clock_counter + 1;
         uart_tx_counter = uart_tx_counter + 1;
 
-        if (tx_Done == 1'b1)
-        begin
-            tx_DataValid = 1'b0;
-        end
+        // if (tx_Done == 1'b1)
+        // begin
+        //     tx_DataValid = 1'b0;
+        // end
 
-        if (uart_tx_counter == 32'd9999999)
-        begin
-            tx_DataValid = 1'b1;
-            uart_tx_counter = 0;
-        end
+        // if (uart_tx_counter == 32'd9999999)
+        // begin
+        //     tx_DataValid = 1'b1;
+        //     uart_tx_counter = 0;
+        // end
 
     end
 
     always @(posedge slow_clock)
     begin
         D1 = ~D1;
-        D2 = 0;
+        D2 = resetn;
         D3 = 0;
         D4 = 0;
     end
@@ -128,9 +129,16 @@ module top(
 
     riscv_multi rvmulti(
         // clock and reset
-        clk,
+        //clk,
+        slow_clock,
         resetn, // the system should reset, when resetn is 0. The system should keep running, when resetn is 1.
-        toggle_value
+
+        // output
+        toggle_value,
+
+        // DEBUG UART
+        tx_byte,
+        tx_DataValid
     );
 
 endmodule
