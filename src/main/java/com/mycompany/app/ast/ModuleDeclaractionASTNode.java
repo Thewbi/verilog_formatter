@@ -11,6 +11,8 @@ public class ModuleDeclaractionASTNode extends ASTNode {
 
     public List<PortASTNode> ports = new ArrayList<>();
 
+    public List<ModuleParameterASTNode> parameters = new ArrayList<>();
+
     public void printRecursive(StringBuilder stringBuilder, int indent) {
 
         // indent and name
@@ -27,6 +29,18 @@ public class ModuleDeclaractionASTNode extends ASTNode {
             stringBuilder.append("Ports: ").append("\n");
             for (ASTNode port : ports) {
                 port.printRecursive(stringBuilder, indent + 1);
+                stringBuilder.append("\n");
+            }
+        }
+
+        // parameters
+        if (parameters.size() > 0) {
+            for (int i = 0; i < indent; i++) {
+                stringBuilder.append("  ");
+            }
+            stringBuilder.append("Parameters: ").append("\n");
+            for (ASTNode parameter : parameters) {
+                parameter.printRecursive(stringBuilder, indent + 1);
                 stringBuilder.append("\n");
             }
         }

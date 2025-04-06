@@ -8,8 +8,6 @@ public class PortASTNode extends TypedASTNode {
 
     public ExpressionStatementASTNode expression;
 
-    // public DataTypeASTNode dataType;
-
     public void printRecursive(final StringBuilder stringBuilder, final int indent) {
 
         // indent and direction, type, name
@@ -25,9 +23,6 @@ public class PortASTNode extends TypedASTNode {
         }
 
         // datatype
-        // for (int i = 0; i < indent; i++) {
-        //     stringBuilder.append("  ");
-        // }
         if (dataType != null) {
             dataType.printRecursive(stringBuilder, indent);
         }

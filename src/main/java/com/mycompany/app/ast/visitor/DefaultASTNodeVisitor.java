@@ -18,16 +18,6 @@ public class DefaultASTNodeVisitor extends BaseASTNodeVisitor {
 
     public ModuleDescriptor moduleDescriptor;
 
-    // @Override
-    // public void visit(final AlwaysConstructASTNode node) {
-    // System.out.println(node.getClass());
-    // }
-
-    // @Override
-    // public void visit(final AssignmentASTNode node) {
-    // System.out.println(node.getClass());
-    // }
-
     @Override
     public void visit(final ModuleDeclaractionASTNode node) {
 

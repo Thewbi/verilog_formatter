@@ -13,7 +13,9 @@ import com.mycompany.app.ast.ConditionalStatementASTNode;
 import com.mycompany.app.ast.ExpressionStatementASTNode;
 import com.mycompany.app.ast.IfStatementASTNode;
 import com.mycompany.app.ast.ModuleDeclaractionASTNode;
+import com.mycompany.app.ast.ModuleParameterASTNode;
 import com.mycompany.app.ast.NetAssignmentASTNode;
+import com.mycompany.app.ast.PortASTNode;
 import com.mycompany.app.ast.AssignmentASTNode;
 import com.mycompany.app.ast.ProceduralTimingControlStatementASTNode;
 import com.mycompany.app.ast.RangeExpressionASTNode;
@@ -37,6 +39,52 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         currentNode = moduleDeclaractionASTNode;
     }
 
+    @Override public void enterPort_implicit(VerilogParser.Port_implicitContext ctx) {
+        PortASTNode portASTNode = new PortASTNode();
+        portASTNode.ctx = ctx;
+
+        // connect parent and child
+        portASTNode.parent = currentNode;
+        ((ModuleDeclaractionASTNode) currentNode).ports.add(portASTNode);
+
+        // descend
+        currentNode = portASTNode;
+    }
+
+	@Override public void exitPort_implicit(VerilogParser.Port_implicitContext ctx) {
+
+        currentNode.value = ctx.getText();
+
+        // ascend
+        currentNode = currentNode.parent;
+    }
+
+    @Override public void enterParameter_declaration(VerilogParser.Parameter_declarationContext ctx) {
+
+        ModuleParameterASTNode moduleParameterASTNode = new ModuleParameterASTNode();
+        moduleParameterASTNode.ctx = ctx;
+
+        // connect parent and child
+        moduleParameterASTNode.parent = currentNode;
+        ((ModuleDeclaractionASTNode) currentNode).parameters.add(moduleParameterASTNode);
+
+        // descend
+        currentNode = moduleParameterASTNode;
+    }
+
+	@Override public void exitParameter_declaration(VerilogParser.Parameter_declarationContext ctx) {
+        // currentNode.value = ctx.getText();
+        ((ModuleParameterASTNode) currentNode).expression = expressionStack.pop();
+
+        // ascend
+        currentNode = currentNode.parent;
+    }
+
+    @Override public void enterParameter_identifier(VerilogParser.Parameter_identifierContext ctx) { }
+	@Override public void exitParameter_identifier(VerilogParser.Parameter_identifierContext ctx) {
+        ((ModuleParameterASTNode) currentNode).value = ctx.getText();
+     }
+
     @Override
     public void enterCase_statement(VerilogParser.Case_statementContext ctx) {
 
@@ -47,7 +95,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         currentNode.children.add(astNode);
         astNode.parent = currentNode;
 
-        // decend
+        // descend
         currentNode = astNode;
     }
 
@@ -70,7 +118,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         currentNode.children.add(astNode);
         astNode.parent = currentNode;
 
-        // decend
+        // descend
         currentNode = astNode;
     }
 
@@ -101,7 +149,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
             currentNode.children.add(astNode);
             astNode.parent = currentNode;
 
-            // decend
+            // descend
             currentNode = astNode;
         }
     }
@@ -139,7 +187,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         currentNode.children.add(astNode);
         astNode.parent = currentNode;
 
-        // decend
+        // descend
         currentNode = astNode;
     }
 
