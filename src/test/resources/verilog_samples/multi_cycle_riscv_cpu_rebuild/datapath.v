@@ -57,8 +57,10 @@ module datapath(
     // end
 
     //      clk    resetn,    write enable    addr        data to write           output read data
-    ram ram(clk,   resetn,    MemWrite,       adr,        WriteData,              ReadData, toggle_value
-    );
+    // ram ram(clk,   resetn,    MemWrite,       adr,        WriteData,              ReadData, toggle_value
+    // );
+
+    single_port_ram ram (WriteData[7:0], adr[8:0], MemWrite, clk, resetn, ReadData[7:0]);
 
     //          clk     write enable    addr        data            output read data
     //dmem dmem(  clk,    MemWrite,       Result,     WriteData,      ReadDData);

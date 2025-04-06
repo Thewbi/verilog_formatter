@@ -9,6 +9,8 @@ C:\iverilog\bin\iverilog.exe -s top_testbench -o build/aout.vvp top_testbench.v 
 // for data and code in a single RAM module (ram.v)
 C:\iverilog\bin\iverilog.exe -s top_testbench -o build/aout.vvp top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v aludec.v immsrcdec.v > build/iverilog_build.log
 
+C:\iverilog\bin\iverilog.exe -s top_testbench -o build/aout.vvp top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v single_port_ram.v uart_rx.v uart_tx.v aludec.v immsrcdec.v
+
 clear && C:\iverilog\bin\vvp.exe build/aout.vvp > build/verilog_log.txt
 
 gtkwave build/aout.vcd
@@ -36,6 +38,9 @@ yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" 
 
 // synthesis - without top_testbench
 yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v aludec.v immsrcdec.v > build/yosys_build.log
+
+// single_port_ram.v (BRAM experiment)
+yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v single_port_ram.v uart_rx.v uart_tx.v aludec.v immsrcdec.v > build/yosys_build.log
 
 yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v aludec.v immsrcdec.v C:\Users\wolfg\Downloads\oss-cad-suite\share\yosys\ice40\cells_sim.v
 

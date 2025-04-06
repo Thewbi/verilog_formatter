@@ -18,6 +18,7 @@ module ram(
     //     $monitor("[RAM] WriteEnable: %d, Address: 0x%08h, WriteData: 0x%08h, ReadData: 0x%08h", we, a, wd, rd);
     // end
 
+    //reg [31:0] RAM[4:0]; // uses 315% ICESTORM_LC
     reg [31:0] RAM[127:0];
     //reg [31:0] RAM[64:0];
 

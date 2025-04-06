@@ -19,6 +19,8 @@ module regfile(
 );
 
     reg [31:0] rf[31:0];
+    //reg [31:0] rf[1:0];
+    //reg [15:0] rf[31:0];
 
     // initial
     // begin
