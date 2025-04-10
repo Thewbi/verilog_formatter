@@ -28,9 +28,9 @@ import simulation.TimeSlot;
 import verilog.VerilogLexer;
 import verilog.VerilogParser;
 
-import systemverilog.sv2017Lexer;
-import systemverilog.sv2017Parser;
-import systemverilog.sv2017Parser.Source_textContext;
+// import systemverilog.sv2017Lexer;
+// import systemverilog.sv2017Parser;
+// import systemverilog.sv2017Parser.Source_textContext;
 
 /**
  * Created with:
@@ -45,16 +45,14 @@ import systemverilog.sv2017Parser.Source_textContext;
  *
  * Clean java language server workspace:
  * Ctrl + Shift + P > Clean java language server workspace > Clean and Restart
- *
- *
  */
 public class App {
 
     private static final String INTERMEDIATE_FILE = "build/preprocessed.sv";
 
     public static void main(String[] args) throws IOException {
-        //mainVerilog(args);
-        mainSystemVerilog(args);
+        mainVerilog(args);
+        //mainSystemVerilog(args);
     }
 
     /**
@@ -64,17 +62,17 @@ public class App {
 
         System.out.println("Lexing ...");
 
-        // String file = "src/test/resources/verilog_samples/elvis_operator.v"; // test
-        // String file = "src/test/resources/verilog_samples/elvis_operator_simple.v";
+        //String file = "src/test/resources/verilog_samples/elvis_operator.v"; // test
+        //String file = "src/test/resources/verilog_samples/elvis_operator_simple.v";
 
-        // String file = "src/test/resources/verilog_samples/temporal_construct.v";
-        // String file = "src/test/resources/verilog_samples/fetch_stage.v";
+        //String file = "src/test/resources/verilog_samples/temporal_construct.v";
+        //String file = "src/test/resources/verilog_samples/fetch_stage.v";
 
         // String file = "src/test/resources/verilog_samples/scratchpad.v";
         // String file =
         // "src/test/resources/verilog_samples/if_else_without_begin_end_without_else.v";
 
-        // String file = "src/test/resources/verilog_samples/case_statement.v";
+        String file = "src/test/resources/verilog_samples/case_statement.v";
         // String file = "src/test/resources/verilog_samples/case_statement_simple.v";
 
         // String file =
@@ -98,13 +96,14 @@ public class App {
         // "src/test/resources/verilog_samples/if_continuous_assignment_extended.v";
         // String file =
         // "src/test/resources/verilog_samples/if_else_without_begin_end.v";
+        //String file = "src/test/resources/verilog_samples/very_large_if.v";
 
         // String file = "src/test/resources/verilog_samples/double_click.v";
         // String file = "src/test/resources/verilog_samples/loopback_device.v";
         // String file = "src/test/resources/verilog_samples/simple_module.v";
         // String file = "src/test/resources/verilog_samples/uart_top.v";
 
-        String file = "src/test/resources/verilog_samples/module_with_parameters.v";
+        // String file = "src/test/resources/verilog_samples/module_with_parameters.v";
         // String file = "src/test/resources/verilog_samples/module_instantiation.v";
         // String file = "src/test/resources/verilog_samples/module_instantiation2.v";
 
@@ -194,7 +193,7 @@ public class App {
         // SimpleVerilogParserVisitor();
         // formatterVisitor.visit(root);
     }
-
+/*
     public static void mainSystemVerilog(String[] args) throws IOException {
 
         System.out.println("Lexing ...");
@@ -382,7 +381,8 @@ public class App {
             }
         }
     }
-
+*/
+    /*
     private static ASTNode parseSystemVerilogFileToAST(String file) throws IOException {
 
         final CharStream charStream = CharStreams.fromFileName(file);
@@ -446,7 +446,7 @@ public class App {
 
         return listener.currentNode;
     }
-
+ */
     private static void executeTimeSlot(TimeSlot timeSlot) {
 
         execute_region(timeSlot.preponedRegion);

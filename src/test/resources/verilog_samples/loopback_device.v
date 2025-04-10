@@ -1,22 +1,21 @@
-
 module loopback_Device
 	(input reset_n,
 	 input sys_clk,
 	 input pause_n,
-	 
+
 	 output reg wren,
 	 output reg [7:0] tx_data,
-	 
+
 	 input [7:0] rx_data,
 	 input rx_data_ready,
 	 output reg rx_data_accept
-	 
+
 	 );
-	 
+
 	localparam WAIT=1'd0, WAIT1=1'd1;
 	reg [1:0] state;
 	//assign tx_data = rx_data;
-	
+
 	always @(posedge sys_clk or negedge reset_n)
 	begin
 		if(~reset_n)

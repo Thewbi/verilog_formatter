@@ -1,3 +1,5 @@
+module design_top;
+
 always @(posedge clk or posedge wb_rst_i)
 begin
 
@@ -42,7 +44,8 @@ begin
 			end
 
 	sr_rec_prepare:begin
-				case (lcr[/*`UART_LC_BITS*/1:0])  // number of bits in a word
+          // number of bits in a word /*`UART_LC_BITS*/
+				case (lcr[1:0])
 				2'b00 : rbit_counter <= #1 3'b100;
 				2'b01 : rbit_counter <= #1 3'b101;
 				2'b10 : rbit_counter <= #1 3'b110;
@@ -157,3 +160,5 @@ begin
 	endcase
   end  // if (enable)
 end // always of receiver
+
+endmodule
