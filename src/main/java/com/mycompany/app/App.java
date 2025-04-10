@@ -72,8 +72,9 @@ public class App {
         // String file =
         // "src/test/resources/verilog_samples/if_else_without_begin_end_without_else.v";
 
-        String file = "src/test/resources/verilog_samples/case_statement.v";
+        //String file = "src/test/resources/verilog_samples/case_statement.v";
         // String file = "src/test/resources/verilog_samples/case_statement_simple.v";
+        String file = "src/test/resources/verilog_samples/case_statement_without_begin_end.v";
 
         // String file =
         // "src/test/resources/verilog_samples/assignment_from_array_with_index.v";
