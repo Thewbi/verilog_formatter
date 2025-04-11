@@ -77,7 +77,7 @@ begin
 
 	sr_end_bit :   begin
 				if (rbit_counter==3'b0) // no more bits in word
-					if (lcr[`UART_LC_PE]) // choose state based on parity
+					if (lcr[/*`UART_LC_PE*/0]) // choose state based on parity
 						rstate <= #1 sr_rec_parity;
 					else
 					begin
@@ -108,7 +108,7 @@ begin
 			  end
 
 	sr_check_parity: begin	  // rcounter equals 5
-				case ({lcr[`UART_LC_EP],lcr[`UART_LC_SP]})
+				case ({lcr[/*`UART_LC_PE*/0],lcr[/*`UART_LC_SP*/0]})
 					2'b00: rparity_error <= #1  rparity_xor == 0;  // no error if parity 1
 					2'b01: rparity_error <= #1 ~rparity;      // parity should sticked to 1
 					2'b10: rparity_error <= #1  rparity_xor == 1;   // error if parity is odd
