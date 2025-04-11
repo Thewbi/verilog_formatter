@@ -1,4 +1,12 @@
-module design_top; always @(posedge CLK) begin case(sel) 2'b00 : out = a; 2'b00 : out = a; endcase end endmodule
+module design_top;
+    always @(posedge CLK)
+    begin
+        case(sel)
+            2'b00 : out = a;
+            2'b00 : out = a;
+        endcase
+    end
+endmodule
 
 // module design_top;
 

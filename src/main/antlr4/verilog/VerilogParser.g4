@@ -1084,9 +1084,9 @@ conditional_statement
 
 // A.6.7 Case statements
 case_statement
-    :  'case' '(' expression ')' new_line* case_item+ new_line* 'endcase'
-    | 'casez' '(' expression ')' new_line* case_item+ new_line* 'endcase'
-    | 'casex' '(' expression ')' new_line* case_item+ new_line* 'endcase'
+    :  'case' '(' expression ')' (new_line* case_item new_line*)+ 'endcase'
+    | 'casez' '(' expression ')' (new_line* case_item new_line*)+ 'endcase'
+    | 'casex' '(' expression ')' (new_line* case_item new_line*)+ 'endcase'
     ;
 
 case_item
