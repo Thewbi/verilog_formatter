@@ -14,15 +14,17 @@ public class DataTypeASTNode extends ASTNode {
             stringBuilder.append("  ");
         }
         stringBuilder.append("type: ");
-        stringBuilder.append(value).append("\n");
+        stringBuilder.append(value);
 
         // indent and expression
         if (rangeExpression != null) {
-            for (int i = 0; i < indent + 2; i++) {
+            stringBuilder.append("\n");
+            for (int i = 0; i < indent + 1; i++) {
                 stringBuilder.append("  ");
             }
-            stringBuilder.append("expression:").append("\n");
-            rangeExpression.printRecursive(stringBuilder, indent + 2);
+            stringBuilder.append("range-expression: "); //.append("\n");
+            //rangeExpression.printRecursive(stringBuilder, indent + 2);
+            rangeExpression.printRecursive(stringBuilder, 0);
         }
 
         // children

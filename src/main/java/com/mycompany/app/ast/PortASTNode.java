@@ -23,7 +23,7 @@ public class PortASTNode extends TypedASTNode {
             stringBuilder.append(" ").append(value).append("\n");
         }
 
-        if (listOfPortNames != null) {
+        if ((listOfPortNames != null) && (listOfPortNames.length > 0)) {
             for (String portName : listOfPortNames) {
                 stringBuilder.append(" [").append(portName).append("]");
             }
@@ -31,11 +31,13 @@ public class PortASTNode extends TypedASTNode {
         }
 
         if (expression != null) {
+            // stringBuilder.append("\n");
             expression.printRecursive(stringBuilder, 0);
         }
 
         // datatype
         if (dataType != null) {
+            // stringBuilder.append("\n");
             dataType.printRecursive(stringBuilder, indent);
         }
     }

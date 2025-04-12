@@ -27,7 +27,6 @@ public class CaseStatementASTNode extends ASTNode {
         stringBuilder.append("expression:").append("\n");
         expression.printRecursive(stringBuilder, indent + 2);
 
-
         // children
         for (ASTNode child : children) {
             stringBuilder.append("\n");

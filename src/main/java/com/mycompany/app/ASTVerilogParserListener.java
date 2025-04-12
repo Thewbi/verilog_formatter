@@ -2,6 +2,8 @@ package com.mycompany.app;
 
 import java.util.Stack;
 
+import javax.management.RuntimeErrorException;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -112,30 +114,65 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 	@Override public void exitInput_declaration(VerilogParser.Input_declarationContext ctx) {
         System.out.println("[" + ctx.hashCode() + "] " + ctx.getText());
 
-        String listOfPortNames = ctx.getChild(3).getText();
-        String[] listOfPortNamesSplit = listOfPortNames.split(",");
+        if (ctx.children.size() == 3) {
 
-        PortASTNode portASTNode = (PortASTNode) currentNode;
-        portASTNode.portDirection = PortDirection.INPUT;
-        portASTNode.listOfPortNames = listOfPortNamesSplit;
-        portASTNode.dataType = new DataTypeASTNode();
-        portASTNode.dataType.value = ctx.getChild(1).getText();
-        portASTNode.dataType.rangeExpression = expressionStack.pop();
+            String listOfPortNames = ctx.getChild(2).getText();
+            String[] listOfPortNamesSplit = listOfPortNames.split(",");
+
+            PortASTNode portASTNode = (PortASTNode) currentNode;
+            portASTNode.portDirection = PortDirection.OUTPUT;
+            portASTNode.listOfPortNames = listOfPortNamesSplit;
+            portASTNode.dataType = new DataTypeASTNode();
+            portASTNode.dataType.value = ctx.getChild(1).getText();
+            // portASTNode.dataType.rangeExpression = expressionStack.pop();
+            portASTNode.dataType.rangeExpression = null;
+
+        } else if (ctx.children.size() == 4) {
+
+            String listOfPortNames = ctx.getChild(3).getText();
+            String[] listOfPortNamesSplit = listOfPortNames.split(",");
+
+            PortASTNode portASTNode = (PortASTNode) currentNode;
+            portASTNode.portDirection = PortDirection.INPUT;
+            portASTNode.listOfPortNames = listOfPortNamesSplit;
+            portASTNode.dataType = new DataTypeASTNode();
+            portASTNode.dataType.value = ctx.getChild(1).getText();
+            portASTNode.dataType.rangeExpression = expressionStack.pop();
+        }
     }
 
     @Override public void enterOutput_declaration(VerilogParser.Output_declarationContext ctx) { }
 	@Override public void exitOutput_declaration(VerilogParser.Output_declarationContext ctx) {
         System.out.println("[" + ctx.hashCode() + "] " + ctx.getText());
 
-        String listOfPortNames = ctx.getChild(3).getText();
-        String[] listOfPortNamesSplit = listOfPortNames.split(",");
+        if (ctx.children.size() == 3) {
 
-        PortASTNode portASTNode = (PortASTNode) currentNode;
-        portASTNode.portDirection = PortDirection.OUTPUT;
-        portASTNode.listOfPortNames = listOfPortNamesSplit;
-        portASTNode.dataType = new DataTypeASTNode();
-        portASTNode.dataType.value = ctx.getChild(1).getText();
-        portASTNode.dataType.rangeExpression = expressionStack.pop();
+            String listOfPortNames = ctx.getChild(2).getText();
+            String[] listOfPortNamesSplit = listOfPortNames.split(",");
+
+            PortASTNode portASTNode = (PortASTNode) currentNode;
+            portASTNode.portDirection = PortDirection.OUTPUT;
+            portASTNode.listOfPortNames = listOfPortNamesSplit;
+            portASTNode.dataType = new DataTypeASTNode();
+            portASTNode.dataType.value = ctx.getChild(1).getText();
+            // portASTNode.dataType.rangeExpression = expressionStack.pop();
+            portASTNode.dataType.rangeExpression = null;
+
+        } else if (ctx.children.size() == 4) {
+
+            String listOfPortNames = ctx.getChild(3).getText();
+            String[] listOfPortNamesSplit = listOfPortNames.split(",");
+
+            PortASTNode portASTNode = (PortASTNode) currentNode;
+            portASTNode.portDirection = PortDirection.OUTPUT;
+            portASTNode.listOfPortNames = listOfPortNamesSplit;
+            portASTNode.dataType = new DataTypeASTNode();
+            portASTNode.dataType.value = ctx.getChild(1).getText();
+            portASTNode.dataType.rangeExpression = expressionStack.pop();
+
+        } else {
+            throw new RuntimeException("");
+        }
     }
 
     /**

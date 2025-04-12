@@ -91,6 +91,8 @@ https://epb.bibl.th-koeln.de/frontdoor/deliver/index/docId/2034/file/Bachelorarb
 
 It seems that a preprocessor can be implemented by looking at individual lines in the input and dealing with each line individually. It is not necessary to construct an AST node.
 
+There is a preprocessor antlr4 grammar: https://github.com/antlr/grammars-v4/blob/master/verilog/verilog/VerilogPreParser.g4
+
 ### Preprocessor for a Formatter
 
 Another type of problem is to format a verilog file. When formatting a file, the verilog code has to be processed in some way including the precompiler statements because the user expects the formatter to format the raw source code without resolving preprocessor statements first.

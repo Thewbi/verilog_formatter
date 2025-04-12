@@ -13,7 +13,11 @@ public class ConditionalStatementASTNode extends ASTNode {
 
     public boolean elseState;
 
-    public void printRecursive(StringBuilder stringBuilder, int indent) {
+    public void printRecursive(final StringBuilder stringBuilder, final int indent) {
+        printRecursive(stringBuilder, indent, true);
+    }
+
+    public void printRecursive(StringBuilder stringBuilder, int indent, final boolean addLineBreak) {
 
         // indent and name
         for (int i = 0; i < indent; i++) {

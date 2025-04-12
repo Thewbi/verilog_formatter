@@ -11,6 +11,10 @@ public class RangeExpressionASTNode extends ExpressionStatementASTNode {
     public int size;
 
     public void printRecursive(final StringBuilder stringBuilder, final int indent) {
+        printRecursive(stringBuilder, indent, true);
+    }
+
+    public void printRecursive(final StringBuilder stringBuilder, final int indent, boolean addLineBreak) {
 
         // indent and direction, type, name
         for (int i = 0; i < indent; i++) {

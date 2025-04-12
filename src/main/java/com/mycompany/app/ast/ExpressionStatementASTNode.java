@@ -17,6 +17,10 @@ public class ExpressionStatementASTNode extends ASTNode {
     public ExpressionStatementASTNode predicate;
 
     public void printRecursive(StringBuilder stringBuilder, int indent) {
+        printRecursive(stringBuilder, indent, true);
+    }
+
+    public void printRecursive(StringBuilder stringBuilder, int indent, boolean addInLinebreak) {
 
         if ((lhs == null) && (rhs == null)) {
 
