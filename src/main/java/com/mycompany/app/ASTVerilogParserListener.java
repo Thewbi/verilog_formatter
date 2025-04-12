@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import com.mycompany.app.ast.ASTNode;
 import com.mycompany.app.ast.CaseStatementASTNode;
 import com.mycompany.app.ast.CaseStatementItemASTNode;
+import com.mycompany.app.ast.ConcatenationExpressionStatementASTNode;
 import com.mycompany.app.ast.ConditionalStatementASTNode;
 import com.mycompany.app.ast.ExpressionStatementASTNode;
 import com.mycompany.app.ast.IfStatementASTNode;
@@ -20,6 +21,7 @@ import com.mycompany.app.ast.AssignmentASTNode;
 import com.mycompany.app.ast.ProceduralTimingControlStatementASTNode;
 import com.mycompany.app.ast.RangeExpressionASTNode;
 import com.mycompany.app.ast.RegisterExpressionASTNode;
+import com.mycompany.app.ast.SystemFunctionCallASTNode;
 
 import verilog.VerilogParser;
 import verilog.VerilogParserBaseListener;
@@ -39,7 +41,8 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         currentNode = moduleDeclaractionASTNode;
     }
 
-    @Override public void enterPort_implicit(VerilogParser.Port_implicitContext ctx) {
+    @Override
+    public void enterPort_implicit(VerilogParser.Port_implicitContext ctx) {
         PortASTNode portASTNode = new PortASTNode();
         portASTNode.ctx = ctx;
 
@@ -51,7 +54,8 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         currentNode = portASTNode;
     }
 
-	@Override public void exitPort_implicit(VerilogParser.Port_implicitContext ctx) {
+    @Override
+    public void exitPort_implicit(VerilogParser.Port_implicitContext ctx) {
 
         currentNode.value = ctx.getText();
 
@@ -59,7 +63,8 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         currentNode = currentNode.parent;
     }
 
-    @Override public void enterParameter_declaration(VerilogParser.Parameter_declarationContext ctx) {
+    @Override
+    public void enterParameter_declaration(VerilogParser.Parameter_declarationContext ctx) {
 
         ModuleParameterASTNode moduleParameterASTNode = new ModuleParameterASTNode();
         moduleParameterASTNode.ctx = ctx;
@@ -72,7 +77,8 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         currentNode = moduleParameterASTNode;
     }
 
-	@Override public void exitParameter_declaration(VerilogParser.Parameter_declarationContext ctx) {
+    @Override
+    public void exitParameter_declaration(VerilogParser.Parameter_declarationContext ctx) {
         // currentNode.value = ctx.getText();
         ((ModuleParameterASTNode) currentNode).expression = expressionStack.pop();
 
@@ -80,10 +86,14 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         currentNode = currentNode.parent;
     }
 
-    @Override public void enterParameter_identifier(VerilogParser.Parameter_identifierContext ctx) { }
-	@Override public void exitParameter_identifier(VerilogParser.Parameter_identifierContext ctx) {
+    @Override
+    public void enterParameter_identifier(VerilogParser.Parameter_identifierContext ctx) {
+    }
+
+    @Override
+    public void exitParameter_identifier(VerilogParser.Parameter_identifierContext ctx) {
         ((ModuleParameterASTNode) currentNode).value = ctx.getText();
-     }
+    }
 
     @Override
     public void enterCase_statement(VerilogParser.Case_statementContext ctx) {
@@ -271,20 +281,6 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         processExpression(ctx, childCount, text, child0, child1);
     }
 
-    // @Override
-    // public void enterExpression(VerilogParser.ExpressionContext ctx) {
-
-    // if (ctx.getChildCount() > 2) {
-
-    // // try to turn an elvis operator (?:) into an if-statment
-    // ParseTree operatorChildParseTree = ctx.getChild(1);
-    // if (operatorChildParseTree.getText().equalsIgnoreCase("?")) {
-    // System.out.println("Elvis has entered the building!");
-    // // descendIntoConditionalStatementASTNode(ctx);
-    // }
-    // }
-    // }
-
     @Override
     public void exitExpression(VerilogParser.ExpressionContext ctx) {
 
@@ -437,6 +433,93 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     /**
+     * example
+     * ```
+     * y_d = { 31'b0, (a < b) };
+     * ```
+     */
+    @Override
+    public void enterConcatenation(VerilogParser.ConcatenationContext ctx) {
+
+        // add concatenation marker
+        ExpressionStatementASTNode concatenationMarker = new ExpressionStatementASTNode();
+        concatenationMarker.value = "CONCATENATION_MARKER";
+        expressionStack.push(concatenationMarker);
+
+    }
+
+    @Override
+    public void exitConcatenation(VerilogParser.ConcatenationContext ctx) {
+
+        ConcatenationExpressionStatementASTNode concatenationExpressionStatementASTNode = new ConcatenationExpressionStatementASTNode();
+
+        do {
+
+            ExpressionStatementASTNode expressionStatementASTNode = expressionStack.pop();
+            if ((expressionStatementASTNode.value != null)
+                    && (expressionStatementASTNode.value.equalsIgnoreCase("CONCATENATION_MARKER"))) {
+                break;
+            }
+
+            connectParentAndChildFront(concatenationExpressionStatementASTNode, expressionStatementASTNode);
+
+        } while (true);
+
+        expressionStack.push(concatenationExpressionStatementASTNode);
+    }
+
+    @Override
+    public void enterSystem_function_call(VerilogParser.System_function_callContext ctx) {
+
+        // SystemFunctionCallASTNode systemFunctionCallASTNode = new SystemFunctionCallASTNode();
+
+        // // connect parent and child
+        // currentNode.children.add(systemFunctionCallASTNode);
+        // systemFunctionCallASTNode.parent = currentNode;
+
+        // // descend
+        // currentNode = systemFunctionCallASTNode;
+
+        // add concatenation marker
+        ExpressionStatementASTNode systemFunctionMarker = new ExpressionStatementASTNode();
+        systemFunctionMarker.value = "SYSTEM_FUNCTION_MARKER";
+        expressionStack.push(systemFunctionMarker);
+    }
+
+    /**
+     * Example:
+     *
+     * ```
+     * $signed(a)
+     * ```
+     */
+    @Override
+    public void exitSystem_function_call(VerilogParser.System_function_callContext ctx) {
+
+        // // ascend
+        // currentNode = currentNode.parent;
+
+        SystemFunctionCallASTNode systemFunctionCallASTNode = new SystemFunctionCallASTNode();
+        systemFunctionCallASTNode.value = ctx.getChild(0).getText();
+
+
+        do {
+
+            ExpressionStatementASTNode expressionStatementASTNode = expressionStack.pop();
+            if ((expressionStatementASTNode.value != null)
+                    && (expressionStatementASTNode.value.equalsIgnoreCase("SYSTEM_FUNCTION_MARKER"))) {
+                break;
+            }
+
+            connectParentAndChildFront(systemFunctionCallASTNode, expressionStatementASTNode);
+
+        } while (true);
+
+
+        expressionStack.push(systemFunctionCallASTNode);
+    }
+
+    /**
      * for @always
      */
     @Override
@@ -455,6 +538,38 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
         ((ProceduralTimingControlStatementASTNode) currentNode).expression = expressionStack.pop();
         currentNode = currentNode.parent;
+    }
+
+    @Override
+    public void enterEvent_control(VerilogParser.Event_controlContext ctx) {
+    }
+
+    /**
+     * example:
+     *
+     * ```
+     * always @* begin <----- parsing this asterisk expression
+     * y_d = 0;
+     * end
+     * ```
+     */
+    @Override
+    public void exitEvent_control(VerilogParser.Event_controlContext ctx) {
+
+        if ((ctx.children.size() == 2) &&
+                (ctx.getChild(0).getText().equalsIgnoreCase("@")) &&
+                (ctx.getChild(1).getText().equalsIgnoreCase("*"))) {
+
+            // although the parse tree does not have an expression node here,
+            // an artificial expression node is added to make
+            // exitProcedural_timing_control_statement()
+            // work without speific edge cases for the timing @* combination
+            ExpressionStatementASTNode expressionStatementASTNode = new ExpressionStatementASTNode();
+            expressionStatementASTNode.value = "*";
+            expressionStatementASTNode.operator = "*";
+
+            expressionStack.push(expressionStatementASTNode);
+        }
     }
 
     @Override
@@ -480,5 +595,23 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
         }
 
+    }
+
+    private void connectParentAndChild(ASTNode parent, ASTNode child) {
+
+        if (parent == child) {
+            throw new RuntimeException("Child is the same object as parent!");
+        }
+        parent.children.add(child);
+        child.parent = parent;
+    }
+
+    private void connectParentAndChildFront(ASTNode parent, ASTNode child) {
+
+        if (parent == child) {
+            throw new RuntimeException("Child is the same object as parent!");
+        }
+        parent.children.add(0, child);
+        child.parent = parent;
     }
 }

@@ -74,7 +74,7 @@ public class App {
 
         //String file = "src/test/resources/verilog_samples/case_statement.v";
         // String file = "src/test/resources/verilog_samples/case_statement_simple.v";
-        String file = "src/test/resources/verilog_samples/case_statement_without_begin_end.v";
+        //String file = "src/test/resources/verilog_samples/case_statement_without_begin_end.v";
 
         // String file =
         // "src/test/resources/verilog_samples/assignment_from_array_with_index.v";
@@ -98,6 +98,9 @@ public class App {
         // String file =
         // "src/test/resources/verilog_samples/if_else_without_begin_end.v";
         //String file = "src/test/resources/verilog_samples/very_large_if.v";
+        String file = "src/test/resources/verilog_samples/if_with_operators.v";
+
+        // String file = "src/test/resources/verilog_samples/system_function_call.v";
 
         // String file = "src/test/resources/verilog_samples/double_click.v";
         // String file = "src/test/resources/verilog_samples/loopback_device.v";
@@ -114,9 +117,26 @@ public class App {
 
         //String file = "src/test/resources/verilog_samples/range_usage.v"; // test
 
+        //String file = "src/test/resources/verilog_samples/yosys_rtlil_conversion_example.v";
+        //String file = "src/test/resources/verilog_samples/rv32i_alu.v";
+
         System.out.println("File: \"" + file + "\"");
 
-        final CharStream charStream = CharStreams.fromFileName(file);
+
+
+
+        //
+        // Masking Preprocessor
+        //
+
+        MaskingPreprocessor maskingPreprocessor = new MaskingPreprocessor();
+        maskingPreprocessor.process(new File(file), new File(INTERMEDIATE_FILE));
+
+
+
+
+        //final CharStream charStream = CharStreams.fromFileName(file);
+        final CharStream charStream = CharStreams.fromFileName(INTERMEDIATE_FILE);
 
         final VerilogLexer lexer = new VerilogLexer(charStream);
         lexer.removeErrorListeners();

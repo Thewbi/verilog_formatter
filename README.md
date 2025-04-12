@@ -41,7 +41,6 @@ referencing an identifier:
 The SystemVerilog search rules ensure that SystemVerilog is fully
 backward compatible with Verilog.
 
-
 # Parsing System Verilog
 
 Use antlr4 to generate the lexer and parser.
@@ -74,6 +73,29 @@ are ever seen by the verilog parser. It assumes that only pure verilog code is
 parsed.
 
 A preprocessor is not part of this project yet.
+
+An example of a preprocessor for verilog can be found in the Yosys Project:
+https://yosyshq.readthedocs.io/projects/yosys/en/latest/yosys_internals/flow/verilog_frontend.html
+
+```
+The Verilog preprocessor
+The Verilog preprocessor scans over the Verilog source code and interprets some of the Verilog compiler directives such as `include, `define and `ifdef.
+
+It is implemented as a C++ function that is passed a file descriptor as input and returns the pre-processed Verilog code as a std::string.
+
+The source code to the Verilog Preprocessor can be found in frontends/verilog/preproc.cc in the Yosys source tree.
+```
+
+The preprocessor has been analyzed in this bachelor thesis (german language only).
+https://epb.bibl.th-koeln.de/frontdoor/deliver/index/docId/2034/file/Bachelorarbeit_Parnow.pdf
+
+It seems that a preprocessor can be implemented by looking at individual lines in the input and dealing with each line individually. It is not necessary to construct an AST node.
+
+### Preprocessor for a Formatter
+
+Another type of problem is to format a verilog file. When formatting a file, the verilog code has to be processed in some way including the precompiler statements because the user expects the formatter to format the raw source code without resolving preprocessor statements first.
+
+In order to parse verilog including preprocessor statements and without integrating the preprocessor into the grammar, a special preprocessor is used. It will comment out all proprocessor statements.
 
 ## Building an AST
 
@@ -315,3 +337,43 @@ primitive mux (out, sel, a, b);
 	endtable
 endprimitive
 ```
+
+
+
+
+# RTLIL - Register Transfer Level Intermediate Language
+
+Once the input has been preprocessed and an AST is ready from parsing a verilog source file, that AST is converted into a intermediate representation. The RTLIL format is used in the Yosys project.
+
+I could not find any official sources for RTLIL other than the Yosys documentation. I think that RTLIL was invented by the Yosys project. There is a formal specification for RTLIL here: https://yosyshq.readthedocs.io/projects/yosys/en/latest/appendix/rtlil_text.html Other toolchains (Vivado, Quartus Prime, Verilator, IcarusVerilog, ...) may use their own intermediate representation. https://epb.bibl.th-koeln.de/frontdoor/deliver/index/docId/2034/file/Bachelorarbeit_Parnow.pdf says that RTLIL was developed by Claire Wolf specifically for the Yosys project.
+
+Page 36 in https://epb.bibl.th-koeln.de/frontdoor/deliver/index/docId/2034/file/Bachelorarbeit_Parnow.pdf contains a table on how yosys translates AST nodes into RTLIL.
+
+Yosys will first simplify the AST. It will then generate the RTLIL from the simplified AST.
+
+Example of input and output:
+https://yosyshq.readthedocs.io/projects/yosys/en/latest/yosys_internals/flow/verilog_frontend.html
+src\test\resources\verilog_samples\yosys_rtlil_conversion_example.v
+
+# .blif output
+
+As can be see in https://arxiv.org/pdf/1903.10407, the .blif output format is for integrating yosys with the Verilog-To-Rounting (VTR) project.
+
+# .json output
+
+As can be see in https://arxiv.org/pdf/1903.10407, the .json output format is for integrating yosys with the nextpnr project.
+
+The .json content contains a netlist. It is currently unclear to me how the netlist is created from The RTLIL representation.
+Some information is here: https://yosyshq.readthedocs.io/projects/yosys/en/0.44/yosys_internals/formats/overview.html
+
+
+
+A typical FPGA flow, after logic elaboration, would perform
+some coarse-grain optimisations and map the results to a set of
+generic hard-logic cells. Generic passes are then used to infer
+block-RAM, flip-flops supporting clock-enables and set-resets,
+arithmetic logic and more, followed by architecture-specific
+technology mapping. Any remaining coarse-grain cells are
+converted to gates by Yosys and then mapped to LUTs by
+ABC. Further architecture-specific rules then map generic LUT
+and flip-flop cells to the target device’s primitives.

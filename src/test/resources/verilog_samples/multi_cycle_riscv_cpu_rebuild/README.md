@@ -33,6 +33,10 @@ mkdir build
 set PATH=%PATH%;C:\Users\wolfg\Downloads\oss-cad-suite\lib\
 C:\Users\wolfg\Downloads\oss-cad-suite\environment.bat
 
+// yosys can output .blif and .json. The .json file is read by nextpnr in a later step for place and rout.
+// The .blif file format is the input format of the Verilog-To-Rounting (VTR) project. .blif is generated in the
+// snippets below but it is not used any further!
+
 // synthesis - including top_testbench
 yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" top_testbench.v top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v aludec.v immsrcdec.v
 
@@ -44,7 +48,7 @@ yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" 
 
 yosys.exe -p "synth_ice40 -top top -blif build/aout.blif -json build/aout.json" top.v riscv_multi.v datapath.v flopenr.v flopr.v regfile.v controller.v mux2.v mux3.v mux4.v alu.v extend.v ram.v uart_rx.v uart_tx.v aludec.v immsrcdec.v C:\Users\wolfg\Downloads\oss-cad-suite\share\yosys\ice40\cells_sim.v
 
-// routing
+// routing (nextpnr uses the .json file as input)
 nextpnr-ice40 --hx1k --package tq144 --json build/aout.json --asc build/aout.asc --pcf icestick.pcf
 nextpnr-ice40 --package hx1k --json build/aout.json --asc build/aout.asc --pcf icestick.pcf
 nextpnr-ice40 --hx1k --json build/aout.json --asc build/aout.asc --pcf icestick.pcf

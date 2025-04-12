@@ -578,7 +578,6 @@ public class ASTSystemVerilogParserListener extends sv2017ParserBaseListener {
             // try to turn an elvis operator (?:) into an if-statment
             ParseTree operatorChildParseTree = ctx.getChild(1);
             if (operatorChildParseTree.getText().equalsIgnoreCase("?")) {
-
                 System.out.println("Elvis has entered the building!");
             }
         }

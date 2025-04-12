@@ -36,6 +36,11 @@ public class ExpressionStatementASTNode extends ASTNode {
                 }
                 stringBuilder.append("elvis-predicate: \n");
                 predicate.printRecursive(stringBuilder, indent + 1);
+
+                for (int i = 0; i < indent; i++) {
+                    stringBuilder.append("  ");
+                }
+                stringBuilder.append(":").append("\n");
             }
 
             // lhs
