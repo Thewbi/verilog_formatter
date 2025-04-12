@@ -8,6 +8,8 @@ public class PortASTNode extends TypedASTNode {
 
     public ExpressionStatementASTNode expression;
 
+    public String[] listOfPortNames;
+
     public void printRecursive(final StringBuilder stringBuilder, final int indent) {
 
         // indent and direction, type, name
@@ -15,8 +17,18 @@ public class PortASTNode extends TypedASTNode {
             stringBuilder.append("  ");
         }
         stringBuilder.append(portDirection).append(" " );
+
         // name
-        stringBuilder.append(" ").append(value).append("\n");
+        if (value != null) {
+            stringBuilder.append(" ").append(value).append("\n");
+        }
+
+        if (listOfPortNames != null) {
+            for (String portName : listOfPortNames) {
+                stringBuilder.append(" [").append(portName).append("]");
+            }
+            stringBuilder.append("\n");
+        }
 
         if (expression != null) {
             expression.printRecursive(stringBuilder, 0);

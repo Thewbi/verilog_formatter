@@ -4,7 +4,7 @@ import com.mycompany.app.ast.visitor.ASTNodeVisitor;
 
 public class DataTypeASTNode extends ASTNode {
 
-    /** If the datatype is an arry, this range expression is present. */
+    /** If the datatype is an array, this range expression is present. */
     public ExpressionStatementASTNode rangeExpression;
 
     public void printRecursive(StringBuilder stringBuilder, int indent) {

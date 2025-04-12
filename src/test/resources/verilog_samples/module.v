@@ -48,7 +48,7 @@ output                          	RAS_N;                  // SDRAM RAS, Row Addre
 output                          	CAS_N;                  // SDRAM CAS, Column Address Strobe Command
 output                          	WE_N;                   // SDRAM WE_N, Write Enable
 
-            
+
 reg                             	CM_ACK;
 reg                             	REF_ACK;
 reg                             	OE;
@@ -103,9 +103,8 @@ begin
     //end
 
     // Refresh
-	if ((REF_REQ == 1 | REFRESH == 1) & command_done == 0 & do_refresh == 0 & rp_done == 0         
-	& do_reada == 0 & do_writea == 0)
-	do_refresh <= 1;         
+	if ((REF_REQ == 1 | REFRESH == 1) & command_done == 0 & do_refresh == 0 & rp_done == 0 & do_reada == 0 & do_writea == 0)
+	do_refresh <= 1;
 	else
 	do_refresh <= 0;
 
@@ -129,13 +128,13 @@ begin
 	begin
 	command_delay <= 8'b11111111;
 	command_done  <= 1;
-	rw_flag <= do_reada;                                                  
+	rw_flag <= do_reada;
 	end
 	else
 	begin
 	command_done        	<= command_delay[0];                // the command_delay shift operation
 	command_delay			<= (command_delay>>1);
-	end 
+	end
 
 end
 

@@ -1,3 +1,5 @@
+// Credit: https://github.com/AngeloJacobo/RISC-V/blob/main/rtl/rv32i_alu.v
+
 /* The rv32i_alu module serves as the Arithmetic Logic Unit (ALU) for the RISC-V core
 during the execute stage of the pipeline. The ALU is responsible for executing arithmetic,
 logic, and comparison operations based on the instruction and operands provided. This
