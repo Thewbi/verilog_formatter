@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.mycompany.app.ast.visitor.ASTNodeVisitor;
 
-public class ModuleDeclaractionASTNode extends ASTNode {
+public class ModuleDeclaractionASTNode extends ModuleBaseASTNode {
 
     public String name;
 
@@ -19,7 +19,7 @@ public class ModuleDeclaractionASTNode extends ASTNode {
         for (int i = 0; i < indent; i++) {
             stringBuilder.append("  ");
         }
-        stringBuilder.append("ModuleDecl: ").append(name).append("\n");
+        stringBuilder.append("ModuleInstantiation: ").append(name).append("\n");
 
         // indent and ports
         if (ports.size() > 0) {

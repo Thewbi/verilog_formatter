@@ -68,7 +68,7 @@ public class App {
         //String file = "src/test/resources/verilog_samples/temporal_construct.v";
         //String file = "src/test/resources/verilog_samples/fetch_stage.v";
 
-        //String file = "src/test/resources/verilog_samples/scratchpad.v";
+        // String file = "src/test/resources/verilog_samples/scratchpad.v";
         // String file =
         // "src/test/resources/verilog_samples/if_else_without_begin_end_without_else.v";
 
@@ -113,6 +113,8 @@ public class App {
         //String file = "src/test/resources/verilog_samples/module_with_complex_params.v";
         // String file = "src/test/resources/verilog_samples/module_with_parameters.v";
 
+        String file = "src/test/resources/verilog_samples/module_instantiation_with_parameters.v";
+
 
         //String file = "src/test/resources/verilog_samples/module.v"; // <---------- fix grammar
 
@@ -123,7 +125,7 @@ public class App {
         //String file = "src/test/resources/verilog_samples/range_usage.v"; // test
 
         //String file = "src/test/resources/verilog_samples/yosys_rtlil_conversion_example.v";
-        String file = "src/test/resources/verilog_samples/rv32i_alu.v";
+        //String file = "src/test/resources/verilog_samples/rv32i_alu.v";
 
         System.out.println("File: \"" + file + "\"");
 

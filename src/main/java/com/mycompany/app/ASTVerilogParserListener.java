@@ -17,8 +17,11 @@ import com.mycompany.app.ast.DataTypeASTNode;
 import com.mycompany.app.ast.ExpressionStatementASTNode;
 import com.mycompany.app.ast.IfStatementASTNode;
 import com.mycompany.app.ast.ModuleDeclaractionASTNode;
+import com.mycompany.app.ast.ModuleInstantiationASTNode;
+import com.mycompany.app.ast.ModuleInstantiationPortConnection;
 import com.mycompany.app.ast.ModuleParameterASTNode;
 import com.mycompany.app.ast.NetAssignmentASTNode;
+import com.mycompany.app.ast.ParameterAssignmentASTNode;
 import com.mycompany.app.ast.PortASTNode;
 import com.mycompany.app.ast.PortDirection;
 import com.mycompany.app.ast.AssignmentASTNode;
@@ -37,6 +40,10 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     public Stack<ExpressionStatementASTNode> expressionStack = new Stack<>();
 
+    //
+    // Module Declaration
+    //
+
     @Override
     public void enterModule_declaration(VerilogParser.Module_declarationContext ctx) {
 
@@ -49,7 +56,8 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     }
 
     /**
-     * When ports of a module are declared in old verilog style without explicit type definition.
+     * When ports of a module are declared in old verilog style without explicit
+     * type definition.
      *
      * e.g.
      *
@@ -57,7 +65,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
      *
      * ```
      * module design_top(
-     *     o_rs2
+     * o_rs2
      * );
      * ```
      *
@@ -65,7 +73,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
      *
      * ```
      * module design_top(
-     *     output wire[31:0] o_rs2
+     * output wire[31:0] o_rs2
      * );
      * ```
      */
@@ -92,7 +100,8 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         currentNode = currentNode.parent;
     }
 
-    @Override public void enterPort_declaration(VerilogParser.Port_declarationContext ctx) {
+    @Override
+    public void enterPort_declaration(VerilogParser.Port_declarationContext ctx) {
         System.out.println("[" + ctx.hashCode() + "] " + ctx.getText());
 
         PortASTNode portASTNode = new PortASTNode();
@@ -105,13 +114,19 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         // descend
         currentNode = portASTNode;
     }
-	@Override public void exitPort_declaration(VerilogParser.Port_declarationContext ctx) {
+
+    @Override
+    public void exitPort_declaration(VerilogParser.Port_declarationContext ctx) {
         // ascend
         currentNode = currentNode.parent;
-     }
+    }
 
-    @Override public void enterInput_declaration(VerilogParser.Input_declarationContext ctx) { }
-	@Override public void exitInput_declaration(VerilogParser.Input_declarationContext ctx) {
+    @Override
+    public void enterInput_declaration(VerilogParser.Input_declarationContext ctx) {
+    }
+
+    @Override
+    public void exitInput_declaration(VerilogParser.Input_declarationContext ctx) {
         System.out.println("[" + ctx.hashCode() + "] " + ctx.getText());
 
         if (ctx.children.size() == 3) {
@@ -141,9 +156,13 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         }
     }
 
-    @Override public void enterOutput_declaration(VerilogParser.Output_declarationContext ctx) { }
-	@Override public void exitOutput_declaration(VerilogParser.Output_declarationContext ctx) {
-        System.out.println("[" + ctx.hashCode() + "] " + ctx.getText());
+    @Override
+    public void enterOutput_declaration(VerilogParser.Output_declarationContext ctx) {
+    }
+
+    @Override
+    public void exitOutput_declaration(VerilogParser.Output_declarationContext ctx) {
+        // System.out.println("[" + ctx.hashCode() + "] " + ctx.getText());
 
         if (ctx.children.size() == 3) {
 
@@ -181,22 +200,26 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
      *
      * ```
      * module design_top(
-     *     output wire[31:0] o_rs2
+     * output wire[31:0] o_rs2
      * );
      * ```
      */
-    @Override public void enterRange_(VerilogParser.Range_Context ctx) { }
-	/**
+    @Override
+    public void enterRange_(VerilogParser.Range_Context ctx) {
+    }
+
+    /**
      * Range used in explicit port declarations!
      * explicit:
      *
      * ```
      * module design_top(
-     *     output wire[31:0] o_rs2
+     * output wire[31:0] o_rs2
      * );
      * ```
      */
-	@Override public void exitRange_(VerilogParser.Range_Context ctx) {
+    @Override
+    public void exitRange_(VerilogParser.Range_Context ctx) {
         RangeExpressionASTNode rangeExpressionASTNode = getRangeExpressionASTNode(ctx);
 
         expressionStack.push(rangeExpressionASTNode);
@@ -229,10 +252,111 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     public void enterParameter_identifier(VerilogParser.Parameter_identifierContext ctx) {
     }
 
+    /**
+     * Used during module declaration with module parameters and also during module
+     * instantiation
+     */
     @Override
     public void exitParameter_identifier(VerilogParser.Parameter_identifierContext ctx) {
-        ((ModuleParameterASTNode) currentNode).value = ctx.getText();
+
+        // if (currentNode instanceof ModuleInstantiationASTNode) {
+        // ((ModuleInstantiationASTNode) currentNode).value = ctx.getText();
+        // }
+
+        // ((ModuleParameterASTNode) currentNode).value = ctx.getText();
+
+        currentNode.value = ctx.getText();
     }
+
+    //
+    // Module Instantiation
+    //
+
+    @Override
+    public void enterModule_instantiation(VerilogParser.Module_instantiationContext ctx) {
+        // System.out.println("[" + ctx.hashCode() + "] " + ctx.getText());
+
+        ModuleInstantiationASTNode moduleInstantiationASTNode = new ModuleInstantiationASTNode();
+        moduleInstantiationASTNode.ctx = ctx;
+        moduleInstantiationASTNode.value = "module_instantiation";
+        moduleInstantiationASTNode.name = ctx.getChild(0).getText(); // this is the type name, not the instance name
+
+        // connect parent and child
+        moduleInstantiationASTNode.parent = currentNode;
+        currentNode.children.add(moduleInstantiationASTNode);
+
+        // descend
+        currentNode = moduleInstantiationASTNode;
+    }
+
+    @Override
+    public void exitModule_instantiation(VerilogParser.Module_instantiationContext ctx) {
+        // ascend
+        currentNode = currentNode.parent;
+    }
+
+    @Override
+    public void enterOrdered_parameter_assignment(VerilogParser.Ordered_parameter_assignmentContext ctx) {
+
+    }
+
+    @Override
+    public void exitOrdered_parameter_assignment(VerilogParser.Ordered_parameter_assignmentContext ctx) {
+    }
+
+    @Override
+    public void enterNamed_parameter_assignment(VerilogParser.Named_parameter_assignmentContext ctx) {
+
+        ParameterAssignmentASTNode parameterAssignmentASTNode = new ParameterAssignmentASTNode();
+        parameterAssignmentASTNode.value = ctx.getChild(0).getText();
+
+        ((ModuleInstantiationASTNode) currentNode).parameterAssignments.add(parameterAssignmentASTNode);
+
+        // connect parent and child
+        parameterAssignmentASTNode.parent = currentNode;
+        currentNode.children.add(parameterAssignmentASTNode);
+
+        // descend
+        currentNode = parameterAssignmentASTNode;
+    }
+
+    @Override
+    public void exitNamed_parameter_assignment(VerilogParser.Named_parameter_assignmentContext ctx) {
+
+        ((ParameterAssignmentASTNode) currentNode).expression = expressionStack.pop();
+
+        // ascend
+        currentNode = currentNode.parent;
+    }
+
+    @Override
+    public void enterModule_instance_identifier(VerilogParser.Module_instance_identifierContext ctx) {
+    }
+
+    @Override
+    public void exitModule_instance_identifier(VerilogParser.Module_instance_identifierContext ctx) {
+        ((ModuleInstantiationASTNode) currentNode).instanceIdentifier = ctx.getText();
+    }
+
+    @Override
+    public void enterNamed_port_connection(VerilogParser.Named_port_connectionContext ctx) {
+    }
+
+    @Override
+    public void exitNamed_port_connection(VerilogParser.Named_port_connectionContext ctx) {
+        ModuleInstantiationPortConnection moduleInstantiationPortConnection = new ModuleInstantiationPortConnection();
+
+        moduleInstantiationPortConnection.value = ctx.children.get(1).getText();
+        if (!expressionStack.empty()) {
+            moduleInstantiationPortConnection.expression = expressionStack.pop();
+        }
+
+        ((ModuleInstantiationASTNode) currentNode).portConnections.add(moduleInstantiationPortConnection);
+    }
+
+    //
+    // Statements
+    //
 
     @Override
     public void enterCase_statement(VerilogParser.Case_statementContext ctx) {
@@ -577,7 +701,8 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
                 expressionStack.push(expressionStatementASTNode);
 
             } else {
-                //throw new RuntimeException("Not implemented yet! text = '" + operatorChildParseTree.getText() + "'");
+                // throw new RuntimeException("Not implemented yet! text = '" +
+                // operatorChildParseTree.getText() + "'");
             }
 
         }
@@ -622,7 +747,8 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     @Override
     public void enterSystem_function_call(VerilogParser.System_function_callContext ctx) {
 
-        // SystemFunctionCallASTNode systemFunctionCallASTNode = new SystemFunctionCallASTNode();
+        // SystemFunctionCallASTNode systemFunctionCallASTNode = new
+        // SystemFunctionCallASTNode();
 
         // // connect parent and child
         // currentNode.children.add(systemFunctionCallASTNode);
@@ -653,7 +779,6 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         SystemFunctionCallASTNode systemFunctionCallASTNode = new SystemFunctionCallASTNode();
         systemFunctionCallASTNode.value = ctx.getChild(0).getText();
 
-
         do {
 
             ExpressionStatementASTNode expressionStatementASTNode = expressionStack.pop();
@@ -665,7 +790,6 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
             connectParentAndChildFront(systemFunctionCallASTNode, expressionStatementASTNode);
 
         } while (true);
-
 
         expressionStack.push(systemFunctionCallASTNode);
     }

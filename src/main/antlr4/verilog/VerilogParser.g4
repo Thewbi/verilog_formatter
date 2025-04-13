@@ -716,12 +716,12 @@ module_instantiation
     ;
 
 parameter_value_assignment
-    : '#' '(' list_of_parameter_assignments ')'
+    : '#' '(' ( new_line | line_comment )* list_of_parameter_assignments ( new_line | line_comment )* ')'
     ;
 
 list_of_parameter_assignments
-    : ordered_parameter_assignment new_line* ( new_line* ',' ordered_parameter_assignment new_line* )*
-    | named_parameter_assignment new_line* ( new_line* ',' named_parameter_assignment new_line* )*
+    : ( new_line | line_comment )* ordered_parameter_assignment ( new_line | line_comment )* ( ( new_line | line_comment )* ',' ( new_line | line_comment )* ordered_parameter_assignment ( new_line | line_comment )* )*
+    | ( new_line | line_comment )* named_parameter_assignment ( new_line | line_comment )* ( ( new_line | line_comment )* ',' ( new_line | line_comment )* named_parameter_assignment ( new_line | line_comment )* )*
     ;
 
 ordered_parameter_assignment
