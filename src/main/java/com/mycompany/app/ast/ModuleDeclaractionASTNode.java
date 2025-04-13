@@ -13,6 +13,10 @@ public class ModuleDeclaractionASTNode extends ModuleBaseASTNode {
 
     public List<ModuleParameterASTNode> parameters = new ArrayList<>();
 
+    public List<ParameterAssignmentASTNode> parameterAssignments = new ArrayList<>();
+
+    // public List<NetDeclarationASTNode> netDeclarations = new ArrayList<>();
+
     public void printRecursive(StringBuilder stringBuilder, int indent) {
 
         // indent and name

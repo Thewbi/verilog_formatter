@@ -4,6 +4,8 @@ public class ModuleParameterASTNode extends ASTNode {
 
     public ExpressionStatementASTNode expression;
 
+    public ParameterAssignmentASTNode assignment;
+
     public void printRecursive(final StringBuilder stringBuilder, final int indent) {
 
         // indent and direction, type, name
@@ -15,6 +17,11 @@ public class ModuleParameterASTNode extends ASTNode {
 
         if (expression != null) {
             expression.printRecursive(stringBuilder, indent+1);
+        }
+
+        if (assignment != null)
+        {
+            assignment.printRecursive(stringBuilder, indent+1);
         }
 
         // // datatype
