@@ -28,7 +28,14 @@ SOFTWARE.
 
 // Start Symbol: source_text
 
+
+
 lexer grammar VerilogLexer;
+
+@header {
+    //package verilog;
+}
+
 channels {
     COMMENTS,
     DIRECTIVES

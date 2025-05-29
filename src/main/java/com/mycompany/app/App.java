@@ -68,7 +68,8 @@ public class App {
         //String file = "src/test/resources/verilog_samples/temporal_construct.v";
         //String file = "src/test/resources/verilog_samples/fetch_stage.v";
 
-        String file = "src/test/resources/verilog_samples/scratchpad.v";
+        //String file = "src/test/resources/verilog_samples/scratchpad.v";
+        String file = "src/test/resources/verilog_samples/uart_top_2.v";
 
         // String file =
         // "src/test/resources/verilog_samples/if_else_without_begin_end_without_else.v";
@@ -135,9 +136,11 @@ public class App {
         //
         // Masking Preprocessor
         //
+        File preprocessedFile = new File(INTERMEDIATE_FILE);
+        Files.createDirectories(preprocessedFile.getParentFile().toPath());
 
         MaskingPreprocessor maskingPreprocessor = new MaskingPreprocessor();
-        maskingPreprocessor.process(new File(file), new File(INTERMEDIATE_FILE));
+        maskingPreprocessor.process(new File(file), preprocessedFile);
 
 
 

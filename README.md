@@ -4,8 +4,28 @@ formatter
 
 ## Build Errors
 
-Error: Lombok can't parse this source.
+### Error: Lombok can't parse this source.
 Solution: Ignore that error and run the software anyways. It seems as if this is not stopping the application from working.
+
+### Error: Java Classes are not generated from Antlr4 files
+
+It seems as if the antlr4 generator needs the .g4 file to be changed in order for it to
+start file generation. Edit the .g4 files of the lexer and parser, make a change, save the change.
+Revert the change and save again. Now generate. Maybe file files appear.
+
+A potential fix is to insert permanently:
+
+```
+@header {
+    package <ADD_PACKET_NAME_HERE>;
+}
+´´´
+
+into the lexer and/or parser .g4 files.
+Sometimes this causes a missing package decleration to be added.
+Sometimes the generator adds the package declaration automatically and you end
+up with two package declarations. Try around a bit until the system starts to work 
+as expected.
 
 ## System Verilog Search Rules
 

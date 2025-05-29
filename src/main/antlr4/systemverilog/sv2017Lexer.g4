@@ -10,6 +10,10 @@
 
 lexer grammar sv2017Lexer;
 
+@header {
+    //package systemverilog;
+}
+
 KW_DOLAR_ERROR: '$error';
 KW_DOLAR_FATAL: '$fatal';
 KW_DOLAR_FULLSKEW: '$fullskew';

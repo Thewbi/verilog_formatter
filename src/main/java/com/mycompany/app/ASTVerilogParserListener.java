@@ -103,7 +103,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void enterPort_declaration(VerilogParser.Port_declarationContext ctx) {
-        System.out.println("[" + ctx.hashCode() + "] " + ctx.getText());
+        //System.out.println("[" + ctx.hashCode() + "] " + ctx.getText());
 
         PortASTNode portASTNode = new PortASTNode();
         portASTNode.ctx = ctx;
@@ -128,15 +128,28 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void exitInput_declaration(VerilogParser.Input_declarationContext ctx) {
-        System.out.println("[" + ctx.hashCode() + "] " + ctx.getText());
+        //System.out.println("[" + ctx.hashCode() + "] " + ctx.getText() + " children: " + ctx.children.size());
 
-        if (ctx.children.size() == 3) {
+        if (ctx.children.size() == 2) {
+
+            String listOfPortNames = ctx.getChild(1).getText();
+            String[] listOfPortNamesSplit = listOfPortNames.split(",");
+
+            PortASTNode portASTNode = (PortASTNode) currentNode;
+            portASTNode.portDirection = PortDirection.INPUT;
+            portASTNode.listOfPortNames = listOfPortNamesSplit;
+            portASTNode.dataType = new DataTypeASTNode();
+            portASTNode.dataType.value = ctx.getChild(1).getText();
+            // portASTNode.dataType.rangeExpression = expressionStack.pop();
+            portASTNode.dataType.rangeExpression = null;
+
+        } else if (ctx.children.size() == 3) {
 
             String listOfPortNames = ctx.getChild(2).getText();
             String[] listOfPortNamesSplit = listOfPortNames.split(",");
 
             PortASTNode portASTNode = (PortASTNode) currentNode;
-            portASTNode.portDirection = PortDirection.OUTPUT;
+            portASTNode.portDirection = PortDirection.INPUT;
             portASTNode.listOfPortNames = listOfPortNamesSplit;
             portASTNode.dataType = new DataTypeASTNode();
             portASTNode.dataType.value = ctx.getChild(1).getText();
@@ -163,9 +176,22 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void exitOutput_declaration(VerilogParser.Output_declarationContext ctx) {
-        // System.out.println("[" + ctx.hashCode() + "] " + ctx.getText());
+        //System.out.println("[" + ctx.hashCode() + "] " + ctx.getText() + " children: " + ctx.children.size());
 
-        if (ctx.children.size() == 3) {
+        if (ctx.children.size() == 2) {
+
+            String listOfPortNames = ctx.getChild(1).getText();
+            String[] listOfPortNamesSplit = listOfPortNames.split(",");
+
+            PortASTNode portASTNode = (PortASTNode) currentNode;
+            portASTNode.portDirection = PortDirection.OUTPUT;
+            portASTNode.listOfPortNames = listOfPortNamesSplit;
+            portASTNode.dataType = new DataTypeASTNode();
+            portASTNode.dataType.value = ctx.getChild(1).getText();
+            // portASTNode.dataType.rangeExpression = expressionStack.pop();
+            portASTNode.dataType.rangeExpression = null;
+
+        } else if (ctx.children.size() == 3) {
 
             String listOfPortNames = ctx.getChild(2).getText();
             String[] listOfPortNamesSplit = listOfPortNames.split(",");
@@ -190,9 +216,8 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
             portASTNode.dataType.value = ctx.getChild(1).getText();
             portASTNode.dataType.rangeExpression = expressionStack.pop();
 
-        } else {
-            throw new RuntimeException("");
         }
+        
     }
 
     /**
@@ -335,13 +360,18 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void enterParam_assignment(VerilogParser.Param_assignmentContext ctx) {
+        //System.out.println("[" + ctx.hashCode() + "] " + ctx.getText());
 
         ParameterAssignmentASTNode parameterAssignmentASTNode = new ParameterAssignmentASTNode();
         parameterAssignmentASTNode.value = ctx.getChild(0).getText();
 
-        // ((ModuleDeclaractionASTNode)
-        // currentNode).parameterAssignments.add(parameterAssignmentASTNode);
-        ((ModuleParameterASTNode) currentNode).assignment = parameterAssignmentASTNode;
+        if (currentNode instanceof ModuleDeclaractionASTNode) {
+            ((ModuleDeclaractionASTNode) currentNode).parameterAssignments.add(parameterAssignmentASTNode);
+        } else if (currentNode instanceof ModuleParameterASTNode) {
+            ((ModuleParameterASTNode) currentNode).assignment = parameterAssignmentASTNode;
+        } else {
+            throw new RuntimeException();
+        }
 
         // connect parent and child
         parameterAssignmentASTNode.parent = currentNode;
@@ -392,7 +422,8 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         NetDeclarationASTNode netDeclarationASTNode = new NetDeclarationASTNode();
         netDeclarationASTNode.value = ctx.getChild(0).getText();
 
-        // ((ModuleDeclaractionASTNode) currentNode).children.add(netDeclarationASTNode);
+        // ((ModuleDeclaractionASTNode)
+        // currentNode).children.add(netDeclarationASTNode);
         // ((ModuleParameterASTNode) currentNode).assignment =
         // parameterAssignmentASTNode;
 
@@ -775,8 +806,10 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
                 expressionStack.push(expressionStatementASTNode);
 
             } else {
+
                 // throw new RuntimeException("Not implemented yet! text = '" +
                 // operatorChildParseTree.getText() + "'");
+
             }
 
         }

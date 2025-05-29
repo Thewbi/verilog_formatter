@@ -1,6 +1,10 @@
 parser grammar sv2017Parser;
 options { tokenVocab=sv2017Lexer; }
 
+@header {
+    //package systemverilog;
+}
+
 /*
  * IEEE1800-2017 grammar optimized for performance in the cost of allowing some ivalid syntax.
  * (= const/non-const is not checked, instance variants are same rule and ansi/non-ansi syntax can be mixed)

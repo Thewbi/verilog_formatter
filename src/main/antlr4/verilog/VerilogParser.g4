@@ -29,6 +29,10 @@ SOFTWARE.
 
 parser grammar VerilogParser;
 
+@header {
+    //package verilog;
+}
+
 options {
     tokenVocab = VerilogLexer;
 }
@@ -716,7 +720,7 @@ module_instantiation
     ;
 
 parameter_value_assignment
-    : '#' '(' ( new_line | line_comment )* list_of_parameter_assignments ( new_line | line_comment )* ')'
+    : '#' new_line* '(' ( new_line | line_comment )* list_of_parameter_assignments ( new_line | line_comment )* ')'
     ;
 
 list_of_parameter_assignments
@@ -796,8 +800,8 @@ case_generate_construct
     ;
 
 case_generate_item
-    : constant_expression (',' constant_expression)* ':' generate_block_or_null
-    | 'default' ':'? generate_block_or_null
+    : constant_expression (',' constant_expression)* ':' new_line* generate_block_or_null
+    | 'default' ':'? new_line* generate_block_or_null
     ;
 
 generate_block
@@ -1090,8 +1094,8 @@ case_statement
     ;
 
 case_item
-    : expression (',' expression)* ':' statement_or_null
-    | 'default' ':'? statement_or_null
+    : expression (',' expression)* ':' new_line* statement_or_null
+    | 'default' ':'? new_line* statement_or_null
     ;
 
 // A.6.8 Looping statements
