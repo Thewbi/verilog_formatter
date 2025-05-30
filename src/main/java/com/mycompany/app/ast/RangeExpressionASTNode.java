@@ -1,5 +1,6 @@
 package com.mycompany.app.ast;
 
+import com.mycompany.app.RangeExpressionSeparatorType;
 import com.mycompany.app.ast.visitor.ASTNodeVisitor;
 
 public class RangeExpressionASTNode extends ExpressionStatementASTNode {
@@ -7,6 +8,8 @@ public class RangeExpressionASTNode extends ExpressionStatementASTNode {
     public ExpressionStatementASTNode left;
 
     public ExpressionStatementASTNode right;
+
+    public RangeExpressionSeparatorType rangeExpressionSeparatorType = RangeExpressionSeparatorType.UNKNOWN;
 
     public int size;
 
@@ -24,7 +27,28 @@ public class RangeExpressionASTNode extends ExpressionStatementASTNode {
         if (size == 1) {
             stringBuilder.append("[").append(right.value).append("] ");
         } else if (size == 2) {
-            stringBuilder.append("[").append(left.value).append(", " ).append(right.value).append("] ");
+            //stringBuilder.append("[").append(left.value).append(", " ).append(right.value).append("] ");
+
+            // start bracket
+            stringBuilder.append("[\n");
+
+            // print left border
+            left.printRecursive(stringBuilder, indent + 1);
+
+            // print separator
+            for (int i = 0; i < indent; i++) {
+                stringBuilder.append("  ");
+            }
+            stringBuilder.append(RangeExpressionSeparatorType.toString(rangeExpressionSeparatorType) + ", \n");
+            
+            // print right border
+            right.printRecursive(stringBuilder, indent + 1);
+
+            // end bracket
+            for (int i = 0; i < indent; i++) {
+                stringBuilder.append("  ");
+            }
+            stringBuilder.append("]");
         }
     }
 

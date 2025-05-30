@@ -15,16 +15,31 @@ public class RegisterExpressionASTNode extends ExpressionStatementASTNode {
         }
         stringBuilder.append("RegisterExpression: \n");
 
-        for (int i = 0; i < indent + 1; i++) {
-            stringBuilder.append("  ");
+        // value
+        if (value != null) {
+            for (int i = 0; i < indent + 1; i++) {
+                stringBuilder.append("  ");
+            }
+            stringBuilder.append("value: ").append(value).append("\n");
         }
-        stringBuilder.append("var: ").append(var.value).append("\n");
 
-        for (int i = 0; i < indent + 1; i++) {
-            stringBuilder.append("  ");
+        // var
+        if (var != null) {
+            for (int i = 0; i < indent + 1; i++) {
+                stringBuilder.append("  ");
+            }
+            stringBuilder.append("var: ").append(var.value).append("\n");
         }
-        stringBuilder.append("range: \n");
-        range.printRecursive(stringBuilder, indent + 2);
+
+        // range
+        if (range != null) {
+            for (int i = 0; i < indent + 1; i++) {
+                stringBuilder.append("  ");
+            }
+            stringBuilder.append("range: \n");
+            range.printRecursive(stringBuilder, indent + 2);
+        }
+
         stringBuilder.append("\n");
     }
 

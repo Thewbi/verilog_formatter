@@ -6,15 +6,21 @@ module uart_test(
 	output                       uart_tx
 );
 
+/*
 parameter                        CLK_FRE  = 27;//Mhz
 parameter                        UART_FRE = 115200;//Mhz
+
 localparam                       IDLE =  0;
 localparam                       SEND =  1;   //send 
 localparam                       WAIT =  2;   //wait 1 second and send uart received data
+
 reg[7:0]                         tx_data;
 reg[7:0]                         tx_str;
+
 reg                              tx_data_valid;
+
 wire                             tx_data_ready;
+
 reg[7:0]                         tx_cnt;
 wire[7:0]                        rx_data;
 wire                             rx_data_valid;
@@ -97,8 +103,13 @@ end
 parameter 	ENG_NUM  = 14; // Anzahl nicht chinesischer Zeichen
 parameter 	CHE_NUM  = 2 + 1; // Anzahl chinesischer Zeichen
 parameter 	DATA_NUM = CHE_NUM * 3 + ENG_NUM; // Chinesische Zeichen verwenden UTF8, das 3 Bytes belegt
-wire [ DATA_NUM * 8 - 1:0] send_data = { "Tang Nano 20K", 16'h0d0a };
+*/
 
+/**/
+wire [ DATA_NUM * 8 - 1 : 0 ] send_data = { "Tang Nano 20K", 16'h0d0a };
+
+
+/*
 // wbi
 //`else
 
@@ -111,10 +122,14 @@ wire [ DATA_NUM * 8 - 1:0] send_data = { "Hello Tang Nano 20K", 16'h0d0a };
 
 // wbi
 //`endif
+*/
 
+/*
 always@(*)
 	tx_str <= send_data[(DATA_NUM - 1 - tx_cnt) * 8 +: 8];
+*/
 
+/*
 uart_rx#
 (
 	.CLK_FRE(CLK_FRE),
@@ -128,7 +143,9 @@ uart_rx#
 	.rx_data_ready              (rx_data_ready            ),
 	.rx_pin                     (uart_rx                  )
 );
+*/
 
+/*
 uart_tx#
 (
 	.CLK_FRE(CLK_FRE),
@@ -142,5 +159,6 @@ uart_tx#
 	.tx_data_ready              (tx_data_ready            ),
 	.tx_pin                     (uart_tx                  )
 );
+*/
 
 endmodule
