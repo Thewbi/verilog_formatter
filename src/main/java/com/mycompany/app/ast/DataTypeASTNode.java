@@ -22,9 +22,9 @@ public class DataTypeASTNode extends ASTNode {
             for (int i = 0; i < indent + 1; i++) {
                 stringBuilder.append("  ");
             }
-            stringBuilder.append("range-expression: "); //.append("\n");
-            //rangeExpression.printRecursive(stringBuilder, indent + 2);
-            rangeExpression.printRecursive(stringBuilder, 0);
+            stringBuilder.append("range-expression: ").append("\n");
+            rangeExpression.printRecursive(stringBuilder, indent + 2);
+            //rangeExpression.printRecursive(stringBuilder, 0);
         }
 
         // children

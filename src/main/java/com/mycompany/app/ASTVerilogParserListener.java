@@ -299,7 +299,8 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void exitReg_declaration(VerilogParser.Reg_declarationContext ctx) {
-        //System.out.println("[" + ctx.hashCode() + "] " + ctx.getText() + " children: " + ctx.children.size());
+        // System.out.println("[" + ctx.hashCode() + "] " + ctx.getText() + " children:
+        // " + ctx.children.size());
 
         RegisterExpressionASTNode registerExpressionASTNode = new RegisterExpressionASTNode();
         String name = "UNKNOWN";
@@ -311,7 +312,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
         } else {
 
-            ExpressionStatementASTNode temp = expressionStack.peek();
+            ExpressionStatementASTNode temp = expressionStackPeek();
             if (temp instanceof RangeExpressionASTNode) {
 
                 ExpressionStatementASTNode expressionStatementASTNode = expressionStackPop();
@@ -464,20 +465,44 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         currentNode = netDeclarationASTNode;
     }
 
+    /**
+     * Complex Example (net declaration initialized with concatenation):
+     * 
+     * <pre>
+     * wire [ DATA_NUM * 8 - 1 : 0 ] send_data = { "Tang Nano 20K", 16'h0d0a };
+     * </pre>
+     */
     @Override
     public void exitNet_declaration(VerilogParser.Net_declarationContext ctx) {
 
-        // name already consumed
-        int index = 1;
+        NetDeclarationASTNode currentNodeAsNetDeclarationASTNode = ((NetDeclarationASTNode) currentNode);
+        
+        // expecting concatenation value as initialization value
+        if (!expressionStack.empty()) {
+
+            ExpressionStatementASTNode temp = expressionStackPeek();
+            if (temp instanceof ConcatenationExpressionStatementASTNode) {
+
+                ConcatenationExpressionStatementASTNode concatenationExpressionStatementASTNode = (ConcatenationExpressionStatementASTNode) expressionStackPop();
+                
+                // add expression into the expression property
+                currentNodeAsNetDeclarationASTNode.expression = concatenationExpressionStatementASTNode;
+
+            }
+        }
 
         // expecting range expression
         if (!expressionStack.empty()) {
-            ((NetDeclarationASTNode) currentNode).expression = expressionStackPop();
-            index++;
-        }
+            ExpressionStatementASTNode temp = expressionStackPeek();
+            if (temp instanceof RangeExpressionASTNode) {
 
-        String identifiers = ctx.getChild(index).getText();
-        ((NetDeclarationASTNode) currentNode).identifiers = identifiers;
+                temp = expressionStackPop();
+                
+                currentNodeAsNetDeclarationASTNode.dataType = new DataTypeASTNode();
+                currentNodeAsNetDeclarationASTNode.dataType.value = "wire";
+                currentNodeAsNetDeclarationASTNode.dataType.rangeExpression = temp;
+            }
+        }
 
         // // DEBUG
         // StringBuilder stringBuilder = new StringBuilder();
@@ -716,10 +741,19 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
         astNode.ctx = ctx;
         astNode.value = ctx.getText();
-        astNode.operator = null;
 
         expressionStackPush(astNode);
     }
+
+    @Override public void enterSimple_identifier(VerilogParser.Simple_identifierContext ctx) { }
+	@Override public void exitSimple_identifier(VerilogParser.Simple_identifierContext ctx) { 
+
+        if (currentNode instanceof NetDeclarationASTNode) {
+            NetDeclarationASTNode netDeclarationASTNode = (NetDeclarationASTNode) currentNode;
+            netDeclarationASTNode.identifiers = ctx.getText();
+        }
+    }
+	
 
     @Override
     public void exitNumber(VerilogParser.NumberContext ctx) {
@@ -727,9 +761,18 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         ExpressionStatementASTNode astNode = new ExpressionStatementASTNode();
         astNode.ctx = ctx;
         astNode.value = ctx.getText();
-        astNode.operator = null;
 
         expressionStackPush(astNode);
+    }
+
+    @Override public void enterString_(VerilogParser.String_Context ctx) { }
+
+	@Override public void exitString_(VerilogParser.String_Context ctx) {
+        //System.out.println("[" + ctx.hashCode() + "] " + ctx.getText() + " children: " + ctx.children.size());
+
+        ExpressionStatementASTNode temp = new ExpressionStatementASTNode();
+        temp.value = ctx.getText();
+        expressionStackPush(temp);
     }
 
     @Override
@@ -767,7 +810,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
         } else if (ctx.children.size() == 5) {
 
-            rangeExpressionSeparator = RangeExpressionSeparatorType.fromString(ctx.getChild(1).getText());
+            rangeExpressionSeparator = RangeExpressionSeparatorType.fromString(ctx.getChild(2).getText());
 
             rangeExpressionASTNode.size = 2;
             rangeExpressionASTNode.rangeExpressionSeparatorType = rangeExpressionSeparator;
@@ -785,9 +828,16 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void exitPrimary(VerilogParser.PrimaryContext ctx) {
-        System.out.println("[" + ctx.hashCode() + "] " + ctx.getText() + " children: " + ctx.children.size());
+        //System.out.println("[" + ctx.hashCode() + "] " + ctx.getText() + " children: " + ctx.children.size());
 
-        if (ctx.getChildCount() == 2) {
+        if (ctx.getChildCount() == 1) {
+
+            // nop
+            //
+            // single nodes are not precessed. Instead the parse tree nodes for
+            // sub types will process values
+
+        } else if (ctx.getChildCount() == 2) {
 
             ExpressionStatementASTNode temp = expressionStackPop();
             if (temp instanceof RangeExpressionASTNode) {
@@ -855,11 +905,6 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
                 expressionStackPush(expressionStatementASTNode);
 
-            } else {
-
-                // throw new RuntimeException("Not implemented yet! text = '" +
-                // operatorChildParseTree.getText() + "'");
-
             }
 
         }
@@ -874,7 +919,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
     @Override
     public void enterConcatenation(VerilogParser.ConcatenationContext ctx) {
 
-        // add concatenation marker
+        // add concatenation marker to the stack
         ExpressionStatementASTNode concatenationMarker = new ExpressionStatementASTNode();
         concatenationMarker.value = "CONCATENATION_MARKER";
         expressionStackPush(concatenationMarker);
@@ -886,6 +931,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
         ConcatenationExpressionStatementASTNode concatenationExpressionStatementASTNode = new ConcatenationExpressionStatementASTNode();
 
+        // pop all items from the stack until the CONCATENATION_MARKER is retrieved
         do {
 
             ExpressionStatementASTNode expressionStatementASTNode = expressionStackPop();
@@ -894,10 +940,12 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
                 break;
             }
 
+            // insert node into parent
             connectParentAndChildFront(concatenationExpressionStatementASTNode, expressionStatementASTNode);
 
         } while (true);
 
+        // put new node onto the stack
         expressionStackPush(concatenationExpressionStatementASTNode);
     }
 
@@ -954,7 +1002,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
 
     @Override
     public void exitProcedural_timing_control_statement(VerilogParser.Procedural_timing_control_statementContext ctx) {
-        System.out.println("[" + ctx.hashCode() + "] " + ctx.getText() + " children: " + ctx.children.size());
+        //System.out.println("[" + ctx.hashCode() + "] " + ctx.getText() + " children: " + ctx.children.size());
 
         if (!expressionStack.empty()) {
             ((ProceduralTimingControlStatementASTNode) currentNode).expression = expressionStackPop();
@@ -1019,6 +1067,7 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         }
     }
 
+    @SuppressWarnings("unused")
     private void connectParentAndChild(ASTNode parent, ASTNode child) {
 
         if (parent == child) {
@@ -1037,11 +1086,25 @@ public class ASTVerilogParserListener extends VerilogParserBaseListener {
         child.parent = parent;
     }
 
+    //
+    // Expression Stack Utils
+    //
+
     private ExpressionStatementASTNode expressionStackPop() {
         return expressionStack.pop();
     }
 
     private void expressionStackPush(ExpressionStatementASTNode expressionStatementASTNode) {
+        
+        // // DEBUG
+        // StringBuilder stringBuilder = new StringBuilder();
+        // expressionStatementASTNode.printRecursive(stringBuilder, 0);
+        // System.out.println(stringBuilder);
+        
         expressionStack.push(expressionStatementASTNode);
+    }
+
+    private ExpressionStatementASTNode expressionStackPeek() {
+        return expressionStack.peek();
     }
 }
